@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+
+  # frontend:
+
+  backend:
+    build:
+      context:  ./backend
+    depends_on:
+      - database
+    restart: always
+
+  database:
+    image: postgres
+    # environment:
+      # - name=value
+    networks:
+      - nw_database
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+    container_name: postgresql_database
+
+networks:
+  nw_database:
+    driver: bridge
+
+volumes:
+  postgres-data:
