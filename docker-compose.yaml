@@ -4,17 +4,24 @@ services:
 
   # frontend:
 
-  backend:
-    build:
-      context:  ./backend
-    depends_on:
-      - database
-    restart: always
+  # backend:
+  #   build:
+  #     context:  ./backend
+  #   networks:
+  #     - nw_database
+  #   depends_on:
+  #     - database
+  #   restart: always
 
   database:
     image: postgres
     # environment:
       # - name=value
+    environment:
+      - PGUSER=user
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=postgres_dbw
     networks:
       - nw_database
     volumes:
