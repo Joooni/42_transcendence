@@ -16,7 +16,7 @@ services:
     restart: always
 
   database:
-    image: postgres
+    image: postgres:15-alpine
     environment:
       - PGUSER=user
       - POSTGRES_USER=user
