@@ -1,12 +1,8 @@
-type GreetProps = {
-	name: string
-}
-
-export const Home = (props: GreetProps) => {
+function Home () {
 	return (
 	  <div className="Home">
 		<p>
-			WELCOME {props.name}! YOU STILL HAVE A LOT TO LEARN!
+			WELCOME saskia! YOU STILL HAVE A LOT TO LEARN!
 		</p>
 		<div className="Button">
 			JOIN A NEW GAME
