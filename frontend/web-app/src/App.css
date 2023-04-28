@@ -19,7 +19,14 @@
   color: rgb(255, 0, 0);
 }
 
+.Matchmaking {
+  font-family: jumpman;
+  font-size: calc(10px + 2vmin);
+  color: rgb(255, 0, 0);
+}
+
 .Button {
+  width: 20vmin;
   background: red;
   font-family: jumpman;
   color: rgb(4, 56, 18);
