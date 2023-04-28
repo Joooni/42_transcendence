@@ -1,0 +1,58 @@
+@font-face {
+  font-family: 'jumpman';
+  src: url('./assets/Jumpman.ttf') format('trueType');
+}
+
+.App {
+  background: no-repeat url(./assets/background.jpg);
+}
+
+.Header-logo {
+  text-align: left;
+  height: 15vmin;
+  pointer-events: none;
+}
+
+.Home {
+  font-family: jumpman;
+  font-size: calc(10px + 2vmin);
+  color: rgb(255, 0, 0);
+}
+
+.Button {
+  background: red;
+  font-family: jumpman;
+  color: rgb(4, 56, 18);
+}
+
+
+
+/* @media (prefers-reduced-motion: no-preference) {
+  .Header-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+} */
+
+  /* .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  .App-link {
+    color: #61dafb;
+  } */
+
+/* @keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
