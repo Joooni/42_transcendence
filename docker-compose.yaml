@@ -4,19 +4,19 @@ services:
 
   # frontend:
 
-  # backend:
-  #   build:
-  #     context:  ./backend
-  #   networks:
-  #     - nw_database
-  #   depends_on:
-  #     - database
-  #   restart: always
+  backend:
+    build:
+      context: ./backend
+    networks:
+      - nw_database
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+    restart: always
 
   database:
     image: postgres
-    # environment:
-      # - name=value
     environment:
       - PGUSER=user
       - POSTGRES_USER=user
