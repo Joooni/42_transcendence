@@ -5,6 +5,7 @@ WORKDIR /app
 
 #copy everthing from CWD to /app
 COPY . ./
+
 RUN npm install --silent
 
 CMD ["npm", "run", "start:dev"]
