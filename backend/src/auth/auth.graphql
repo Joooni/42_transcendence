@@ -1,0 +1,24 @@
+type Auth {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateAuthInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateAuthInput {
+  id: Int!
+}
+
+type Query {
+  auth: [Auth]!
+  auth(id: Int!): Auth
+}
+
+type Mutation {
+  createAuth(createAuthInput: CreateAuthInput!): Auth!
+  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
+  removeAuth(id: Int!): Auth
+}
