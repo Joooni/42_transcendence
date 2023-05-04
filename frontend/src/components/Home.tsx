@@ -1,12 +1,9 @@
 function Home () {
 	return (
 	  <div className="Home">
-		<p>
-			WELCOME saskia! YOU STILL HAVE A LOT TO LEARN!
-		</p>
 		<div className = "flex_row">
 			<div className = "flex_column">
-				<div className = "Button">JOIN A GAME</div>
+				<div className = "big_button">JOIN A GAME</div>
 				<h3 className = "headline">ONGOING GAMES</h3>
 				<div className = "ongoing_game">saskia vs. jonas</div>
 				<div className = "ongoing_game">saskia vs. jonas</div>

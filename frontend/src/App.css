@@ -8,12 +8,24 @@
 }
 
 .Header-logo {
-  text-align: left;
-  height: 15vmin;
-  pointer-events: none;
+	margin: 1vmin;
+	text-align: left;
+	height: 15vmin;
+	pointer-events: none;
+}
+
+.header_flex {
+	display: flex;
+	flex-direction: row;
+	margin-left: 1vmin;
+	margin-right: 2vmin;
+	justify-content: space-between;
+	align-items: center;
+	text-align-last: left;
 }
 
 .Home {
+  margin: 3vmin 2vmin;
   font-family: jumpman;
   font-size: calc(10px + 2vmin);
   color: rgb(255, 0, 0);
@@ -25,19 +37,20 @@
   color: rgb(255, 0, 0);
 }
 
-.Button {
+.big_button {
   margin: auto;
   text-align: center;
-  width: 70vmin;
+  width: 75vmin;
   background: red;
   font-family: jumpman;
-  font-size: 5vmin;
+  font-weight: bold;
+  font-size: 6vmin;
   color: rgb(4, 56, 18);
   border-style: solid;
   border-width: 3px;
   border-color: orange;
   border-radius: 15px;
-  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-width: 0.5px;
   -webkit-text-stroke-color: orange;
 }
 
@@ -53,25 +66,24 @@
 }
 
 .flex_column {
-  margin: auto;
+  margin: 1vmin;
   text-align: center;
-  width: 80vmin;
+  width: 100vmin;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   border-style: solid;
   border-width: 2px;
   border-color: cyan;
-  gap: 20px;
 }
 
 .ongoing_game {
-  margin: auto;
+  margin: 5vmin 5vmin;
   text-align: center;
-  width: 70vmin;
+  width: 75vmin;
   background: darkgreen;
   font-family: jumpman;
-  font-size: 5vmin;
+  font-size: 6vmin;
   color: rgb(4, 56, 18);
   border-style: solid;
   border-width: 3px;
@@ -83,8 +95,8 @@
   text-align: center;
   font-family: jumpman;
   color: red;
-  font-size: 5vmin;
-  -webkit-text-stroke-width: 1px;
+  font-size: 6vmin;
+  -webkit-text-stroke-width: 0.5px;
   -webkit-text-stroke-color: orange;
 }
 
