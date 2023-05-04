@@ -26,10 +26,66 @@
 }
 
 .Button {
-  width: 20vmin;
+  margin: auto;
+  text-align: center;
+  width: 70vmin;
   background: red;
   font-family: jumpman;
+  font-size: 5vmin;
   color: rgb(4, 56, 18);
+  border-style: solid;
+  border-width: 3px;
+  border-color: orange;
+  border-radius: 15px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: orange;
+}
+
+.flex_row {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  border-style: solid;
+  border-width: 2px;
+  border-color: magenta;
+}
+
+.flex_column {
+  margin: auto;
+  text-align: center;
+  width: 80vmin;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-style: solid;
+  border-width: 2px;
+  border-color: cyan;
+  gap: 20px;
+}
+
+.ongoing_game {
+  margin: auto;
+  text-align: center;
+  width: 70vmin;
+  background: darkgreen;
+  font-family: jumpman;
+  font-size: 5vmin;
+  color: rgb(4, 56, 18);
+  border-style: solid;
+  border-width: 3px;
+  border-color: orange;
+  border-radius: 15px;
+}
+
+.headline {
+  text-align: center;
+  font-family: jumpman;
+  color: red;
+  font-size: 5vmin;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: orange;
 }
 
 
