@@ -6,7 +6,7 @@ up:
 	docker-compose -f docker-compose.yaml up --remove-orphans -d
 
 dev:
-	cp sheesh.env .env
+	cp actual.env .env
 	docker-compose -f docker-compose.yaml up --build --remove-orphans -d
 	docker-compose -f docker-compose.yaml logs --tail 100 -f
 

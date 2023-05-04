@@ -33,7 +33,7 @@ export const mockUser1: User = createMockUser({
 });
 
 export const mockUser2: User = createMockUser({
-	id: 4269,
+	id: 6942,
 	intra: 'dikong',
 	firstname: 'Diddy',
 	lastname: 'Kong',

@@ -1,19 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {}
+
+  async create(createUserInput: CreateUserInput): Promise<void> {
+    console.log("This action adds a new user");
+    
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<User[]> {
+    console.log("This action returns all users");
+    return this.userRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    console.log("This action returns a %d user", id);
+    return
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {

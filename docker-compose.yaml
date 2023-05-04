@@ -21,14 +21,14 @@ services:
   database:
     image: postgres:15-alpine
     environment:
-      PGUSER: ${DB_HOST}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST: postgresql_database
     networks:
       - nw_database
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: always
