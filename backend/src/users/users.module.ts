@@ -1,9 +1,19 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './controllers/users/users.controller';
-import { UsersService } from './services/users/users.service';
+import { UsersService } from './users.service';
+import { UsersResolver } from './users.resolver';
+import { DataSource } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { UsersController } from './users.controller';
+import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
+  providers: [UsersResolver, UsersService],
+  imports: [TypeOrmModule.forFeature([ User ]), ConfigModule, HttpModule],
+  exports: [UsersService],
   controllers: [UsersController],
-  providers: [UsersService]
 })
-export class UsersModule {}
+export class UsersModule {
+  constructor(private dataSource: DataSource) {}
+}
