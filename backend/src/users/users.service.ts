@@ -4,7 +4,8 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
-
+import { User } from './entities/user.entity';
+import { EntityNotFoundError, Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,7 +16,10 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput): Promise<void> {
     console.log("This action adds a new user");
-    
+    //repository.insert method is used to insert a new entity or an array of entities into the database.
+    await this.userRepository.insert(createUserInput);
+    // here needs to go some error management - username already in use, more...
+    return Promise.resolve();
   }
 
   async findAll(): Promise<User[]> {
@@ -23,16 +27,20 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    console.log("This action returns a %d user", id);
-    return
+  findOne(identifier: number | string): Promise<User> {
+    console.log("This action returns a user");
+    if (typeof identifier === 'number')
+      return this.userRepository.findOneByOrFail({id: identifier})
+    else if (typeof identifier === 'string')
+      return this.userRepository.findOneByOrFail({username: identifier})
+    throw new EntityNotFoundError(User,{});
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+    console.log("This action updates a user with %d id", id);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    console.log("This action removes a user with %d id", id);
   }
 }

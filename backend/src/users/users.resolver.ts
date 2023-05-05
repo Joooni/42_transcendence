@@ -1,34 +1,34 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
+import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
+/**
+ * compared to RESTful APIs, graphQL uses three different requests:
+ * Query: used to retrieve data from server (REST analogue: GET)
+ * Mutation: used to create and modify data on server (POST, PUT, DELETE)
+ * Subscription: receive real-time updates from server and notificatgions when changes or updates occur
+*/
 @Resolver('User')
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation('createUser')
-  create(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
-  }
-
-  @Query('users')
+  @Query(() => [User], { name: 'users'})
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Query('user')
-  findOne(@Args('id') id: number) {
+  @Query(() => User, {name: 'user'})
+  findOneById(@Args('id') id: number) {
     return this.usersService.findOne(id);
   }
 
-  @Mutation('updateUser')
-  update(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
+  @Query(() => User, {name: 'user'})
+  findOneByUsername(@Args('username') username: string) {
+    return this.usersService.findOne(username);
   }
 
-  @Mutation('removeUser')
-  remove(@Args('id') id: number) {
-    return this.usersService.remove(id);
-  }
+
+
 }

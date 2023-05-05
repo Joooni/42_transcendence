@@ -6,6 +6,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 // import { AuthModule } from './auth/auth.module';
+import { UsersController } from './users/users.controller';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,13 +26,18 @@ import { User } from './users/entities/user.entity';
 				password: configService.get('DB_PASSWORD'),
 				database: configService.get('DB_NAME'),
 				entities: [ User ],
-        autoLoadEntities: true,
 				synchronize: true,
 			}),
-		})
+		}),
+	//GraphQL playground *should* be available at /graphql
+	GraphQLModule.forRoot<ApolloDriverConfig>({
+		driver: ApolloDriver,
+		playground: true,
+		autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+	}),
     // AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UsersController],
   providers: [AppService],
 })
 export class AppModule {}
