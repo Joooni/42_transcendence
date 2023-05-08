@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+	font-family: 'jumpman';
+	src: url('./assets/Jumpman.ttf') format('trueType');
+}
+
+body {
+	background: no-repeat url(./assets/background.jpg);
+}

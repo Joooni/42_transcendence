@@ -1,0 +1,21 @@
+* {
+	display: flex;
+	flex-direction: row;
+	margin-left: 1vmin;
+	margin-right: 2vmin;
+	justify-content: space-between;
+	align-items: center;
+	text-align-last: left;
+}
+
+img {
+	height: 15vmin;
+}
+
+p {
+	font-family: jumpman;
+	color: red;
+	font-size: 4vmin;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: orange;
+}
