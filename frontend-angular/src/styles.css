@@ -1,0 +1,78 @@
+@font-face {
+	font-family: 'jumpman';
+	src: url('./assets/Jumpman.ttf') format('trueType');
+}
+
+@font-face {
+	font-family: 'press_start';
+	src: url('./assets/PressStart2P-Regular.ttf') format('trueType');
+}
+
+body {
+	background: no-repeat url(./assets/background.jpg);
+}
+
+h1 {
+	font-family: jumpman;
+	color: red;
+	font-size: 6vmin;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: orange;
+}
+
+h2 {
+	font-family: jumpman;
+	color: red;
+	font-size: 4vmin;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: orange;
+}
+
+h3 {
+	font-family: press_start;
+	font-size: 2vmin;
+	color: orange;
+}
+
+button {
+	margin-top: 2vmin;
+	text-align: center;
+	background: red;
+	font-family: jumpman;
+	font-weight: bold;
+	font-size: 6vmin;
+	color: rgb(4, 56, 18);
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+	border-radius: 15px;
+	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: orange;
+}
+
+.box {
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	width: 80vmin;
+	height: 10vmin;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	text-align: center;
+	padding: 1vmin 3vmin;
+}
+
+.profile_picture {
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+	height: 8vmin;
+	width: 8vmin;
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+* {
+	color: red;
+}

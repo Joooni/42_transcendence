@@ -1,0 +1,12 @@
+img {
+	height: 15vmin;
+}
+
+.flex_header {
+	display: flex;
+	text-align-last: left;
+	justify-content: space-between;
+	margin-left: 1vmin;
+	margin-right: 2vmin;
+	margin-bottom: 2vmin;
+}

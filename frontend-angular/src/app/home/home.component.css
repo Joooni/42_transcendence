@@ -1,0 +1,27 @@
+.home_flex_columns {
+	display: flex;
+	flex-direction: row;
+	text-align: center;
+	justify-content: space-evenly;
+	border-style: solid;
+	border-width: 2px;
+	border-color: magenta;
+}
+
+.home_flex_rows {
+	margin: 2vmin 2vmin;
+	display: flex;
+	flex-direction: column;
+	width: 100vmin;
+	text-align: center;
+	justify-content: flex-start;
+	align-items: center;
+	border-style: solid;
+	border-width: 2px;
+	border-color: cyan;
+	row-gap: 2vmin;
+}
+
+.home_big_button {
+	width: 80vmin;
+}
