@@ -1,4 +1,5 @@
 .home_flex_columns {
+	margin: 2vmin 2vmin;
 	display: flex;
 	flex-direction: row;
 	text-align: center;
@@ -9,7 +10,6 @@
 }
 
 .home_flex_rows {
-	margin: 2vmin 2vmin;
 	display: flex;
 	flex-direction: column;
 	width: 100vmin;
@@ -24,4 +24,10 @@
 
 .home_big_button {
 	width: 80vmin;
+}
+
+.home_game_box {
+	width: 80vmin;
+
+	justify-content: space-between;
 }

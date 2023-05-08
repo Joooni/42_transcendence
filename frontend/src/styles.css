@@ -50,16 +50,22 @@ button {
 	-webkit-text-stroke-color: orange;
 }
 
-.box {
+.box_row {
 	background-color: rgb(2, 88, 2);
 	border-radius: 15px;
-	width: 80vmin;
-	height: 10vmin;
+	padding: 1vmin 3vmin;
+
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
-	text-align: center;
+}
+
+.box_column {
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
 	padding: 1vmin 3vmin;
+
+	display: flex;
+	flex-direction: column;
 }
 
 .profile_picture {
