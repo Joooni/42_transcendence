@@ -19,7 +19,7 @@
 }
 
 .profile_box_row {
-	justify-content: flex-start;
+	justify-content: space-between;
 	align-items: flex-start;
 	width: 85vmin;
 	min-height: auto;
@@ -48,12 +48,21 @@
 }
 
 h1 {
-	margin: 2vmin;
+	margin: 2vmin 3vmin;
 }
 
 h2 {
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
+}
+
+h4 {
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+table {
+	width: 40vmin;
 }
 
 .achievements_box {
@@ -67,4 +76,9 @@ h2 {
 	display: flex;
 	flex-direction: row;
 	column-gap: 3vmin;
+}
+
+.settings_icon {
+	height: 5vmin;
+	width: 5vmin;
 }
