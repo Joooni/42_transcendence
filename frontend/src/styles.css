@@ -30,7 +30,19 @@ h2 {
 
 h3 {
 	font-family: press_start;
+	font-size: 4vmin;
+	color: orange;
+}
+
+h4 {
+	font-family: press_start;
 	font-size: 2vmin;
+	color: orange;
+}
+
+h6 {
+	font-family: press_start;
+	font-size: 1.5vmin;
 	color: orange;
 }
 
@@ -75,6 +87,28 @@ button {
 	border-color: orange;
 	height: 8vmin;
 	width: 8vmin;
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+.achievement_icon {
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+	height: 4vmin;
+	width: 4vmin;
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+.profile_picture_big {
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+	height: 20vmin;
+	width: 20vmin;
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
 }

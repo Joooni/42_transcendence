@@ -20,17 +20,18 @@
 
 .profile_box_row {
 	justify-content: flex-start;
-	align-items: center;
-	width: 80vmin;
+	align-items: flex-start;
+	width: 85vmin;
 	min-height: auto;
-	column-gap: 2vmin;
+	column-gap: 4vmin;
 	margin: 0vmin;
+	padding-top: 3vmin;
 }
 
 .profile_box_column {
 	justify-content: center;
 	align-items: center;
-	width: 80vmin;
+	width: 85vmin;
 	min-height: auto;
 	margin: 0vmin;
 	
@@ -39,6 +40,31 @@
 	border-color: magenta;
 }
 
+.profile_box_games {
+	justify-content: space-between;
+	align-items: center;
+	min-height: auto;
+	margin: 2vmin 2vmin;
+}
+
 h1 {
 	margin: 2vmin;
+}
+
+h2 {
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+.achievements_box {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 5vmin;
+}
+
+.achievement {
+	display: flex;
+	flex-direction: row;
+	column-gap: 3vmin;
 }
