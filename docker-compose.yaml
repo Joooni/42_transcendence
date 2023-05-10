@@ -16,7 +16,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./backend/src:/app/backend/src
+      - ${PWD}/backend:/app
     restart: always
     container_name: backend
 

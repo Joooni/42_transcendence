@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  intra: String!
+  firstname: String!
+  lastname: String!
+  username: String!
+  email: String!
+  picture: String!
+  twoFAEnabled: Boolean!
+  status: String!
+  wins: Float!
+  losses: Float!
+}
+
+type Query {
+  users: [User!]!
+  user(username: String!): User!
+}
