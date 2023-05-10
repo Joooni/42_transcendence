@@ -17,6 +17,8 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
 			clientSecret: configService.get<string>('INTRA42_AUTH_SECRET'),
 			callbackURL: "http://localhost:3000/42intra/callback",
 		});
+		console.log("client id: %s",configService.get<string>('INTRA42_AUTH_ID'));
+		console.log("auth secret: %s",configService.get<string>('INTRA42_AUTH_SECRET'));
 	}
 
 	async validate(

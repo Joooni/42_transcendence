@@ -15,6 +15,8 @@ services:
       - database
     env_file:
       - .env
+    volumes:
+      - ./backend/src:/app/backend/src
     restart: always
     container_name: backend
 

@@ -6,8 +6,9 @@ WORKDIR /app
 #copy everthing from CWD to /app
 COPY . ./
 
+RUN npm install -g nodemon
 RUN npm install --silent
 
 EXPOSE 3000
-
-CMD ["npm", "run", "start:dev"]
+ENTRYPOINT [ "nodemon", "--config /app/backend/nodemon.json"]
+CMD ["npm", "run", "start:nodemon"]

@@ -12,6 +12,7 @@ export class AuthService {
     ) {}
 
   async login(@Req() _req: any, @Res() _res: any): Promise<any> {
+    console.log(_req);
     var user = await this.usersService.findOne(_req.user.id);
     if (!user)
       // return or throw erorr
