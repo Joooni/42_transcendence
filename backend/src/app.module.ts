@@ -5,7 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
-// import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { UsersController } from './users/users.controller';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -35,7 +35,7 @@ import { join } from 'path';
 		playground: true,
 		autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
 	}),
-    // AuthModule,
+    AuthModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],

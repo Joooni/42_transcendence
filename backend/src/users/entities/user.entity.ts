@@ -47,10 +47,10 @@ export class User {
 	status: string;
 
 	@Field()
-	@Column()
+	@Column({ default: 0 })
 	wins: number;
 
 	@Field()
-	@Column()
+	@Column({ default: 0 })
 	losses: number;
 }

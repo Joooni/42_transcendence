@@ -20,6 +20,8 @@ down:
 ps:
 	docker-compose -f docker-compose.yaml ps
 
+clean:
+
 fclean: down
 	rm .env
 	docker system prune -af --volumes

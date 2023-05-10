@@ -5,7 +5,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { EntityNotFoundError, Like, QueryFailedError, Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
@@ -17,8 +17,14 @@ export class UsersService {
   async create(createUserInput: CreateUserInput): Promise<void> {
     console.log("This action adds a new user");
     //repository.insert method is used to insert a new entity or an array of entities into the database.
-    await this.userRepository.insert(createUserInput);
-    // here needs to go some error management - username already in use, more...
+    try {
+      await this.userRepository.insert(createUserInput);
+    } catch (error) {
+      if (!(error instanceof QueryFailedError)) return Promise.reject(error);
+      const existingUsers: User[] = await this.userRepository.find({
+        where: { username: Like('${createUserInput.username}%') },
+      });
+    }
     return Promise.resolve();
   }
 
