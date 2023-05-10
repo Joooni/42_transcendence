@@ -46,6 +46,10 @@ h6 {
 	color: orange;
 }
 
+a {
+	text-decoration: none;
+}
+
 button {
 	margin-top: 2vmin;
 	text-align: center;
