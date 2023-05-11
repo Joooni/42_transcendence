@@ -1,0 +1,65 @@
+h1 {
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+h4 {
+	line-height: 3vmin;
+}
+
+table {
+	width: 140vmin
+}
+
+button {
+	width: 40vmin
+}
+
+.settings_column {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin: 3vmin 3vmin;
+	row-gap: 1vmin;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: magenta;
+}
+
+.settings_row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	column-gap: 4vmin;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: cyan;
+}
+
+.game_design_preview
+{
+	height: 15vmin;
+	width:	auto;
+}
+
+.game_design_column {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	row-gap: 1vmin;
+}
+
+.game_design_row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	margin: 3vmin 3vmin;
+	column-gap: 15vmin;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: cyan;
+}

@@ -1,0 +1,81 @@
+.profile_flex_column {
+	display: flex;
+	flex-direction: column; 
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: magenta;
+}
+
+.profile_flex_row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 2vmin 2vmin;
+	column-gap: 5vmin;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: cyan;
+}
+
+.profile_box_row {
+	justify-content: space-between;
+	align-items: flex-start;
+	min-height: auto;
+	column-gap: 4vmin;
+	padding-top: 3vmin;
+}
+
+.profile_box_column {
+	justify-content: center;
+	align-items: center;
+	min-height: auto;
+	
+	border-style: solid;
+	border-width: 2px;
+	border-color: magenta;
+}
+
+.profile_box_games {
+	justify-content: space-between;
+	align-items: center;
+	min-height: auto;
+	margin: 2vmin 2vmin;
+}
+
+h1 {
+	margin: 2vmin 3vmin;
+}
+
+h2 {
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+h4 {
+	margin-top: 1vmin;
+	margin-bottom: 1vmin;
+}
+
+table {
+	width: 40vmin;
+}
+
+.achievements_box {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 5vmin;
+}
+
+.achievement {
+	display: flex;
+	flex-direction: row;
+	column-gap: 3vmin;
+}
+
+.settings_icon {
+	height: 5vmin;
+	width: 5vmin;
+}
