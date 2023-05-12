@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { User } from './user';
 import { USERS } from './mock_users';
 
@@ -9,16 +10,18 @@ export class UserDataService {
 
   constructor() { }
 
-  getUserByID(userID:number) {
-    return USERS.find(elem => elem.id == userID);
+  // getUserByID(userID:number) {
+  //   return USERS.find(elem => elem.id == userID);
+  // }
+
+  getUserByUsername(username:string): Observable<User> {
+    const User = USERS.find(elem => elem.username === username)!;
+    return of(User);
   }
 
-  getUserByUsername(name:string) {
-    return USERS.find(elem => elem.username == name);
-  }
-
-  getUsers() {
-    return USERS;
+  getUsers(): Observable<User[]> {
+    const users = of(USERS);
+    return users;
   }
 
 }

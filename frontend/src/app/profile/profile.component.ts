@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
 import { User } from '../user';
 import { UserDataService } from '../user-data.service';
 
@@ -9,16 +12,26 @@ import { UserDataService } from '../user-data.service';
 })
 export class ProfileComponent {
   
+  Users: User[] = [];
   selectedUser?: User;
   
-  constructor(private userDataService: UserDataService) {}
+  constructor(
+    private userDataService: UserDataService,
+    private route: ActivatedRoute,
+    private location: Location
+    ) {}
 
   ngOnInit(): void {
-    this.getUserByUsername();
+    this.getUser();
   }
 
-  getUserByUsername(): void {
-    this.selectedUser = this.userDataService.getUserByUsername("JonDude");
+  getUser(): void {
+    const username = String(this.route.snapshot.paramMap.get('username'));
+    console.log(username);
+    this.userDataService.getUserByUsername(username).subscribe(user => this.selectedUser = user);
   }
 
+  getUsers(): void {
+    this.userDataService.getUsers().subscribe(users => this.Users = users);
+  }
 }

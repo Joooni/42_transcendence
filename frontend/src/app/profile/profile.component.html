@@ -1,17 +1,17 @@
-<div class="profile_flex_column">
+<div *ngIf="selectedUser" class="profile_flex_column">
 	<div class="profile_flex_row">
 		<div class="box_row profile_box_row">
 			<img class="profile_picture_big" src="../../assets/profile.jpg">
 			<div>
-				<h3>Jon Doe</h3>
+				<h3>{{selectedUser.username}} </h3>
 				<table>
 					<tr>
 						<td><h4>Rank</h4></td>
-						<td><h4>#18</h4></td>
+						<td><h4>#{{selectedUser.rank}}</h4></td>
 					</tr>
 					<tr>
 						<td><h4>XP</h4></td>
-						<td><h4>215</h4></td>
+						<td><h4>{{selectedUser.xp}}</h4></td>
 					</tr>
 				</table>
 			</div>
@@ -76,4 +76,8 @@
 			<h4>+200XP</h4>
 		</div>
 	</div>
+</div>
+<div *ngIf="!selectedUser">
+	<h1>NO SUCH USER</h1>
+	<h3>(WORK IN PROGRESS)</h3>
 </div>
