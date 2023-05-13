@@ -33,4 +33,8 @@ fclean: down
 
 re: fclean up
 
-.PHONY: all dev down ps fclean re
+norm:
+    npm --prefix backend run format
+    npm --prefix backend run lint
+
+.PHONY: all dev down ps fclean re norm
