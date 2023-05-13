@@ -15,7 +15,6 @@ export class Intra42Controller {
 		) {}
 
 	@HttpCode(HttpStatus.OK)
-	// ideally, instead of Record, use a DTO class to define request body shape
 	@Get('login')
 	@UseGuards(Intra42OAuthGuard)
 	login(): void {
@@ -32,18 +31,19 @@ export class Intra42Controller {
 	async callback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
 		if (typeof req.user == 'undefined')
 			throw new BadRequestException("Verification with 42Intra failed");
-
+		console.log(req);
 		let user: User | CreateUserInput = req.user;
 		try {
 			user = await this.usersService.findOne(+user.id);
 		} catch (error) {
 			if (error instanceof EntityNotFoundError) {
 				await this.usersService.create(user);
-			}
-			else {
+			} else {
 				throw error;
 			}
 		}
+
+		// JWT token stuff
 	}
 
 	@Get('logout')
@@ -54,5 +54,13 @@ export class Intra42Controller {
 	@Get()
 	headempty(): string {
 		return "this is just /42intra, bruh!";
+	}
+
+	@Get('usertest')
+	@UseGuards(Intra42OAuthGuard)
+	testdiesdas(@Req() req: any): void {
+		let user: User | CreateUserInput = req.user;
+		console.log("user found!:");
+		console.log(user);
 	}
 }

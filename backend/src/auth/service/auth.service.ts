@@ -1,6 +1,4 @@
 import { Injectable, Req, Res } from '@nestjs/common';
-import { CreateAuthInput } from '../dto/create-auth.input';
-import { UpdateAuthInput } from '../dto/update-auth.input';
 import { UsersService } from 'src/users/users.service';
 import { ConfigService } from '@nestjs/config';
 

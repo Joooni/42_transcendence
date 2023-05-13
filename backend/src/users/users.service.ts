@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
@@ -18,12 +17,16 @@ export class UsersService {
     console.log("This action adds a new user");
     //repository.insert method is used to insert a new entity or an array of entities into the database.
     try {
+      console.log(createUserInput);
       await this.userRepository.insert(createUserInput);
     } catch (error) {
       if (!(error instanceof QueryFailedError)) return Promise.reject(error);
       const existingUsers: User[] = await this.userRepository.find({
         where: { username: Like('${createUserInput.username}%') },
       });
+      if (existingUsers.length === 0) return Promise.reject(error);
+      // here should be a part where a user cant be created because of conflicting usernames
+      // so we check the database for the same username and add a number to its end
     }
     return Promise.resolve();
   }
@@ -40,10 +43,6 @@ export class UsersService {
     else if (typeof identifier === 'string')
       return this.userRepository.findOneByOrFail({username: identifier})
     throw new EntityNotFoundError(User,{});
-  }
-
-  update(id: number, updateUserInput: UpdateUserInput) {
-    console.log("This action updates a user with %d id", id);
   }
 
   remove(id: number) {

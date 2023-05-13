@@ -1,0 +1,30 @@
+img {
+	height: 15vmin;
+}
+
+.flex_header {
+	display: flex;
+	text-align-last: left;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: 1vmin;
+	margin-right: 2vmin;
+	margin-bottom: 2vmin;
+}
+
+.flex_header_profile {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	column-gap: 3vmin;
+}
+
+.header_profile_picture {
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+	height: 8vmin;
+	width: 8vmin;
+}
