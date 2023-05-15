@@ -1,48 +1,46 @@
 <div *ngIf="getActiveUsername()" class="settings_column">
 	<h1> - ACCOUNT SETTINGS - </h1>
-	<form>
-		<table>
-			<tr>
-				<td><h4>Nickname:</h4></td>
-				<td><input [(ngModel)]="changedUserData.username" name="username" type="text" placeholder="{{activeUser?.username}}"></td>
-			</tr>
-			<tr>
-				<td><h4>Two-Factor-<br>Authentication:</h4></td>
-				<td>
-					<label class="switch">
-						<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox" checked="{{activeUser?.twoFAEnabled}}">
-						<span class="slider round"></span>
-					</label>
-				</td>
-			</tr>
-		</table>
-		<h1> - GAME SETTINGS - </h1>
-		<div class="game_design_row">
-			<div class="game_design_column">
-				<img class="game_design_preview" src="../../assets/game_design.png">
-				<label for="design1" class="container">
-					<input type="radio" id="design1" name="game_design" value="1">
-					<span class="checkmark"></span>
+	<table>
+		<tr>
+			<td><h4>Nickname:</h4></td>
+			<td><input [(ngModel)]="changedUserData.username" name="username" type="text" placeholder="{{activeUser?.username}}"></td>
+		</tr>
+		<tr>
+			<td><h4>Two-Factor-<br>Authentication:</h4></td>
+			<td>
+				<label class="switch">
+					<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox" checked="{{activeUser?.twoFAEnabled}}">
+					<span class="slider round" checked="{activeUser?.twoFAEnabled}"></span>
 				</label>
-			</div>
-			<div class="game_design_column">
-				<img class="game_design_preview" src="../../assets/game_design.png">
-				<label for="design2" class="container">
-					<input type="radio" id="design2" name="game_design" value="2">
-					<span class="checkmark"></span>
-				</label>
-			</div>
-			<div class="game_design_column">
-				<img class="game_design_preview" src="../../assets/game_design.png">
-				<label for="design3" class="container">
-					<input type="radio" id="design3" name="game_design" value="2">
-					<span class="checkmark"></span>
-				</label>
-			</div>
+			</td>
+		</tr>
+	</table>
+	<h1> - GAME SETTINGS - </h1>
+	<div class="game_design_row">
+		<div class="game_design_column">
+			<img class="game_design_preview" src="../../assets/game_design.png">
+			<label for="design1" class="container">
+				<input type="radio" id="design1" name="game_design" value="1">
+				<span class="checkmark"></span>
+			</label>
 		</div>
-		<div class="settings_row">
-			<button (click)="changeUserData()">SAVE CHANGES</button>
-			<button class="button_reverse">CANCEL</button>
+		<div class="game_design_column">
+			<img class="game_design_preview" src="../../assets/game_design.png">
+			<label for="design2" class="container">
+				<input type="radio" id="design2" name="game_design" value="2">
+				<span class="checkmark"></span>
+			</label>
 		</div>
-	</form>
+		<div class="game_design_column">
+			<img class="game_design_preview" src="../../assets/game_design.png">
+			<label for="design3" class="container">
+				<input type="radio" id="design3" name="game_design" value="2">
+				<span class="checkmark"></span>
+			</label>
+		</div>
+	</div>
+	<div class="settings_row">
+		<button (click)="changeUserData()">SAVE CHANGES</button>
+		<button class="button_reverse">CANCEL</button>
+	</div>
 </div>

@@ -13,7 +13,7 @@ export class SettingsComponent {
 	
 	activeUser?: User;
 	
-	changedUserData = {}
+	changedUserData:any = {}
 	
 	constructor(private cookie: CookieService, private userService: UserDataService) {}
 	
