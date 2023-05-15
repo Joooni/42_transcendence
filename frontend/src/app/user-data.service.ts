@@ -10,10 +10,6 @@ export class UserDataService {
 
   constructor() { }
 
-  // getUserByID(userID:number) {
-  //   return USERS.find(elem => elem.id == userID);
-  // }
-
   getUserByUsername(username:string): Observable<User> {
     const User = USERS.find(elem => elem.username === username)!;
     return of(User);

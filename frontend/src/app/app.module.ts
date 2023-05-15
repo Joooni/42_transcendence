@@ -17,7 +17,7 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
     HomeComponent,
     ProfileComponent,
     SettingsComponent,
-    MatchmakingComponent
+    MatchmakingComponent,
   ],
   imports: [
     BrowserModule,
