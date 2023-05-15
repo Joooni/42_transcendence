@@ -80,6 +80,10 @@ input[type=text] {
 	padding-right: 2vmin;
 }
 
+::placeholder {
+	color:rgb(4, 56, 18)
+}
+
 .button_reverse {
 	margin-top: 2vmin;
 	text-align: center;

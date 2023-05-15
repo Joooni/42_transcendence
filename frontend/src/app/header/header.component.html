@@ -1,9 +1,9 @@
 <div class="flex_header">
-	<a href="/home">
+	<a routerLink="/home" routerLinkActive="active">
 		<img src="../../assets/DonkeyPong_logo.png" />
 	</a>
 	<!-- if condition: if user is logged in -->
-	<a *ngIf="getActiveUsername()" href="{{'/profile/' + getActiveUsername()}}" class="flex_header_profile">
+	<a *ngIf="getActiveUsername()" class="flex_header_profile" routerLink="{{'/profile/' + getActiveUsername()}}" routerLinkActive="active">
 		<img class="header_profile_picture" src={{activeUser?.picture}}>
 		<h2>MY<br>PROFILE</h2>
 	</a>

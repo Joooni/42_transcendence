@@ -10,9 +10,12 @@ import { UserDataService } from '../user-data.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
-	constructor(private cookie: CookieService, private userService: UserDataService) {}
-
+	
 	activeUser?: User;
+	
+	changedUserData = {}
+	
+	constructor(private cookie: CookieService, private userService: UserDataService) {}
 	
 	getActiveUserID() {
 		this.userService.getUserByUsername(this.cookie.get("username")).subscribe(user => this.activeUser = user);
@@ -22,5 +25,9 @@ export class SettingsComponent {
 	getActiveUsername() {
 		this.userService.getUserByUsername(this.cookie.get("username")).subscribe(user => this.activeUser = user);
 		return this.activeUser?.username;
+	}
+
+	changeUserData() {
+		console.log(this.changedUserData);
 	}
 }
