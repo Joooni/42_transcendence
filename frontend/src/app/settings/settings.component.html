@@ -1,4 +1,4 @@
-<div *ngIf="getActiveUsername()" class="settings_column">
+<div *ngIf="getActiveUsername() && changedUserData" class="settings_column">
 	<h1> - ACCOUNT SETTINGS - </h1>
 	<table>
 		<tr>
@@ -8,15 +8,12 @@
 		<tr>
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
-				<label class="switch">
-					<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox">
-					<span class="slider round" ng-checked="true"></span>
-				</label>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input [(ngModel)]="changedUserData.test" name="test" type="checkbox" {{(activeUser?.twoFAEnabled ? 'checked' : '')}}>
+				<!-- <label class="switch">
+					<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox" [checked]="test">
+					<span class="slider round"></span>
+				</label> -->
+				<input type="checkbox" id="switch" [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled"/>
+				<label for="switch" class="toggle">Toggle</label>
 			</td>
 		</tr>
 	</table>
@@ -38,7 +35,7 @@
 		</div>
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
-			<label for="design3" class="container">
+			<label for="design3" class="container" hidden="true">
 				<input type="radio" id="design3" name="game_design" value="2">
 				<span class="checkmark"></span>
 			</label>
