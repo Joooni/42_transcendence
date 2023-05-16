@@ -4,7 +4,12 @@ import { CreateUserInput } from './dto/create-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
-import { EntityNotFoundError, Like, QueryFailedError, Repository } from 'typeorm';
+import {
+  EntityNotFoundError,
+  Like,
+  QueryFailedError,
+  Repository,
+} from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,7 +19,7 @@ export class UsersService {
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<void> {
-    console.log("This action adds a new user");
+    console.log('This action adds a new user');
     //repository.insert method is used to insert a new entity or an array of entities into the database.
     try {
       console.log(createUserInput);
@@ -32,20 +37,20 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    console.log("This action returns all users");
+    console.log('This action returns all users');
     return this.userRepository.find();
   }
 
   findOne(identifier: number | string): Promise<User> {
-    console.log("This action returns a user");
+    console.log('This action returns a user');
     if (typeof identifier === 'number')
-      return this.userRepository.findOneByOrFail({id: identifier})
+      return this.userRepository.findOneByOrFail({ id: identifier });
     else if (typeof identifier === 'string')
-      return this.userRepository.findOneByOrFail({username: identifier})
-    throw new EntityNotFoundError(User,{});
+      return this.userRepository.findOneByOrFail({ username: identifier });
+    throw new EntityNotFoundError(User, {});
   }
 
   remove(id: number) {
-    console.log("This action removes a user with %d id", id);
+    console.log('This action removes a user with %d id', id);
   }
 }

@@ -6,21 +6,22 @@ import { ConfigService } from '@nestjs/config';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private configService: ConfigService
-    ) {}
+    private configService: ConfigService,
+  ) {}
 
   async login(@Req() _req: any, @Res() _res: any): Promise<any> {
     console.log(_req);
-    var user = await this.usersService.findOne(_req.user.id);
+    console.log(_res);
+    const user = await this.usersService.findOne(_req.user.id);
     if (!user)
       // return or throw erorr
-    // if(user.twoFAEnabled == true)
-    // {
-    //   // two FA route goes here
-    //   return user;
-    // }
-    // Intra Login goes here
-    return ;
+      // if(user.twoFAEnabled == true)
+      // {
+      //   // two FA route goes here
+      //   return user;
+      // }
+      // Intra Login goes here
+      return;
     // should return a 42 signed JWT token
   }
 }

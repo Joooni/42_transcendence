@@ -8,5 +8,4 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
   ) {}
-
 }
