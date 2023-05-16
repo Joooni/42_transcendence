@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './auth/guard/jwt.guard';
 
 @Controller()
 export class AppController {
@@ -17,5 +18,11 @@ export class AppController {
   @Get('login-callback')
   getLoginCallback(): string {
     return this.appService.getLoginCallback();
+  }
+
+  @Get('test_jwt')
+  @UseGuards(JwtAuthGuard)
+  testJwt(): string {
+    return 'test_jwt reached, you have to be authenticated for this!';
   }
 }

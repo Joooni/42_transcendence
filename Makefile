@@ -10,6 +10,9 @@ dev:
 	docker-compose -f docker-compose.yaml up --build --remove-orphans -d
 	docker-compose -f docker-compose.yaml logs --tail 100 -f
 
+logs:
+	docker compose -f docker-compose.yaml up --build
+
 database:
 	docker exec -it postgresql_database bash
 #	psql -h localhost -U user postgres_db
@@ -29,7 +32,7 @@ fclean: down
 re: fclean up
 
 norm:
-    npm --prefix backend run format
-    npm --prefix backend run lint
+	npm --prefix backend run format
+	npm --prefix backend run lint
 
 .PHONY: all dev down ps fclean re norm
