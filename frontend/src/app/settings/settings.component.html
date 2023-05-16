@@ -9,9 +9,14 @@
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
 				<label class="switch">
-					<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox" checked="{{activeUser?.twoFAEnabled}}">
-					<span class="slider round" checked="{activeUser?.twoFAEnabled}"></span>
+					<input [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled" type="checkbox">
+					<span class="slider round" ng-checked="true"></span>
 				</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input [(ngModel)]="changedUserData.test" name="test" type="checkbox" {{(activeUser?.twoFAEnabled ? 'checked' : '')}}>
 			</td>
 		</tr>
 	</table>
