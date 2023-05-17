@@ -35,4 +35,10 @@ export class SettingsComponent {
 	changeUserData() {
 		console.log(this.changedUserData);
 	}
+
+	mapNumberIs(map: number): boolean {
+		if (map == this.changedUserData?.map)
+			return true;
+		return false;
+	}
 }
