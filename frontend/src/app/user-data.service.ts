@@ -8,16 +8,28 @@ import { USERS } from './mock_users';
 })
 export class UserDataService {
 
+  users = USERS;
+  
   constructor() { }
 
-  getUserByUsername(username:string): Observable<User> {
-    const User = USERS.find(elem => elem.username === username)!;
+  getUserByID(id: number): Observable<User> {
+    const User = this.users.find(elem => elem.id === id)!;
     return of(User);
   }
 
-  getUsers(): Observable<User[]> {
-    const users = of(USERS);
-    return users;
+  getUserByUsername(name: string): Observable<User> {
+    const User = this.users.find(elem => elem.username === name)!;
+    return of(User);
+  }
+
+  updateUserData(user: User) {
+    const userToUpdate = this.users.find(elem => elem.id === user.id);
+    if (userToUpdate)
+    {
+      userToUpdate.username = user.username;
+      userToUpdate.twoFAEnabled = user.twoFAEnabled;
+      userToUpdate.map = user.map;
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-<div *ngIf="getActiveUserID()" class="home_flex_columns">
+<div *ngIf="activeUser" class="home_flex_columns">
 	<div class="home_flex_rows">
 		<button class="home_big_button">
 			JOIN GAME
@@ -25,9 +25,9 @@
 		Placeholder
 	</div>
 </div>
-<div *ngIf="!getActiveUserID()" class="home_flex_columns">
+<div *ngIf="!activeUser" class="home_flex_columns">
 	<button class="home_login_button" (click)="onLogin()">LOGIN</button>
 </div>
-<div *ngIf="getActiveUserID()">
+<div *ngIf="activeUser">
 	<button class="home_big_button" (click)="deleteAllCookies()">DELETE COOKIES</button>
 </div>

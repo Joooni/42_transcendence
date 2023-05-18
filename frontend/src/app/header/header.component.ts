@@ -10,17 +10,15 @@ import { UserDataService } from '../user-data.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
+	
+	activeUser?: User;
+	
 	constructor(private cookie: CookieService, private userService: UserDataService) {}
 
-	activeUser?: User;
-
-	getActiveUserID() {
-		this.userService.getUserByUsername(this.cookie.get("username")).subscribe(user => this.activeUser = user);
-		return this.activeUser?.id;
-	}
-
-	getActiveUsername() {
-		this.userService.getUserByUsername(this.cookie.get("username")).subscribe(user => this.activeUser = user);
-		return this.activeUser?.username;
+	checkForActiveUser(): boolean {
+		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+		if (this.activeUser)
+			return true;
+		return false;
 	}
 }
