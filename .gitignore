@@ -4,3 +4,4 @@ DS_Store
 .idea
 actual.env
 .DS_Store
+.env
