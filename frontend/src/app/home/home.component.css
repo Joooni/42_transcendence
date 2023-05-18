@@ -31,3 +31,8 @@
 
 	justify-content: space-between;
 }
+
+.home_login_button {
+	margin: 25vmin;
+	width: 40vmin;
+}

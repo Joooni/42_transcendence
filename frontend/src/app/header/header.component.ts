@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+
+import { User } from '../user';
+import { UserDataService } from '../user-data.service';
 
 @Component({
   selector: 'app-header',
@@ -6,5 +10,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
+	
+	activeUser?: User;
+	
+	constructor(private cookie: CookieService, private userService: UserDataService) {}
 
+	checkForActiveUser(): boolean {
+		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+		if (this.activeUser)
+			return true;
+		return false;
+	}
 }

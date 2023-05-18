@@ -21,10 +21,6 @@ button {
 	justify-content: flex-start;
 	margin: 3vmin 3vmin;
 	row-gap: 1vmin;
-
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
 }
 
 .settings_row {
@@ -32,10 +28,6 @@ button {
 	flex-direction: row;
 	justify-content: flex-start;
 	column-gap: 4vmin;
-
-	border-style: solid;
-	border-width: 2px;
-	border-color: cyan;
 }
 
 .game_design_preview
@@ -58,8 +50,4 @@ button {
 	justify-content: flex-start;
 	margin: 3vmin 3vmin;
 	column-gap: 15vmin;
-
-	border-style: solid;
-	border-width: 2px;
-	border-color: cyan;
 }

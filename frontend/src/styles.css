@@ -80,6 +80,10 @@ input[type=text] {
 	padding-right: 2vmin;
 }
 
+::placeholder {
+	color:rgb(4, 56, 18)
+}
+
 .button_reverse {
 	margin-top: 2vmin;
 	text-align: center;
@@ -149,63 +153,46 @@ input[type=text] {
 
   /* Rounded sliders */
 
-.switch {
-	position: relative;
-	display: inline-block;
-	width: 60px;
-	height: 34px;
-  }
-  
-  .switch input {
-	opacity: 0;
-	width: 0;
+  input[type=checkbox] {
 	height: 0;
-  }
-  
-  .slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: green;
-	-webkit-transition: .4s;
-	transition: .4s;
-  }
-  
-  .slider:before {
-	position: absolute;
-	content: "";
-	height: 26px;
-	width: 26px;
-	left: 4px;
-	bottom: 4px;
-	background-color: white;
-	-webkit-transition: .4s;
-	transition: .4s;
-  }
-  
-  input:checked + .slider {
-	background-color: orange;
-  }
-  
-  input:focus + .slider {
-	box-shadow: 0 0 1px orange;
-  }
-  
-  input:checked + .slider:before {
-	-webkit-transform: translateX(26px);
-	-ms-transform: translateX(26px);
-	transform: translateX(26px);
+	width: 0;
+	visibility: hidden;
   }
 
-  .slider.round {
-	border-radius: 34px;
+  .toggle {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 8vmin;
+	height: 4vmin;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
   }
-  
-  .slider.round:before {
-	border-radius: 50%;
+
+  .toggle:after {
+	content: '';
+	position: absolute;
+	top: calc(10%);
+	left: calc(10%);
+	width: calc(40%);
+	height: calc(80%);
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+  }
+
+  input:checked + .toggle {
+	background: orange;
+  }
+
+  input:checked + .toggle:after {
+	left: calc(90%);
+	transform: translateX(-100%);
+  }
+
+  .toggle:active:after {
+	width: calc(40%);
   }
 
   /* Radio Button */
@@ -214,10 +201,10 @@ input[type=text] {
 .container {
 	display: block;
 	position: relative;
-	padding-left: 35px;
-	margin-bottom: 12px;
+	padding-left: 3.5vmin;
+	margin-bottom: 1.2vmin;
 	cursor: pointer;
-	font-size: 22px;
+	font-size: 2.2vmin;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -238,8 +225,8 @@ input[type=text] {
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 30px;
-	width: 30px;
+	height: 2vmin;
+	width: 2vmin;
 	background-color: rgba(0, 128, 0, 0.751);
 	border-radius: 50%;
   }
@@ -268,14 +255,10 @@ input[type=text] {
   
   /* Style the indicator (dot/circle) */
   .container .checkmark:after {
-	top: 10px;
-	left: 10px;
-	width: 10px;
-	height: 10px;
+	top: calc(25%);
+	left: calc(25%);
+	width: calc(50%);
+	height: calc(50%);
 	border-radius: 50%;
 	background: white;
   }
-
-* {
-	color: red;
-}
