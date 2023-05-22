@@ -6,6 +6,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
+import { AuthService } from './service/auth.service';
 @Module({
   imports: [
     HttpModule,
@@ -22,7 +23,7 @@ import { HttpModule } from '@nestjs/axios';
       inject: [ConfigService],
     }),
   ],
-  providers: [JwtStrategy, Intra42Strategy, ConfigService],
+  providers: [JwtStrategy, Intra42Strategy, ConfigService, AuthService],
   controllers: [Intra42Controller],
 })
 export class AuthModule {}

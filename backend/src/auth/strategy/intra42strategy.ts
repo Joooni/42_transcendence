@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 // @ts-ignore
 import { Strategy, VerifyCallback } from 'passport-42';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
+import { config } from 'process';
 /* eslint-enable */
 @Injectable()
 export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
@@ -14,7 +15,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
     super({
       clientID: configService.get<string>('INTRA42_AUTH_ID'),
       clientSecret: configService.get<string>('INTRA42_AUTH_SECRET'),
-      callbackURL: 'http://localhost:3000/login',
+      callbackURL: configService.get<string>('INTRA42_AUTH_CALLBACK_URL'),
       scope: ['public'],
     });
   }
@@ -30,12 +31,12 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
     const user: CreateUserInput = {
       id: +profile.id,
       intra: profile.username,
-      firstname: profile.first_name,
-      lastname: profile.last_name,
-      username: profile.unsername,
+      firstname: profile.name.givenName,
+      lastname: profile.name.familyName,
+      username: profile.username,
       twoFAEnabled: false,
-      email: profile.email,
-      picture: profile.picture,
+      email: profile.emails[0].value,
+      picture: profile._json.image.link,
       status: profile.status,
       wins: profile.wins,
       losses: profile.losses,

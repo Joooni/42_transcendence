@@ -27,7 +27,7 @@ export class UsersService {
     } catch (error) {
       if (!(error instanceof QueryFailedError)) return Promise.reject(error);
       const existingUsers: User[] = await this.userRepository.find({
-        where: { username: Like('${createUserInput.username}%') },
+        where: { username: Like(`${createUserInput.username}%`) },
       });
     }
     return Promise.resolve();
