@@ -22,12 +22,11 @@ export class UsersService {
     console.log('This action adds a new user');
     //repository.insert method is used to insert a new entity or an array of entities into the database.
     try {
-      console.log(createUserInput);
       await this.userRepository.insert(createUserInput);
     } catch (error) {
       if (!(error instanceof QueryFailedError)) return Promise.reject(error);
       const existingUsers: User[] = await this.userRepository.find({
-        where: { username: Like('${createUserInput.username}%') },
+        where: { username: Like(`${createUserInput.username}%`) },
       });
       if (existingUsers.length === 0) return Promise.reject(error);
       // here should be a part where a user cant be created because of conflicting usernames

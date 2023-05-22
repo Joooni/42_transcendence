@@ -1,12 +1,11 @@
 import {
   Controller,
-  HttpCode,
-  HttpStatus,
   Get,
   Req,
   Res,
   BadRequestException,
   UseGuards,
+  ExecutionContext,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
@@ -16,31 +15,27 @@ import { UsersService } from '../../users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategy/jwt.strategy';
-
-@Controller('42intra')
+import { JwtAuthGuard } from '../guard/jwt.guard';
+import { AuthService } from '../service/auth.service';
+@Controller('auth')
 export class Intra42Controller {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
   ) {}
 
-  @HttpCode(HttpStatus.OK)
   @Get('login')
   @UseGuards(Intra42OAuthGuard)
   login(): void {
     console.log('login here');
-    return;
+    return ;
   }
-  // async intra_login(@Req() req: any, @Res() res: any): Promise<any> {
-  // 	console.log("inside auth controller/login");
-  // 	await this.authService.login(req, res);
-  // }
 
   @Get('callback')
   @UseGuards(Intra42OAuthGuard)
   async callback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    console.log('12345: %s', req);
-    console.log('res: %s', res);
+    console.log("inside callback");
     if (typeof req.user == 'undefined')
       throw new BadRequestException('Verification with 42Intra failed');
 
@@ -56,12 +51,15 @@ export class Intra42Controller {
       }
     }
 
+    console.log("after user finding block");
+
     const payload = {
       id: user.id,
       email: user.email,
       isAuthenticated: !user.twoFAEnabled,
     };
 
+    console.log("after definition of payload");
     // signs a JSON Web Token (JWT) with the payload from registered user
     // JwtPayload as an interface is used to ensure correct object shape and allow static type checking
     // then, create a cookie called 'jwt' with the signed token and set it to httpOnly mode to mitigate
@@ -77,7 +75,7 @@ export class Intra42Controller {
     console.log('logout route');
     res.clearCookie('jwt', { httpOnly: true });
   }
-
+  
   @Get()
   headempty(): string {
     return 'this is just /42intra, bruh!';
@@ -88,5 +86,17 @@ export class Intra42Controller {
     const user: User | CreateUserInput = req.user;
     console.log('user found!:');
     console.log(user);
+  }
+
+  @UseGuards(Intra42OAuthGuard)
+  @Get('42guardtest')
+  test_42oauthguard() {
+    console.log("inside Intra42OAuthGuards");
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('jwtguardtest')
+  test_42jwtguard() {
+    console.log("inside JwtAuthGuards");
   }
 }

@@ -10,6 +10,8 @@ import { UsersController } from './users/users.controller';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { PassportModule } from '@nestjs/passport';
+
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { join } from 'path';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     AuthModule,
+    PassportModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],
