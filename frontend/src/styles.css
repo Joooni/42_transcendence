@@ -97,7 +97,7 @@ input[type=text] {
 	border-color: orange;
 	border-radius: 15px;
 	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: orange;
+	-webkit-text-stroke-color: #ffa500;
 }
 
 .box_row {
