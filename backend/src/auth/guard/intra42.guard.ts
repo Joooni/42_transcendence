@@ -31,7 +31,7 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
     // console.log('code: ', code);
     // console.log('req: ', req);
     // console.log('context: ', context);
-    console.log("now super.canActivate(context) should trigger");
+    console.log('now super.canActivate(context) should trigger');
     return super.canActivate(context);
   }
 }

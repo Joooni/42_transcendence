@@ -5,7 +5,6 @@ import {
   Res,
   BadRequestException,
   UseGuards,
-  ExecutionContext,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
@@ -29,13 +28,13 @@ export class Intra42Controller {
   @UseGuards(Intra42OAuthGuard)
   login(): void {
     console.log('login here');
-    return ;
+    return;
   }
 
   @Get('callback')
   @UseGuards(Intra42OAuthGuard)
   async callback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    console.log("inside callback");
+    console.log('inside callback');
     if (typeof req.user == 'undefined')
       throw new BadRequestException('Verification with 42Intra failed');
 
@@ -51,7 +50,7 @@ export class Intra42Controller {
       }
     }
 
-    console.log("after user finding block");
+    console.log('after user finding block');
 
     const payload = {
       id: user.id,
@@ -59,7 +58,7 @@ export class Intra42Controller {
       isAuthenticated: !user.twoFAEnabled,
     };
 
-    console.log("after definition of payload");
+    console.log('after definition of payload');
     // signs a JSON Web Token (JWT) with the payload from registered user
     // JwtPayload as an interface is used to ensure correct object shape and allow static type checking
     // then, create a cookie called 'jwt' with the signed token and set it to httpOnly mode to mitigate
@@ -75,7 +74,7 @@ export class Intra42Controller {
     console.log('logout route');
     res.clearCookie('jwt', { httpOnly: true });
   }
-  
+
   @Get()
   headempty(): string {
     return 'this is just /42intra, bruh!';
@@ -91,12 +90,12 @@ export class Intra42Controller {
   @UseGuards(Intra42OAuthGuard)
   @Get('42guardtest')
   test_42oauthguard() {
-    console.log("inside Intra42OAuthGuards");
+    console.log('inside Intra42OAuthGuards');
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('jwtguardtest')
   test_42jwtguard() {
-    console.log("inside JwtAuthGuards");
+    console.log('inside JwtAuthGuards');
   }
 }
