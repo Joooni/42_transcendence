@@ -92,3 +92,7 @@ table {
 .br_top_gap {
 	margin-bottom: 10%;
 }
+
+.red {
+	background-color: #ff0000;
+}

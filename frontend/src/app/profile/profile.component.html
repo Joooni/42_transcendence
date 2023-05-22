@@ -52,7 +52,7 @@
 	<h1> - GAME HISTORY - </h1>
 	<div class="profile_flex_column">
 		
-		<div *ngFor="let history of gameHistory" class="box_row profile_box_games">
+		<div *ngFor="let history of gameHistory" [class.red]= "history.result === 'loss'" class="box_row profile_box_games">
 			<h4>{{ history.result }}</h4>
 			<h4>{{ history.player_score }} : {{ history.other_score }}</h4>
 			<div class="profile_box_opponent">
