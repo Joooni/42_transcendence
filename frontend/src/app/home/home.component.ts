@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { GAMES } from '../mock_games';
+import { Game } from "../game";
+import { GameDataService } from '../game-data.service';
 
 import { User } from '../user';
 import { UserDataService } from '../user-data.service';
@@ -12,11 +15,15 @@ import { UserDataService } from '../user-data.service';
 export class HomeComponent {
 	
 	activeUser?: User;
+	games = GAMES;
+	activeMatches?: Array<Game>;
 	
-	constructor(private cookie: CookieService, private userService: UserDataService) {}
+	constructor(private cookie: CookieService, private userService: UserDataService,
+		private gameservice: GameDataService) {}
 
 	ngOnInit() {
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+		this.activeMatches = this.gameservice.getActiveMatches();
 	}
 
 	onLogin() {
