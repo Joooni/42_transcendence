@@ -32,6 +32,10 @@
 	justify-content: space-between;
 }
 
+.home_game_box br {
+	margin-bottom: 10%;
+}
+
 .home_login_button {
 	margin: 25vmin;
 	width: 40vmin;

@@ -97,7 +97,7 @@ input[type=text] {
 	border-color: orange;
 	border-radius: 15px;
 	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: orange;
+	-webkit-text-stroke-color: #ffa500;
 }
 
 .box_row {
@@ -106,6 +106,7 @@ input[type=text] {
 	padding: 1vmin 3vmin;
 
 	display: flex;
+	align-items: center;
 	flex-direction: row;
 }
 
@@ -151,15 +152,19 @@ input[type=text] {
 	margin-bottom: 1vmin;
 }
 
-  /* Rounded sliders */
+.center {
+	text-align: center;
+}
 
-  input[type=checkbox] {
+/* Rounded sliders */
+
+input[type=checkbox] {
 	height: 0;
 	width: 0;
 	visibility: hidden;
-  }
+}
 
-  .toggle {
+.toggle {
 	cursor: pointer;
 	text-indent: -9999px;
 	width: 8vmin;
@@ -168,9 +173,9 @@ input[type=text] {
 	display: block;
 	border-radius: 100px;
 	position: relative;
-  }
+}
 
-  .toggle:after {
+.toggle:after {
 	content: '';
 	position: absolute;
 	top: calc(10%);
@@ -180,24 +185,24 @@ input[type=text] {
 	background: #fff;
 	border-radius: 90px;
 	transition: 0.3s;
-  }
+}
 
-  input:checked + .toggle {
+input:checked + .toggle {
 	background: orange;
-  }
+}
 
-  input:checked + .toggle:after {
+input:checked + .toggle:after {
 	left: calc(90%);
 	transform: translateX(-100%);
-  }
+}
 
-  .toggle:active:after {
+.toggle:active:after {
 	width: calc(40%);
-  }
+}
 
-  /* Radio Button */
+/* Radio Button */
 
-  /* Customize the label (the container) */
+/* Customize the label (the container) */
 .container {
 	display: block;
 	position: relative;
@@ -209,19 +214,19 @@ input[type=text] {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-  }
+}
   
-  /* Hide the browser's default radio button */
-  .container input {
+/* Hide the browser's default radio button */
+.container input {
 	position: absolute;
 	opacity: 0;
 	cursor: pointer;
 	height: 0;
 	width: 0;
-  }
+}
   
-  /* Create a custom radio button */
-  .checkmark {
+/* Create a custom radio button */
+.checkmark {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -229,36 +234,36 @@ input[type=text] {
 	width: 2vmin;
 	background-color: rgba(0, 128, 0, 0.751);
 	border-radius: 50%;
-  }
+}
   
-  /* On mouse-over, add a grey background color */
-  .container:hover input ~ .checkmark {
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
 	background-color: green;
-  }
+}
   
-  /* When the radio button is checked, add a blue background */
-  .container input:checked ~ .checkmark {
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
 	background-color: orange;
-  }
+}
   
-  /* Create the indicator (the dot/circle - hidden when not checked) */
-  .checkmark:after {
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
 	content: "";
 	position: absolute;
 	display: none;
-  }
+}
   
-  /* Show the indicator (dot/circle) when checked */
-  .container input:checked ~ .checkmark:after {
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
 	display: block;
-  }
+}
   
-  /* Style the indicator (dot/circle) */
-  .container .checkmark:after {
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
 	top: calc(25%);
 	left: calc(25%);
 	width: calc(50%);
 	height: calc(50%);
 	border-radius: 50%;
 	background: white;
-  }
+}

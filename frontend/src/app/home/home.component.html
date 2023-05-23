@@ -6,19 +6,20 @@
 		<h1>
 			- ONGOING GAMES -
 		</h1>
-		<div class="box_row home_game_box">
-			<img class="profile_picture" src="../../assets/profile.jpg">
-			<h4>Player1</h4>
+		<div *ngFor="let game of activeMatches" class="box_row home_game_box">
+			<img class="profile_picture" src="{{ game.player1_profile_pic }}">
+			<h4>
+				{{ game.player1_name }}
+				<br>
+				{{ game.player1_score}}
+			</h4>
 			<h4>vs</h4>
-			<h4>Player2</h4>
-			<img class="profile_picture" src="../../assets/profile.jpg">
-		</div>
-		<div class="box_row home_game_box">
-			<img class="profile_picture" src="../../assets/profile.jpg">
-			<h4>Player1</h4>
-			<h4>vs</h4>
-			<h4>Player2</h4>
-			<img class="profile_picture" src="../../assets/profile.jpg">
+			<h4>
+				{{ game.player2_name }}
+				<br>
+				{{ game.player2_score}}
+			</h4> 
+			<img class="profile_picture" src="{{ game.player2_profile_pic }}">
 		</div>
 	</div>
 	<div class="home_flex_rows">
