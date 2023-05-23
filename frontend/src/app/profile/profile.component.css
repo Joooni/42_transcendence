@@ -42,6 +42,15 @@
 	align-items: center;
 	min-height: auto;
 	margin: 2vmin 2vmin;
+	padding-left: 7vmin;
+	padding-right: 7vmin;
+}
+
+.profile_box_opponent {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	align-items: center;
 }
 
 h1 {
@@ -78,4 +87,12 @@ table {
 .settings_icon {
 	height: 5vmin;
 	width: 5vmin;
+}
+
+.br_top_gap {
+	margin-bottom: 10%;
+}
+
+.red {
+	background-color: #ff0000;
 }
