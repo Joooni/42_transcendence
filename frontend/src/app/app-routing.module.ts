@@ -4,12 +4,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'profile/:username', component: ProfileComponent },
   { path: 'settings', component: SettingsComponent},
+  { path: 'chat', component: ChatComponent },
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 
