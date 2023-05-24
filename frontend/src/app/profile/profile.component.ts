@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 
-import { User } from '../user';
-import { UserDataService } from '../user-data.service';
-import { Game, GameHistory } from '../game';
-import { GameDataService } from '../game-data.service';
+import { User } from '../objects/user';
+import { UserDataService } from '../services/user-data.service';
+import { Game, GameHistory } from '../objects/game';
+import { GameDataService } from '../services/game-data.service';
 
 @Component({
   selector: 'app-profile',

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 
-import { User } from '../user';
-import { UserDataService } from '../user-data.service';
+import { User } from '../objects/user';
+import { UserDataService } from '../services/user-data.service';
 
 @Component({
   selector: 'app-settings',
