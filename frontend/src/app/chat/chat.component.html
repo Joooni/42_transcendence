@@ -1,1 +1,40 @@
-<p>chat works!</p>
+<div class="chat_flex_row">
+	<div class="chat_contacts">
+		<button type="button" class="button_collapsible" (click)="changeShowFriends()">
+			<h1>FRIENDS</h1>
+		</button>
+		<div *ngIf="showFriends" class="chat_contact_list">
+			<div class="contact online">
+				<h4>FRIEND 1</h4>
+			</div>
+			<div class="contact offline">
+				<h4>FRIEND 2</h4>
+			</div>
+		</div>
+		<button type="button" class="button_collapsible" (click)="changeShowOtherUsers()">
+			<h1>OTHER USERS</h1>
+		</button>
+		<div *ngIf="showOtherUsers" class="chat_contact_list">
+			<div class="contact online">
+				<h4>FRIEND 1</h4>
+			</div>
+			<div class="contact gaming">
+				<h4>FRIEND 2</h4>
+			</div>
+		</div>
+		<button type="button" class="button_collapsible" (click)="changeShowChannels()">
+			<h1>CHANNELS</h1>
+		</button>
+		<div *ngIf="showChannels" class="chat_contact_list">
+			<div class="channel member">
+				<h4>FRIEND 1</h4>
+			</div>
+			<div class="channel other">
+				<h4>FRIEND 2</h4>
+			</div>
+		</div>
+	</div>
+	<div>
+		test
+	</div>
+</div>

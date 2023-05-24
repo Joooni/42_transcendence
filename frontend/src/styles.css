@@ -80,10 +80,6 @@ input[type=text] {
 	padding-right: 2vmin;
 }
 
-::placeholder {
-	color:rgb(4, 56, 18)
-}
-
 .button_reverse {
 	margin-top: 2vmin;
 	text-align: center;
@@ -98,6 +94,25 @@ input[type=text] {
 	border-radius: 15px;
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: #ffa500;
+}
+
+.button_collapsible {
+	display: flex;
+	flex-direction: row;
+	background-color: transparent;
+	color: red;
+	border-width: 0px;
+	/* cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 15px; */
+}
+
+::placeholder {
+	color:rgb(4, 56, 18)
 }
 
 .box_row {
