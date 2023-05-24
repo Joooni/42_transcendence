@@ -32,14 +32,14 @@ button .button_collapisble{
 	border-style: solid;
 	border-width: 2px;
 	border-color: magenta;
-	width: 40rem;
+	width: 45vmin;
 }
 
 .contact,
 .channel {
 	border-radius: 15px;
 	font-family: press_start;
-	padding: 10px;
+	padding: 5px;
 	margin: 15px 0px;
 	
 	display: flex;
@@ -62,4 +62,33 @@ button .button_collapisble{
 .offline{
 	background-color: rgb(65, 65, 65);
 	color: rgb(165, 165, 165);
+}
+
+.profile_picture {
+	height: 30px;
+	width: 30px;
+	margin: 0px 5px;
+}
+
+.user {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 15px;
+}
+
+.icons {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 5px;
+
+}
+
+.icon {
+	height: 30px;
+	width: 30px;
+	margin: 0px 5px;
 }

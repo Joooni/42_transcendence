@@ -5,10 +5,20 @@
 		</button>
 		<div *ngIf="showFriends" class="chat_contact_list">
 			<div class="contact online">
-				<h4>FRIEND 1</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
+				<div class="icons">
+					<img class="icon" src="../../assets/dots_icon_yellow.png">
+					<img class="icon" src="../../assets/unread_message_icon_yellow.png">
+				</div>
 			</div>
 			<div class="contact offline">
-				<h4>FRIEND 2</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
 			</div>
 		</div>
 		<button type="button" class="button_collapsible" (click)="changeShowOtherUsers()">
@@ -16,10 +26,16 @@
 		</button>
 		<div *ngIf="showOtherUsers" class="chat_contact_list">
 			<div class="contact online">
-				<h4>FRIEND 1</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
 			</div>
 			<div class="contact gaming">
-				<h4>FRIEND 2</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
 			</div>
 		</div>
 		<button type="button" class="button_collapsible" (click)="changeShowChannels()">
@@ -27,10 +43,16 @@
 		</button>
 		<div *ngIf="showChannels" class="chat_contact_list">
 			<div class="channel member">
-				<h4>FRIEND 1</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
 			</div>
 			<div class="channel other">
-				<h4>FRIEND 2</h4>
+				<div class="user">
+					<img class="profile_picture" src="../../assets/profile.jpg">
+					<h4>FRIEND1</h4>
+				</div>
 			</div>
 		</div>
 	</div>
