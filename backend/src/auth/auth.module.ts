@@ -24,12 +24,7 @@ import { TwoFAService } from './service/twoFA.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [
-    JwtStrategy,
-    Intra42Strategy,
-    ConfigService,
-    TwoFAService,
-  ],
+  providers: [JwtStrategy, Intra42Strategy, ConfigService, TwoFAService],
   controllers: [Intra42Controller, TwoFAController],
 })
 export class AuthModule {}
