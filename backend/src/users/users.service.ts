@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
-    console.log("This action updates a user with %d id", id);
+    console.log('This action updates a user with %d id', id);
   }
 
   remove(id: number) {

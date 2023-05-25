@@ -1,4 +1,10 @@
-import { CanActivate, ContextType, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ContextType,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
@@ -14,8 +20,7 @@ export class TwoFAGuard implements CanActivate {
       user = context.switchToHttp().getRequest().user;
     }
 
-    if (!user || !user.isAuthenticated)
-      throw new UnauthorizedException();
+    if (!user || !user.isAuthenticated) throw new UnauthorizedException();
     return true;
   }
 }
