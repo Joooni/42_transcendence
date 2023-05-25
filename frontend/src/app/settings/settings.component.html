@@ -1,17 +1,15 @@
-<div class="settings_column">
+<div *ngIf="activeUser && changedUserData" class="settings_column">
 	<h1> - ACCOUNT SETTINGS - </h1>
 	<table>
 		<tr>
 			<td><h4>Nickname:</h4></td>
-			<td><input type="text" id="nickname"></td>
+			<td><input [(ngModel)]="changedUserData.username" name="username" type="text" placeholder="{{activeUser.username}}"></td>
 		</tr>
 		<tr>
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
-				<label class="switch">
-					<input type="checkbox">
-					<span class="slider round"></span>
-				</label>
+				<input type="checkbox" id="switch" [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled"/>
+				<label for="switch" class="toggle"></label>
 			</td>
 		</tr>
 	</table>
@@ -20,27 +18,27 @@
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
 			<label for="design1" class="container">
-				<input type="radio" id="design1" name="game_design" value="1">
+				<input type="radio" id="design1" name="game_design" value="1" [(ngModel)]="selectedGameDesign">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
 			<label for="design2" class="container">
-				<input type="radio" id="design2" name="game_design" value="2">
+				<input type="radio" id="design2" name="game_design" value="2" [(ngModel)]="selectedGameDesign">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
-			<label for="design3" class="container">
-				<input type="radio" id="design3" name="game_design" value="2">
+			<label for="design3" class="container" hidden="true">
+				<input type="radio" id="design3" name="game_design" value="3" [(ngModel)]="selectedGameDesign">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 	</div>
 	<div class="settings_row">
-		<button>SAVE CHANGES</button>
-		<button class="button_reverse">CANCEL</button>
+		<button (click)="saveChanges()">SAVE CHANGES</button>
+		<button class="button_reverse" routerLink="{{'/profile/' + activeUser.username}}" routerLinkActive="active">CANCEL</button>
 	</div>
 </div>

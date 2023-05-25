@@ -1,23 +1,26 @@
-<div class="profile_flex_column">
+<div *ngIf="selectedUser" class="profile_flex_column">
 	<div class="profile_flex_row">
 		<div class="box_row profile_box_row">
-			<img class="profile_picture_big" src="../../assets/profile.jpg">
+			<img class="profile_picture_big" src={{selectedUser.picture}}>
 			<div>
-				<h3>Jon Doe</h3>
+				<h3>{{selectedUser.username}} </h3>
 				<table>
 					<tr>
 						<td><h4>Rank</h4></td>
-						<td><h4>#18</h4></td>
+						<td><h4>#{{selectedUser.rank}}</h4></td>
 					</tr>
 					<tr>
 						<td><h4>XP</h4></td>
-						<td><h4>215</h4></td>
+						<td><h4>{{selectedUser.xp}}</h4></td>
 					</tr>
 				</table>
 			</div>
-			<a href="/settings">
-				<img class="settings_icon" src="../../assets/settings.png">
-			</a>
+			<div>
+				<a routerLink="/settings" routerLinkActive="active">
+					<img class="settings_icon" src="../../assets/settings.png">
+				</a>
+			</div>
+
 			
 		</div>
 		<div class="box_column profile_box_column">
@@ -48,32 +51,21 @@
 	</div>
 	<h1> - GAME HISTORY - </h1>
 	<div class="profile_flex_column">
-		<div class="box_row profile_box_games">
-			<img class="profile_picture" src="../../assets/profile.jpg">
-			<h4>Jill Doe</h4>
-			<h4>WIN</h4>
-			<h4>11 : 5</h4>
-			<h4>03.05.2023</h4>
-			<h4>17:47h</h4>
-			<h4>+200XP</h4>
+		
+		<div *ngFor="let history of gameHistory" [class.red]= "history.result === 'loss'" class="box_row profile_box_games">
+			<h4>{{ history.result }}</h4>
+			<h4>{{ history.player_score }} : {{ history.other_score }}</h4>
+			<div class="profile_box_opponent">
+				<img class="profile_picture" src= "{{ history.other_img }}">
+				<h4>{{ history.other_name }}</h4>
+			</div>
+			<h4 class="center">03.05.2023<br class="br_top_gap">17:47h</h4>
+			<h4>+{{ history.xp }}XP</h4>
 		</div>
-		<div class="box_row profile_box_games">
-			<img class="profile_picture" src="../../assets/profile.jpg">
-			<h4>Jill Doe</h4>
-			<h4>WIN</h4>
-			<h4>11 : 5</h4>
-			<h4>03.05.2023</h4>
-			<h4>17:47h</h4>
-			<h4>+200XP</h4>
-		</div>
-		<div class="box_row profile_box_games">
-			<img class="profile_picture" src="../../assets/profile.jpg">
-			<h4>Jill Doe</h4>
-			<h4>WIN</h4>
-			<h4>11 : 5</h4>
-			<h4>03.05.2023</h4>
-			<h4>17:47h</h4>
-			<h4>+200XP</h4>
-		</div>
+
 	</div>
+</div>
+<div *ngIf="!selectedUser">
+	<h1>NO SUCH USER</h1>
+	<h3>(WORK IN PROGRESS)</h3>
 </div>

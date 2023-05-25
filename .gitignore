@@ -3,4 +3,5 @@ DS_Store
 *.log
 .idea
 actual.env
+.DS_Store
 .env
