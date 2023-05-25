@@ -10,6 +10,7 @@ import {
   Like,
   QueryFailedError,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 @Injectable()
 export class UsersService {
@@ -53,5 +54,21 @@ export class UsersService {
 
   remove(id: number) {
     console.log('This action removes a user with %d id', id);
+  }
+
+  async updateTwoFASecret(secret: string, id: number): Promise<any> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      twoFAsecret: secret,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async update2FAEnable(id: number, state: boolean) {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      twoFAEnabled: state,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
   }
 }

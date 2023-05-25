@@ -38,7 +38,7 @@ export class User {
   twoFAEnabled: boolean;
 
   @Column({ type: String, nullable: true })
-  twoFAsecret: string | null;
+  twoFAsecret!: string | null;
 
   @Field()
   @Column({ default: 'offline' })
