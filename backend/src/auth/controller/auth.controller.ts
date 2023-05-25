@@ -15,13 +15,11 @@ import { EntityNotFoundError } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategy/jwt.strategy';
 import { JwtAuthGuard } from '../guard/jwt.guard';
-import { AuthService } from '../service/auth.service';
 @Controller('auth')
 export class Intra42Controller {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly authService: AuthService,
   ) {}
 
   @Get('login')
@@ -64,7 +62,7 @@ export class Intra42Controller {
     // then, create a cookie called 'jwt' with the signed token and set it to httpOnly mode to mitigate
     // risks of cross-site scripting (XSS) attacks
     const jwt_token = this.jwtService.sign(payload as JwtPayload);
-    console.log('jwt token: %s', jwt_token);
+    console.log('jwt token: ', jwt_token);
     res.cookie('jwt', jwt_token, { httpOnly: true });
     return { isAuthenticated: !user.twoFAEnabled };
   }

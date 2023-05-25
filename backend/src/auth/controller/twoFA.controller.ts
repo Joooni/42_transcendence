@@ -5,6 +5,7 @@ import { TwoFAService } from '../service/twoFA.service';
 import { UsersService } from '../../users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { JwtPayload } from '../strategy/jwt.strategy';
+import { TwoFAGuard } from '../guard/twoFA.guard';
 
 
 @Controller('2fa')
@@ -16,13 +17,16 @@ export class TwoFAController {
 	) {}
 
 	@Get('generate')
-	@UseGuards(JwtAuthGuard)
-	async generate(@Req() req: any, @Res() res: Response): Promise<void> {
+	@UseGuards(JwtAuthGuard, TwoFAGuard)
+	async generate(@Req() req: any, @Res() res: Response): Promise<string> {
+		console.log("inside 2fa/generate");
 		try {
 			const user: User = await this.usersService.findOne(req.user.id);
 			const { otpAuthUrl } = await this.twoFAService.generate2FASecret(user);
 			// learn how to make QR code and/or secret passphrase for authenticator app here
-			return ;
+			// put DataURI/Filestream in response to get to frontend?
+			console.log("QRcode URI: ",this.twoFAService.generateQRCodeDataURL(otpAuthUrl));
+			return this.twoFAService.generateQRCodeDataURL(otpAuthUrl);
 		} catch (error) {
 			throw new BadRequestException(error.message);
 		}
@@ -31,6 +35,7 @@ export class TwoFAController {
 	@Get('verify')
 	@UseGuards(JwtAuthGuard)
 	async verify(@Req() req: any, @Res() res: Response, @Query('code') code: string | null) {
+		console.log("inside 2fa/verify");
 		if (req.user.isAuthenticated)
 			throw new BadRequestException('User is already authenticated');
 		if (!code)
@@ -51,8 +56,9 @@ export class TwoFAController {
 
 
 	@Get('enable')
-	@UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard, TwoFAGuard)
 	async enableTwoFA(@Req() req: any, @Query('code') code: string | null): Promise<void> {
+		console.log("inside 2fa/enable");
 		if (!code)
 			throw new BadRequestException('2FA code missing');
 		try {
@@ -64,8 +70,9 @@ export class TwoFAController {
 	}
 
 	@Get('disable')
-	@UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard, TwoFAGuard)
 	async disableTwoFA(@Req() req: any): Promise<void> {
+		console.log("inside 2fa/disable");
 		try {
 			const user: User = await this.usersService.findOne(req.user.id);
 			await this.twoFAService.disable2FA(user);
