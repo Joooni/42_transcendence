@@ -6,7 +6,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
-import { AuthService } from './service/auth.service';
 import { TwoFAController } from './controller/twoFA.controller';
 import { TwoFAService } from './service/twoFA.service';
 @Module({
@@ -29,7 +28,6 @@ import { TwoFAService } from './service/twoFA.service';
     JwtStrategy,
     Intra42Strategy,
     ConfigService,
-    AuthService,
     TwoFAService,
   ],
   controllers: [Intra42Controller, TwoFAController],

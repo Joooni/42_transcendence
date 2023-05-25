@@ -50,7 +50,7 @@ export class TwoFAService {
 	await this.userService.update2FAEnable(user.id, false);
   }
 
-  async generateQRCodeDataURL(otpAuthUrl: string) {
+  async generateQRCodeDataURL(otpAuthUrl: string): Promise<any> {
 	return toDataURL(otpAuthUrl);
   }
 
