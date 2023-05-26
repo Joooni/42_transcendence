@@ -2,19 +2,28 @@ version: '3.8'
 
 services:
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   # depends_on: ['backend']
-  #   ports:
-  #     - 80:80
-  #   restart: unless-stopped
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    volumes:
+      - ${PWD}/frontend:/app
+    ports:
+      - 80:80
+    restart: unless-stopped
+    container_name: frontend
+    networks:
+      - nw_app
+    command: "ng serve --open --host 0.0.0.0 --port 80"
+    # command: "ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
 
   backend:
     build:
       context: ./backend
     networks:
       - nw_database
+      - nw_app
     ports:
       - 3000:3000
     depends_on:
@@ -44,6 +53,8 @@ services:
 
 networks:
   nw_database:
+    driver: bridge
+  nw_app:
     driver: bridge
 
 volumes:
