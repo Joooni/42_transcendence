@@ -1,4 +1,5 @@
 
+FOLDER_NAME := $(shell basename $(realpath .))
 
 all: up
 
@@ -16,6 +17,9 @@ logs:
 database:
 	docker exec -it postgresql_database bash
 #	psql -h localhost -U user postgres_db
+#	\dt for overview of all tables
+#	SELECT * FROM "table you want to see";
+#
 
 down:
 	docker-compose -f docker-compose.yaml down
@@ -24,6 +28,7 @@ ps:
 	docker-compose -f docker-compose.yaml ps
 
 clean:
+	docker volume rm $(FOLDER_NAME)_postgres-data
 
 fclean: down
 	rm .env
