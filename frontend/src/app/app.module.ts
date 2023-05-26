@@ -15,7 +15,6 @@ import { ChatComponent } from './chat/chat.component';
 import { ChatDirectMessageComponent } from './chat/chat-direct-message/chat-direct-message.component';
 import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
