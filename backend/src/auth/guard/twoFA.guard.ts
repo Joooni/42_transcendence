@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class TwoFAGuard implements CanActivate {

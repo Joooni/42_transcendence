@@ -1,0 +1,4 @@
+package-lock.json
+*.gql
+node_modules/
+README
