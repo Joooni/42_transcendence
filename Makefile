@@ -44,4 +44,7 @@ ci:
 	npm --prefix backend ci
 	npm --prefix frontend ci
 
-.PHONY: all dev down ps fclean re norm ci
+test:
+	npm --prefix backend run test
+
+.PHONY: all dev down ps fclean re norm ci test
