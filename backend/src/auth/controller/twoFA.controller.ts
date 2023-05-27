@@ -56,6 +56,7 @@ export class TwoFAController {
     try {
       const user: User = await this.usersService.findOne(req.user.id);
       return await this.twoFAService.verify2FA(user, code).then(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const jwt_token = this.jwtService.sign({
           id: req.user.id,
           email: req.user.email,

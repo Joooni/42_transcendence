@@ -27,6 +27,7 @@ export class UsersService {
       await this.userRepository.insert(createUserInput);
     } catch (error) {
       if (!(error instanceof QueryFailedError)) return Promise.reject(error);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const existingUsers: User[] = await this.userRepository.find({
         where: { username: Like(`${createUserInput.username}%`) },
       });
@@ -48,6 +49,7 @@ export class UsersService {
     throw new EntityNotFoundError(User, {});
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(id: number, updateUserInput: UpdateUserInput) {
     console.log('This action updates a user with %d id', id);
   }

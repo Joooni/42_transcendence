@@ -1,3 +1,10 @@
+name: Lint & Test
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
 jobs:
   lint:
     runs-on: ubuntu-latest
