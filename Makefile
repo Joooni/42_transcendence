@@ -40,4 +40,8 @@ norm:
 	npm --prefix backend run format
 	npm --prefix backend run lint
 
-.PHONY: all dev down ps fclean re norm
+ci:
+	npm --prefix backend ci
+	npm --prefix frontend ci
+
+.PHONY: all dev down ps fclean re norm ci
