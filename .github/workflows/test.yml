@@ -1,0 +1,35 @@
+name: Run Tests
+
+on:
+#  pull_request:
+#    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: node:18
+    strategy:
+      matrix:
+        project:
+          - backend
+    #          - frontend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "${{ matrix.project }}/package-lock.json"
+
+      - name: Install npm packages
+        run: npm --prefix ./${{ matrix.project }} ci
+
+      - name: Run test for Backend
+        run: npm --prefix backend run test
+
+  #      - name: Run test for Frontend
+  #        run: npm --prefix frontend run test
