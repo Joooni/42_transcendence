@@ -50,9 +50,15 @@ export class UsersService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  update(id: number, updateUserInput: UpdateUserInput) {
-    console.log('This action updates a user with %d id', id);
+  
+  async updateUsername(id: number, username: any): Promise<void> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      username: username,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, {id: id });
   }
+
 
   remove(id: number) {
     console.log('This action removes a user with %d id', id);

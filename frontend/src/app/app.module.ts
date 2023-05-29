@@ -11,6 +11,9 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
+import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
+import { InMemoryCache } from '@apollo/client/core';
+import { HttpLink } from 'apollo-angular/http';
 
 
 @NgModule({
@@ -27,8 +30,23 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    ApolloModule,
   ],
-  providers: [CookieService],
+  providers: [
+    CookieService,
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory(httpLink: HttpLink) {
+        return {
+          cache: new InMemoryCache(),
+          link: httpLink.create({
+            uri: 'localhost:3000/graphql',
+          }),
+        };
+      },
+      deps: [HttpLink],
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
