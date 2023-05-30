@@ -1,8 +1,9 @@
-import { Resolver, Query, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { JwtPayload } from '../auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
+import { UpdateUsernameInput } from './dto/update-username.input';
 
 /**
  * compared to RESTful APIs, graphQL uses three different requests:
@@ -33,12 +34,15 @@ export class UsersResolver {
     return this.usersService.findOne(username);
   }
 
-  // @Mutation(() => User)
-  // async updateUsername(
-  //   @CurrentJwtPayload() jwtPayload: JwtPayload,
-  //   @Args() updateUsernameInput: UpdateUsernameInput,
-  // ) {
-  //   await this.usersService.updateUsername(jwtPayload.id, updateUsernameInput.username,);
-  //   return this.usersService.findOne(jwtPayload.id);
-  // }
+  @Mutation(() => User)
+  async updateUsername(
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+    @Args() updateUserUsernameInput: UpdateUsernameInput,
+  ) {
+    await this.usersService.updateUsername(
+      jwtPayload.id,
+      updateUserUsernameInput.username,
+    );
+    return this.usersService.findOne(jwtPayload.id);
+  }
 }

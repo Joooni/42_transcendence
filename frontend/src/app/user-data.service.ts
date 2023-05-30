@@ -55,6 +55,22 @@ export class UserDataService {
   //   this.http.get()
   // }
 
+  async updateUsername(username: string) {
+    const { updateUsername } = await graphQLService.mutation(
+      `
+      mutation updateUsername( $username: String! ){
+        updateUsername( username: $username ) {
+          username
+        }
+      }
+      `,
+      { username },
+    );
+    if (typeof updateUsername === 'undefined')
+      throw new Error('Empty users data');
+    return updateUsername;
+  }
+
   getUserByUsername(name: string): Observable<User> {
     const User = this.users.find(elem => elem.username === name)!;
     return of(User);

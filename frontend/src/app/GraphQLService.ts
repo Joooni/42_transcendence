@@ -1,6 +1,7 @@
 import {
   ApolloClient,
   InMemoryCache,
+  MutationOptions,
   QueryOptions,
   createHttpLink,
 } from '@apollo/client/core';
@@ -63,7 +64,40 @@ class GraphQLService {
         throw new Error(error.message);
       });
   }
+
+
+  async mutation(
+    mutation: string,
+    variables: OperationVariables = {},
+    mutationOptions: Partial<MutationOptions> = {}
+  ) {
+    return await this.apolloClient
+      .mutate({
+        mutation: gql`
+          ${mutation}
+        `,
+        variables,
+        ...mutationOptions,
+      })
+      .then(({ data, errors }) => {
+        if (errors && errors.length > 0) throw new Error(errors[0].message);
+        if (!data) throw new Error('empty data');
+        return data;
+      })
+      .catch((error) => {
+        if (
+          typeof error.graphQLErrors?.at(0)?.extensions?.response?.message !==
+          'undefined'
+        ) {
+          throw new Error(
+            error.graphQLErrors?.at(0)?.extensions?.response?.message
+          );
+        }
+        throw new Error(error.message);
+      });
+  }
 }
+
 
 const graphQLService = new GraphQLService(apolloClient);
 
