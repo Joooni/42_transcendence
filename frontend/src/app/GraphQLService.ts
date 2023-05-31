@@ -9,16 +9,11 @@ import type { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types'
 import type { OperationVariables } from '@apollo/client/core/types';
 import { gql } from 'graphql-tag';
 
-const httpLink = createHttpLink({
-  uri: 'localhost:3000/graphql',
-  credentials: 'include',
-});
-
 const cache = new InMemoryCache();
 
 const apolloClient = new ApolloClient({
   link: createHttpLink({
-    uri: 'localhost:3000/graphql',
+    uri: 'http://localhost:3000/graphql',
     credentials: 'include',
   }),
   cache,

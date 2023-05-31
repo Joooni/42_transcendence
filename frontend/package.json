@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@apollo/client": "^3.7.14",
+    "@auth0/angular-jwt": "^5.1.2",
     "apollo-angular": "^5.0.0",
     "graphql": "^16.6.0",
     "ngx-cookie-service": "^16.0.0",

@@ -14,8 +14,12 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
 import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
+import { JwtModule } from '@auth0/angular-jwt';
 
 
+export function tokenGetter() {
+  return localStorage.getItem('jwt');
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +35,12 @@ import { HttpLink } from 'apollo-angular/http';
     FormsModule,
     HttpClientModule,
     ApolloModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:3000']
+      }
+    }),
   ],
   providers: [
     CookieService,
@@ -40,7 +50,7 @@ import { HttpLink } from 'apollo-angular/http';
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: 'localhost:3000/graphql',
+            uri: 'http://localhost:3000/graphql',
           }),
         };
       },

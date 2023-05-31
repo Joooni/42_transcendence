@@ -39,10 +39,13 @@ export class UsersResolver {
     @CurrentJwtPayload() jwtPayload: JwtPayload,
     @Args() updateUserUsernameInput: UpdateUsernameInput,
   ) {
+    console.log("jwtPayload: ", jwtPayload);
+    // console.log("jwtPayload.id: ", jwtPayload.id);
     await this.usersService.updateUsername(
-      jwtPayload.id,
+     // jwtPayload.id,
+      1,
       updateUserUsernameInput.username,
     );
-    return this.usersService.findOne(jwtPayload.id);
+    return this.usersService.findOne(updateUserUsernameInput.username); // change back to jwtPayload.id
   }
 }

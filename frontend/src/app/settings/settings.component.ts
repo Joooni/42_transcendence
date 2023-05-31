@@ -29,11 +29,13 @@ export class SettingsComponent {
 	}
 
 	saveChanges() {
+		console.log('saveChanges called');
 		if (this.selectedGameDesign && this.changedUserData)
 		{
 			this.changedUserData.map = parseInt(this.selectedGameDesign);
 			this.userService.updateUserData(this.changedUserData);
 			// see if this works
+			console.log("new username: ", this.changedUserData.username);
 			this.userService.updateUsername(this.changedUserData.username);
 		}
 		this.router.navigate(['/profile/' + this.changedUserData?.username]);

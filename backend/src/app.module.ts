@@ -31,10 +31,14 @@ import { PassportModule } from '@nestjs/passport';
       }),
     }),
     //GraphQL playground *should* be available at /graphql
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: {
+        origin: `http://${process.env.DOMAIN}`,
+        credentials: true,
+      },
     }),
     AuthModule,
     PassportModule,

@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { User } from './user';
 import { USERS } from './mock_users';
 import { HttpClient } from '@angular/common/http';
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -56,6 +56,7 @@ export class UserDataService {
   // }
 
   async updateUsername(username: string) {
+    console.log('inside UserDataService.updateUsername');
     const { updateUsername } = await graphQLService.mutation(
       `
       mutation updateUsername( $username: String! ){
