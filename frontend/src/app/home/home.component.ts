@@ -33,8 +33,7 @@ export class HomeComponent {
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
 	}
 	onLogintra() {
-		console.log('logintra pressed');
-		this.router.navigateByUrl('http://localhost:3000/auth/login');
+		window.location.href = "http://localhost:3000/auth/login";
 	}
 	deleteAllCookies() {
 		this.cookie.deleteAll();

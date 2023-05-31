@@ -15,7 +15,6 @@ import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { JwtModule } from '@auth0/angular-jwt';
-import { LoginComponent } from './login/login.component';
 
 
 export function tokenGetter() {
@@ -29,7 +28,6 @@ export function tokenGetter() {
     ProfileComponent,
     SettingsComponent,
     MatchmakingComponent,
-    LoginComponent,
   ],
   imports: [
     BrowserModule,
