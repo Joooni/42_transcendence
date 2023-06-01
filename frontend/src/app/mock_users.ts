@@ -16,7 +16,8 @@ export const USERS: User[] = [
 		losses: 23,
 		xp: 223,
 		rank: 1,
-		map: 2
+		map: 2,
+		isLoggedIn: true
 	},
 	{
 		id: 2,
@@ -33,7 +34,8 @@ export const USERS: User[] = [
 		losses: 12,
 		xp: 2,
 		rank: 3,
-		map: 1
+		map: 1,
+		isLoggedIn: true
 	},
 	{
 		id: 3,
@@ -50,7 +52,8 @@ export const USERS: User[] = [
 		losses: 120,
 		xp: 4374,
 		rank: 2,
-		map: 3
+		map: 3,
+		isLoggedIn: false
 	},
 	{
 		id: 4,
@@ -67,6 +70,7 @@ export const USERS: User[] = [
 		losses: 120,
 		xp: 1,
 		rank: 4,
-		map: 3
+		map: 3,
+		isLoggedIn: true
 	}
 ];

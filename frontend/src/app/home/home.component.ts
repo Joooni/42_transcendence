@@ -34,7 +34,7 @@ export class HomeComponent {
 	}
 	onLogintra() {
 		console.log('logintra pressed');
-		this.router.navigateByUrl('http://localhost:3000/auth/login');
+		window.location.href = 'http://localhost:3000/auth/login';
 	}
 	deleteAllCookies() {
 		this.cookie.deleteAll();

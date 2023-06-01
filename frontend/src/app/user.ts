@@ -14,4 +14,5 @@ export interface User {
 	xp: number;
 	rank: number;
 	map: number;
+	isLoggedIn: boolean;
 }

@@ -20,6 +20,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+
+
   // private static cookieExtractor(req: Request): string | null {
   //   let token: string | null = null;
   //   if (req && req.cookies) {

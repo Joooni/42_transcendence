@@ -1,5 +1,5 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, Length, Matches } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 @ArgsType()
 export class UpdateUsernameInput {

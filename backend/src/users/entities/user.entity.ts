@@ -51,4 +51,8 @@ export class User {
   @Field()
   @Column({ default: 0 })
   losses: number;
+
+  @Field()
+  @Column({ default: false})
+  isLoggedIn: boolean;
 }

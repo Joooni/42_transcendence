@@ -48,4 +48,16 @@ export class UsersResolver {
     );
     return this.usersService.findOne(updateUserUsernameInput.username); // change back to jwtPayload.id
   }
+
+  @Mutation(() => User)
+  async updateLoggedIn(
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+    @Args() updateUserUsernameInput: UpdateUsernameInput,
+  ) {
+    wait this.usersService.updateLoggedIn(
+      JwtPayload.id,
+      updateUserLoggedInInput.status,
+    );
+    return this.usersService.findOne(jwdPayload.id);
+  }
 }
