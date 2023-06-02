@@ -25,4 +25,5 @@ type Query {
 
 type Mutation {
   updateUsername(username: String!): User!
+  updateLoggedIn(isLoggedIn: Boolean!): User!
 }

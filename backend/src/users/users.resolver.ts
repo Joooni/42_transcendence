@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { JwtPayload } from '../auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
 import { UpdateUsernameInput } from './dto/update-username.input';
+import { updateUserLoggedInInput } from './dto/update-loggedin.input';
 
 /**
  * compared to RESTful APIs, graphQL uses three different requests:
@@ -52,12 +53,12 @@ export class UsersResolver {
   @Mutation(() => User)
   async updateLoggedIn(
     @CurrentJwtPayload() jwtPayload: JwtPayload,
-    @Args() updateUserUsernameInput: UpdateUsernameInput,
+    @Args() updateUserLoggedInInput: updateUserLoggedInInput,
   ) {
-    wait this.usersService.updateLoggedIn(
-      JwtPayload.id,
-      updateUserLoggedInInput.status,
+    await this.usersService.updateLoggedIn(
+      jwtPayload.id,
+      updateUserLoggedInInput.isLoggedIn,
     );
-    return this.usersService.findOne(jwdPayload.id);
+    return this.usersService.findOne(jwtPayload.id);
   }
 }

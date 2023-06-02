@@ -5,6 +5,7 @@
   Res,
   BadRequestException,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
@@ -64,6 +65,7 @@ export class Intra42Controller {
     const jwt_token = this.jwtService.sign(payload as JwtPayload);
     console.log('jwt token: ', jwt_token);
     res.cookie('jwt', jwt_token, { httpOnly: true });
+    console.log('auth.controller.res: ', res);
     return { isAuthenticated: !user.twoFAEnabled };
   }
 

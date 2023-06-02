@@ -22,6 +22,7 @@
     "@apollo/client": "^3.7.14",
     "@auth0/angular-jwt": "^5.1.2",
     "apollo-angular": "^5.0.0",
+    "axios": "^1.4.0",
     "graphql": "^16.6.0",
     "ngx-cookie-service": "^16.0.0",
     "rxjs": "~7.8.0",

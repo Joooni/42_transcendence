@@ -5,7 +5,7 @@ import { User } from './user';
 import { USERS } from './mock_users';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,29 @@ export class UserDataService {
 
   constructor(
     private http: HttpClient,
+    private readonly cookieService: CookieService,
     ) {}
+
+
+  async fetchJwt(code: string) {
+    return this.http.get('http://localhost:3000/auth/callback', {
+      params: { string: 'code' },
+      withCredentials: true,
+    })
+    // .pipe((res) => {
+    //   tap((res) => {
+    //     console.log('res: ', res);
+    //   })
+    //   // if (typeof res.data.isAuthenticated === 'undefined')
+    //   //   throw new Error('Empty user authentication.');
+    //   // return { require2FAVerify: !res.data.isAuthenticated };
+    // })
+    // .catch((error) => {
+    //   if (typeof error.response === 'undefined') throw error;
+    //   throw new Error(error.response.data.message);
+    // });
+  }
+
 
 
   //   async fetchJwt(code: string) {
@@ -92,9 +114,31 @@ export class UserDataService {
     if (typeof user === 'undefined') throw new Error('Empty user data');
     return user;
   }
-  // getUser(identifier: number | string): Observable<User> {
-  //   this.http.get()
-  // }
+
+  async findUserById(id: number): Promise<User> {
+    const user = await graphQLService.query(
+      `
+      query User($id: Int!) {
+        user(id: $id) {
+          id
+          intra
+          firstname
+          lastname
+          username
+          email
+          picture
+          twoFAEnabled
+          wins
+          losses
+          isLoggedIn
+        }
+      }
+      `,
+      { id },
+    );
+      if (typeof user === 'undefined') throw new Error('Empty user data');
+      return user;
+  }
 
   async updateUsername(username: string) {
     console.log('inside UserDataService.updateUsername');
@@ -118,7 +162,7 @@ export class UserDataService {
     return of(User);
   }
 
-  updateLoggedIn(user: User, status: boolean) {
+  async updateLoggedIn(user: User, status: boolean) {
     const { updateLoggedIn } = await graphQLService.mutation(
       `
       mutation updateLoggedIn( $status: boolean! ){

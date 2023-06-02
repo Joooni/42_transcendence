@@ -20,7 +20,7 @@ import { LoginComponent } from './login/login.component';
 
 export function tokenGetter() {
   const token = localStorage.getItem('jwt');
-  console.log('jwt: ', token);
+  // console.log('jwt: ', token);
   return token;
 }
 @NgModule({

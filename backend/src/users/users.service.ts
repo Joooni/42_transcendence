@@ -50,7 +50,7 @@ export class UsersService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  
+
   async updateUsername(id: number, username: any): Promise<void> {
     const result: UpdateResult = await this.userRepository.update(id, {
       username: username,
@@ -78,5 +78,13 @@ export class UsersService {
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async updateLoggedIn(id: number, state: boolean) {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      isLoggedIn: state,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+    throw new EntityNotFoundError(User, { id: id });
   }
 }
