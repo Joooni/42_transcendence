@@ -1,6 +1,7 @@
 <div class="chat_flex_row">
 	<div class="chat_contacts">
 		<button type="button" class="button_collapsible" (click)="changeShowFriends()">
+			<img class="expansion_icon" [ngClass]="showFriends ? 'rotate_icon' : ''" src="../../assets/expansion-panel-icon.png">
 			<h1>FRIENDS</h1>
 		</button>
 		<div *ngIf="showFriends" class="chat_contact_list">
@@ -16,12 +17,17 @@
 			</div>
 			<div class="contact offline">
 				<div class="user">
-					<img class="profile_picture" src="../../assets/profile.jpg">
-					<h4>FRIEND2</h4>
+					<img class="profile_picture" src="../../assets/trump.jpeg">
+					<h4 class="offline">FRIEND2</h4>
+				</div>
+				<div class="icons">
+					<img class="icon" src="../../assets/dots_icon_yellow.png">
+					<img class="icon" src="../../assets/unread_message_icon_yellow.png">
 				</div>
 			</div>
 		</div>
 		<button type="button" class="button_collapsible" (click)="changeShowOtherUsers()">
+			<img class="expansion_icon" [ngClass]="showOtherUsers ? 'rotate_icon' : ''" src="../../assets/expansion-panel-icon.png">
 			<h1>OTHER USERS</h1>
 		</button>
 		<div *ngIf="showOtherUsers" class="chat_contact_list">
@@ -39,20 +45,16 @@
 			</div>
 		</div>
 		<button type="button" class="button_collapsible" (click)="changeShowChannels()">
+			<img class="expansion_icon" [ngClass]="showChannels ? 'rotate_icon' : ''" src="../../assets/expansion-panel-icon.png">
 			<h1>CHANNELS</h1>
 		</button>
 		<div *ngIf="showChannels" class="chat_contact_list">
 			<div class="channel member">
-				<div class="user">
-					<img class="profile_picture" src="../../assets/profile.jpg">
-					<h4>FRIEND1</h4>
-				</div>
+				<h4>CHANNEL 1</h4>
 			</div>
 			<div class="channel other">
-				<div class="user">
-					<img class="profile_picture" src="../../assets/profile.jpg">
-					<h4>FRIEND1</h4>
-				</div>
+				<h4>CHANNEL 2</h4>
+				<button class="button_small">JOIN</button>
 			</div>
 		</div>
 	</div>

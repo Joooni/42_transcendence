@@ -10,32 +10,37 @@ import { USERS } from '../objects/mock_users';
 })
 export class UserDataService {
 
-  users = USERS;
+	//initalization can be deleted afterwards
+	users = USERS;
 
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) {}
 
-  getUserByID(id: number): Observable<User> {
-    const User = this.users.find(elem => elem.id === id)!;
-    return of(User);
-  }
+	//update - BE call instead
+	getUserByID(id: number): Observable<User> {
+		const User = this.users.find(elem => elem.id === id)!;
+		return of(User);
+	}
 
-  // getUser(identifier: number | string): Observable<User> {
-  //   this.http.get()
-  // }
+	//update - BE call instead
+	getUserByUsername(name: string): Observable<User> {
+		const User = this.users.find(elem => elem.username === name)!;
+		return of(User);
+	}
 
-  getUserByUsername(name: string): Observable<User> {
-    const User = this.users.find(elem => elem.username === name)!;
-    return of(User);
-  }
+	//update - BE call instead
+	updateUserData(user: User) {
+		const userToUpdate = this.users.find(elem => elem.id === user.id);
+		if (userToUpdate)
+		{
+			userToUpdate.username = user.username;
+			userToUpdate.twoFAEnabled = user.twoFAEnabled;
+			userToUpdate.map = user.map;
+		}
+	}
 
-  updateUserData(user: User) {
-    const userToUpdate = this.users.find(elem => elem.id === user.id);
-    if (userToUpdate)
-    {
-      userToUpdate.username = user.username;
-      userToUpdate.twoFAEnabled = user.twoFAEnabled;
-      userToUpdate.map = user.map;
-    }
-  }
+	//update - BE call instead
+	getAllUsersFor(userid: number): Observable<User[]> {
+		return of(this.users);
+	}
 
 }

@@ -7,11 +7,6 @@ h4 {
 	margin: 5px;
 }
 
-button .button_collapisble{
-	margin: 10px;
-	padding: 0px;
-}
-
 .chat_flex_row {
 	margin: 2vmin 2vmin;
 	display: flex;
@@ -28,6 +23,8 @@ button .button_collapisble{
 	flex-direction: column;
 	justify-content: flex-start;
 	padding-top: 0px;
+	overflow: auto;
+	max-height: 100rem;
 
 	border-style: solid;
 	border-width: 2px;
@@ -45,6 +42,7 @@ button .button_collapisble{
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	align-items: center;
 }
 
 .online,
@@ -62,6 +60,7 @@ button .button_collapisble{
 .offline{
 	background-color: rgb(65, 65, 65);
 	color: rgb(165, 165, 165);
+	filter: grayscale(100%)
 }
 
 .profile_picture {
@@ -91,4 +90,12 @@ button .button_collapisble{
 	height: 30px;
 	width: 30px;
 	margin: 0px 5px;
+}
+
+.expansion_icon {
+	height: 35px;
+}
+
+.rotate_icon {
+	transform: rotate(90deg);
 }
