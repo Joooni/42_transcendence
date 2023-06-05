@@ -18,7 +18,7 @@ export class UserDataService {
 
 
   async fetchJwt(code: string) {
-      console.log('code: ', code);
+      console.log('fetchJwt code: ', code);
       return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
         if (typeof res.data.isAuthenticated === 'undefined')
           throw new Error('Empty user authentication');
@@ -30,6 +30,7 @@ export class UserDataService {
     }
 
   async login(code: string): Promise<void> {
+    console.log('UserDataService login');
     try {
       const { require2FAVerify } = await this.fetchJwt(code);
       if (require2FAVerify) {
@@ -37,7 +38,9 @@ export class UserDataService {
         return;
       }
       const user: User = await this.findSelf();
+      console.log('userDataService login user: ', user);
       this.updateLoggedIn(user, true);
+      console.log('userDataService login user after update: ', user);
     } catch (error: any) {
       await this.logout();
       if (typeof error.response === 'undefined') throw error;

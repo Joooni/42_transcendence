@@ -6,6 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import  axios from 'axios';
 import { Response } from 'express';
 import { LoginGuard } from '../login.guard';
+import { UserDataService } from '../user-data.service';
 
 @Component({
   selector: 'app-login',
@@ -15,25 +16,17 @@ import { LoginGuard } from '../login.guard';
 
 @Injectable()
 export class LoginComponent {
-  constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {}
+  constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private readonly userDataService: UserDataService) {}
 
   ngOnInit() {
-    // this.activatedRoute.queryParamMap.subscribe((params) => {
-    //   const code = params.get('code');
-    //   if (code) {
-    //     console.log('code: ', code);
-    //     return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
-    //       if (typeof res.data.isAuthenticated === 'undefined')
-    //         throw new Error('Empty user authentication');
-    //       return { require2FAVerify: !res.data.isAuthenticated };
-    //     }).catch((error) => {
-    //       if (typeof error.response === 'undefined') throw error;
-    //       throw new Error(error.response.data.message);
-    //     })
-    //   } else {
-    //     return ;
-    //   }
-    // });
+    this.activatedRoute.queryParamMap.subscribe((params) => {
+      const code = params.get('code');
+      if (code) {
+        this.userDataService.login(code);
+      } else {
+        return ;
+      }
+    });
   }
 
   onLogin() {
@@ -42,4 +35,7 @@ export class LoginComponent {
     console.log('after window.location.href');
   };
 
+  findSelf() {
+    console.log('findself: ',this.userDataService.findSelf());
+  }
 }
