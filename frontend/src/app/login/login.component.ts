@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import  axios from 'axios';
 import { Response } from 'express';
+import { LoginGuard } from '../login.guard';
 
 @Component({
   selector: 'app-login',
@@ -17,18 +18,22 @@ export class LoginComponent {
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() {
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      const code = params.get('code');
-        console.log('code: ', code);
-        return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
-          if (typeof res.data.isAuthenticated === 'undefined')
-            throw new Error('Empty user authentication');
-          return { require2FAVerify: !res.data.isAuthenticated };
-        }).catch((error) => {
-          if (typeof error.response === 'undefined') throw error;
-          throw new Error(error.response.data.message);
-        })
-    });
+    // this.activatedRoute.queryParamMap.subscribe((params) => {
+    //   const code = params.get('code');
+    //   if (code) {
+    //     console.log('code: ', code);
+    //     return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
+    //       if (typeof res.data.isAuthenticated === 'undefined')
+    //         throw new Error('Empty user authentication');
+    //       return { require2FAVerify: !res.data.isAuthenticated };
+    //     }).catch((error) => {
+    //       if (typeof error.response === 'undefined') throw error;
+    //       throw new Error(error.response.data.message);
+    //     })
+    //   } else {
+    //     return ;
+    //   }
+    // });
   }
 
   onLogin() {

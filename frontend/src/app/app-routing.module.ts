@@ -5,13 +5,14 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { LoginComponent } from './login/login.component';
+import { LoginGuard } from './login.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  { path: 'profile/:username', component: ProfileComponent },
-  { path: 'settings', component: SettingsComponent},
+  { path: 'home', component: HomeComponent, canActivate: [LoginGuard()] },
+  { path: 'profile/:username', component: ProfileComponent, canActivate: [LoginGuard()] },
+  { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard()]},
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 

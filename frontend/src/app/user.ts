@@ -15,4 +15,5 @@ export interface User {
 	rank: number;
 	map: number;
 	isLoggedIn: boolean;
+	require2FAVerify?: boolean;
 }

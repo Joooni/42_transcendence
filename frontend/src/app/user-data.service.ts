@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { User } from './user';
 import { USERS } from './mock_users';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
+import axios from 'axios';
 
 @Injectable({
   providedIn: 'root'
@@ -16,49 +14,52 @@ export class UserDataService {
 
   users = USERS;
 
-
-  constructor(
-    private http: HttpClient,
-    private readonly cookieService: CookieService,
-    ) {}
+  constructor() {}
 
 
   async fetchJwt(code: string) {
-    return this.http.get('http://localhost:3000/auth/callback', {
-      params: { string: 'code' },
-      withCredentials: true,
-    })
-    // .pipe((res) => {
-    //   tap((res) => {
-    //     console.log('res: ', res);
-    //   })
-    //   // if (typeof res.data.isAuthenticated === 'undefined')
-    //   //   throw new Error('Empty user authentication.');
-    //   // return { require2FAVerify: !res.data.isAuthenticated };
-    // })
-    // .catch((error) => {
-    //   if (typeof error.response === 'undefined') throw error;
-    //   throw new Error(error.response.data.message);
-    // });
+      console.log('code: ', code);
+      return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
+        if (typeof res.data.isAuthenticated === 'undefined')
+          throw new Error('Empty user authentication');
+        return { require2FAVerify: !res.data.isAuthenticated };
+      }).catch((error) => {
+        if (typeof error.response === 'undefined') throw error;
+        throw new Error(error.response.data.message);
+      })
+    }
+
+  async login(code: string): Promise<void> {
+    try {
+      const { require2FAVerify } = await this.fetchJwt(code);
+      if (require2FAVerify) {
+        await this.verify2FA(code);
+        return;
+      }
+      const user: User = await this.findSelf();
+      this.updateLoggedIn(user, true);
+    } catch (error: any) {
+      await this.logout();
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    }
   }
 
+  async verify2FA(code: string): Promise<void> {
 
+  }
 
-  //   async fetchJwt(code: string) {
-  //   console.log('inside fetchJwt');
-  //   const url = 'http://localhost:3000/auth/callback';
-	// 	const params = new HttpParams().set('code', code);
-	// 	const options = { withCredentials: true };
-	// 	// 1. check if user is logged in
-	// 	// -> if yes, redirect to profile page
-	// 	// -> if no, take login route (redirect to :3000/auth/login)
-	// 	return this.http.get<any>(url, { params, ...options }).pipe(
-	// 		map(res => {
-	// 			if (typeof res.isAuthenticated === 'undefined') {throw new Error('Empty user authentication')};
-	// 			return { require2FAVerify: !res.isAuthenticated };
-	// 		}),
-	// 	)
-  // }
+  async logout(): Promise<void> {
+    const user: User = await this.findSelf();
+    if (user.isLoggedIn || user.id > 0) {
+      await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
+        return;
+      }).catch((error) => {
+        if (typeof error.response === 'undefined') throw error;
+        throw new Error(error.response.data.message);
+      })
+    }
+  }
 
   getUserByID(id: number): Observable<User> {
     const User = this.users.find(elem => elem.id === id)!;

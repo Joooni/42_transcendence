@@ -2,6 +2,24 @@ import { User } from "./user";
 
 export const USERS: User[] = [
 	{
+		id: -1,
+		intra: '',
+		firstname: '',
+		lastname: '',
+		username: '',
+		email: '',
+		picture: '',
+		twoFAEnabled: false,
+		twoFAsecret: '',
+		status: '',
+		wins: 0,
+		losses: 0,
+		xp: 0,
+		rank: 0,
+		map: 0,
+		isLoggedIn: false
+	},
+	{
 		id: 1,
 		intra: "mmuster",
 		firstname: "Max",
