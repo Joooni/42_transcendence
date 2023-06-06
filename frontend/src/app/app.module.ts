@@ -33,7 +33,7 @@ import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component
     FormsModule,
     HttpClientModule,
   ],
-  providers: [CookieService],
+  providers: [CookieService, ChatComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

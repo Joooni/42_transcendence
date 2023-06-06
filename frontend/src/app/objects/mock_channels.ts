@@ -67,6 +67,7 @@ export const CHANNELS: Channel[] = [
 		muted: [],
 		invited: [],
 		banned: [],
+		hasUnreadMessagesToActiveUser: true
 	},
 	{
 		id: 7,

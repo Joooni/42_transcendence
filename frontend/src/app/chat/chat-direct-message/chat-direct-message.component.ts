@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChatComponent } from '../chat.component';
 
 @Component({
   selector: 'app-chat-direct-message',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./chat-direct-message.component.css']
 })
 export class ChatDirectMessageComponent {
+
+	constructor(public chatComponent: ChatComponent) {}
 
 }

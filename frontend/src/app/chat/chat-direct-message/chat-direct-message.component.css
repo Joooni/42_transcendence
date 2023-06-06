@@ -1,0 +1,29 @@
+.chat-dm {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+
+	padding: 1.5rem 1rem;
+	row-gap: 1rem;
+}
+
+.chat-box {
+	width: 115vmin;
+
+	border-style: solid;
+	border-width: 3px;
+	border-color: red;
+
+	background-color: black;
+	color: red;
+}
+
+.contact-name,
+.message-input {
+	height: 2.5rem;
+}
+
+.message-display {
+	height: 30rem;
+}
