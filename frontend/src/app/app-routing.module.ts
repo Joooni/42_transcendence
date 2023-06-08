@@ -6,6 +6,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { LoginComponent } from './login/login.component';
 import { LoginGuard } from './login.guard';
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [LoginGuard()] },
   { path: 'profile/:username', component: ProfileComponent, canActivate: [LoginGuard()] },
   { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard()] },
+  { path: 'chat', component: ChatComponent },
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 

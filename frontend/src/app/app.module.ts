@@ -11,7 +11,9 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
-import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
+import { ChatComponent } from './chat/chat.component';
+import { ChatDirectMessageComponent } from './chat/chat-direct-message/chat-direct-message.component';
+import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -32,6 +34,9 @@ export function tokenGetter() {
     SettingsComponent,
     MatchmakingComponent,
     LoginComponent,
+    ChatComponent,
+    ChatDirectMessageComponent,
+    ChatChannelComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +66,7 @@ export function tokenGetter() {
       deps: [HttpLink],
     }
   ],
+  providers: [CookieService, ChatComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

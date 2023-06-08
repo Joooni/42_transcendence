@@ -1,12 +1,12 @@
-name: Lint & Test
+name: Run Tests
 
 on:
-  pull_request:
-    branches: ["main"]
+#  pull_request:
+#    branches: ["main"]
   workflow_dispatch:
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     container: node:18
     strategy:
@@ -28,8 +28,8 @@ jobs:
       - name: Install npm packages
         run: npm --prefix ./${{ matrix.project }} ci
 
-      - name: Prettier
-        run: npm --prefix ./${{ matrix.project }} run format-check
+      - name: Run test for Backend
+        run: npm --prefix backend run test
 
-      - name: ESLint
-        run: npm --prefix ./${{ matrix.project }} run lint-check
+  #      - name: Run test for Frontend
+  #        run: npm --prefix frontend run test

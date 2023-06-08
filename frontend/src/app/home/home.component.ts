@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { GAMES } from '../mock_games';
-import { Game } from "../game";
-import { GameDataService } from '../game-data.service';
+import { GAMES } from '../objects/mock_games';
+import { Game } from "../objects/game";
+import { GameDataService } from '../services/game-data/game-data.service';
 
-import { User } from '../user';
-import { UserDataService } from '../user-data.service';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { User } from '../objects/user';
+import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
   selector: 'app-home',

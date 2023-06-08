@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "./objects/user";
 
 export const USERS: User[] = [
 	// this is an empty user that can be used to see if findUser functions work
