@@ -146,12 +146,10 @@
 			</div>
 		</div>
 	</div>
-	<div>
-		<ng-container *ngIf="selectedChannel">
-			<app-chat-channel></app-chat-channel>
-		</ng-container>
-		<ng-container *ngIf="selectedUser">
-			<app-chat-direct-message></app-chat-direct-message>
-		</ng-container>
+	<div *ngIf="selectedChannel" class="chat_window">
+		<app-chat-channel></app-chat-channel>
+	</div>
+	<div *ngIf="selectedUser" class="chat_window">
+		<app-chat-direct-message></app-chat-direct-message>
 	</div>
 </div>
