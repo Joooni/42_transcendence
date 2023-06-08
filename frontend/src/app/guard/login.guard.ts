@@ -10,30 +10,22 @@ import { UserDataService } from '../services/user-data/user-data.service';
 
 export function LoginGuard(): CanActivateFn {
   return async () => {
-    console.log('inside loginguard');
     const router = inject(Router);
     const authService = inject(AuthService);
     const userDataService = inject(UserDataService);
     const route = inject(ActivatedRoute);
     const code = route.snapshot.paramMap.get('code');
-    console.log('code', code);
     const isAuthenticated: boolean = await authService.isAuthenticated();
-    if ( isAuthenticated && router.url === '/login') {
-      console.log('isAuthenticated + route /login');
-      return router.createUrlTree(['/home']);
-    }
-    if (isAuthenticated) {
-      console.log('isAuthenticated');
-      return true;
-    }
-    else if ( router.url !== '/login') {
-      console.log('route not /login');
+    if ( !isAuthenticated && router.url !== '/login') {
       return router.createUrlTree(['/login']);
     }
-    else if ( router.url === '/login' && code) {
+    if ( !isAuthenticated && router.url === '/login' && code) {
       await userDataService.login(code);
-      if (await authService.isAuthenticated())
-        return true;
+      return true;
+    }
+    if ( isAuthenticated && router.url === '/login') {
+      router.createUrlTree(['/home']);
+      return true;
     }
   return false;
   }
