@@ -1,11 +1,11 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 
 @ObjectType()
 @Entity()
 export class User {
   @Field(() => Int)
-  @PrimaryGeneratedColumn({ type: 'int' })
+  @PrimaryColumn({ type: 'int', unique: true })
   id: number;
 
   @Field()
@@ -51,4 +51,8 @@ export class User {
   @Field()
   @Column({ default: 0 })
   losses: number;
+
+  @Field()
+  @Column({ default: false })
+  isLoggedIn: boolean;
 }

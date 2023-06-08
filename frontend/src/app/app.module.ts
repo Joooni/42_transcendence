@@ -12,9 +12,21 @@ import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { ChatComponent } from './chat/chat.component';
+import { ChatDirectMessageComponent } from './chat/chat-direct-message/chat-direct-message.component';
+import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
+import { InMemoryCache } from '@apollo/client/core';
+import { HttpLink } from 'apollo-angular/http';
+import { JwtModule } from '@auth0/angular-jwt';
+import { LoginComponent } from './login/login.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
+export function tokenGetter() {
+  const token = localStorage.getItem('jwt');
+  // console.log('jwt: ', token);
+  return token;
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,15 +35,41 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ProfileComponent,
     SettingsComponent,
     MatchmakingComponent,
+    LoginComponent,
+    ChatComponent,
+    ChatDirectMessageComponent,
+    ChatChannelComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    ApolloModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:3000']
+      }
+    }),
     SocketIoModule.forRoot(config),
   ],
-  providers: [CookieService],
+  providers: [
+    CookieService,
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory(httpLink: HttpLink) {
+        return {
+          cache: new InMemoryCache(),
+          link: httpLink.create({
+            uri: 'http://localhost:3000/graphql',
+          }),
+        };
+      },
+      deps: [HttpLink],
+    },
+    ChatComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

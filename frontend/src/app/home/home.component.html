@@ -21,7 +21,7 @@
 				{{ game.player2_name }}
 				<br>
 				{{ game.player2_score}}
-			</h4> 
+			</h4>
 			<img class="profile_picture" src="{{ game.player2_profile_pic }}">
 		</div>
 	</div>
@@ -31,6 +31,7 @@
 </div>
 <div *ngIf="!activeUser" class="home_flex_columns">
 	<button class="home_login_button" (click)="onLogin()">LOGIN</button>
+	<button class="home_login_button" (click)="onLogintra()">LOGINtra</button>
 </div>
 <div *ngIf="activeUser">
 	<button class="home_big_button" (click)="deleteAllCookies()">DELETE COOKIES</button>

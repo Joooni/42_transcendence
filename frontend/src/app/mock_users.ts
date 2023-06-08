@@ -1,6 +1,25 @@
-import { User } from "./user";
+import { User } from "./objects/user";
 
 export const USERS: User[] = [
+	// this is an empty user that can be used to see if findUser functions work
+	{
+		id: -1,
+		intra: '',
+		firstname: '',
+		lastname: '',
+		username: '',
+		email: '',
+		picture: '',
+		twoFAEnabled: false,
+		twoFAsecret: '',
+		status: '',
+		wins: 0,
+		losses: 0,
+		xp: 0,
+		rank: 0,
+		map: 0,
+		isLoggedIn: false
+	},
 	{
 		id: 1,
 		intra: "mmuster",
@@ -16,7 +35,8 @@ export const USERS: User[] = [
 		losses: 23,
 		xp: 223,
 		rank: 1,
-		map: 2
+		map: 2,
+		isLoggedIn: true
 	},
 	{
 		id: 2,
@@ -27,13 +47,14 @@ export const USERS: User[] = [
 		email: "jdoe@mock.com",
 		picture: "../../assets/cage.jpeg",
 		twoFAEnabled: false,
-		twoFAsecret: null,
+		twoFAsecret: undefined,
 		status: "offline",
 		wins: 1,
 		losses: 12,
 		xp: 2,
 		rank: 3,
-		map: 1
+		map: 1,
+		isLoggedIn: true
 	},
 	{
 		id: 3,
@@ -50,7 +71,8 @@ export const USERS: User[] = [
 		losses: 120,
 		xp: 4374,
 		rank: 2,
-		map: 3
+		map: 3,
+		isLoggedIn: false
 	},
 	{
 		id: 4,
@@ -61,12 +83,13 @@ export const USERS: User[] = [
 		email: "dtrump@mock.com",
 		picture: "../assets/trump.jpeg",
 		twoFAEnabled: false,
-		twoFAsecret: null,
+		twoFAsecret: undefined,
 		status: "online",
 		wins: 1,
 		losses: 120,
 		xp: 1,
 		rank: 4,
-		map: 3
+		map: 3,
+		isLoggedIn: true
 	}
 ];

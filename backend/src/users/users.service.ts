@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
@@ -50,8 +49,13 @@ export class UsersService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  update(id: number, updateUserInput: UpdateUserInput) {
-    console.log('This action updates a user with %d id', id);
+
+  async updateUsername(id: number, username: any): Promise<void> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      username: username,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
   }
 
   remove(id: number) {
@@ -69,6 +73,14 @@ export class UsersService {
   async update2FAEnable(id: number, state: boolean) {
     const result: UpdateResult = await this.userRepository.update(id, {
       twoFAEnabled: state,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async updateLoggedIn(id: number, state: boolean) {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      isLoggedIn: state,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
