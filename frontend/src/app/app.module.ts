@@ -11,7 +11,9 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
-
+import { ChatComponent } from './chat/chat.component';
+import { ChatDirectMessageComponent } from './chat/chat-direct-message/chat-direct-message.component';
+import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,9 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
     ProfileComponent,
     SettingsComponent,
     MatchmakingComponent,
+    ChatComponent,
+    ChatDirectMessageComponent,
+    ChatChannelComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +33,7 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
     FormsModule,
     HttpClientModule,
   ],
-  providers: [CookieService],
+  providers: [CookieService, ChatComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

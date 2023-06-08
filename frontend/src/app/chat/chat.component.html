@@ -1,0 +1,155 @@
+<div class="chat_flex_row">
+	<div class="chat_contacts">
+		<button 
+			type="button"
+			class="button_collapsible"
+			(click)="changeShowFriends()"
+		>
+			<img
+				class="expansion_icon"
+				[ngClass]="showFriends ? 'rotate_icon' : ''"
+				src="../../assets/expansion-panel-icon.png"
+			>
+			<h1>FRIENDS</h1>
+		</button>
+
+		<div *ngIf="showFriends" class="chat_contact_list">
+			<div *ngFor="let user of allUsers">
+				<div 
+					*ngIf="friends?.includes(user.id)"
+					class="contact"
+					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']" 
+					(click)="selectUser(user)"
+				>
+					<div class="user">
+						<img class="profile_picture" src="{{'../' + user.picture}}">
+						<h4>{{user.username}}</h4>
+					</div>
+					<div class="icons">
+						<img class="icon" src="../../assets/dots_icon_yellow.png">
+						<img 
+							*ngIf="user.hasUnreadMessagesToActiveUser"
+							class="icon"
+							src="../../assets/unread_message_icon_yellow.png"
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<button 
+			type="button"
+			class="button_collapsible"
+			(click)="changeShowOtherUsers()"
+		>
+			<img 
+				class="expansion_icon"
+				[ngClass]="showOtherUsers ? 'rotate_icon' : ''"
+				src="../../assets/expansion-panel-icon.png">
+			<h1>OTHER USERS</h1>
+		</button>
+
+		<div *ngIf="showOtherUsers" class="chat_contact_list">
+			<div *ngFor="let user of allUsers">
+				<div 
+					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id)"
+					class="contact"
+					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']"
+					(click)="selectUser(user)"
+				>
+					<div class="user">
+						<img class="profile_picture" src="{{'../' + user.picture}}">
+						<h4>{{user.username}}</h4>
+					</div>
+					<div class="icons">
+						<img class="icon" src="../../assets/dots_icon_yellow.png">
+						<img 
+							*ngIf="user.hasUnreadMessagesToActiveUser"
+							class="icon"
+							src="../../assets/unread_message_icon_yellow.png">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<button
+			type="button"
+			class="button_collapsible"
+			(click)="changeShowChannels()"
+		>
+			<img 
+				class="expansion_icon"
+				[ngClass]="showChannels ? 'rotate_icon' : ''"
+				src="../../assets/expansion-panel-icon.png"
+			>
+			<h1>CHANNELS</h1>
+		</button>
+
+		<div *ngIf="showChannels" class="chat_contact_list">
+			<div *ngFor="let channel of visibleChannels">
+				<div 
+					class="channel"
+					[ngClass]="[memberChannels?.includes(channel.name) ? 'member' : 'other', selectedChannel?.id === channel.id ? 'selected' : '']"
+					(click)="selectChannel(channel)"
+				>
+					<h4>{{channel.name}}</h4>
+					<div class="icons">
+						<button 
+							*ngIf="!memberChannels?.includes(channel.name)"
+							class="button_reverse button_small"
+						>
+							JOIN
+						</button>
+						<img 
+							*ngIf="channel.hasUnreadMessagesToActiveUser" 
+							class="icon" 
+							src="../../assets/unread_message_icon_yellow.png"
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<button
+			type="button"
+			class="button_collapsible"
+			(click)="changeShowBlocked()"
+		>
+			<img
+				class="expansion_icon"
+				[ngClass]="showBlocked ? 'rotate_icon' : ''"
+				src="../../assets/expansion-panel-icon.png"
+			>
+			<h1>BLOCKED USERS</h1>
+		</button>
+		
+		<div *ngIf="showBlocked" class="chat_contact_list">
+			<div *ngFor="let user of allUsers">
+				<div 
+					*ngIf="blocked?.includes(user.id)"
+					class="contact"
+					[ngClass]="user.status"
+				>
+					<div class="user">
+						<img class="profile_picture" src="{{'../' + user.picture}}">
+						<h4>{{user.username}}</h4>
+					</div>
+					<div class="icons">
+						<img class="icon" src="../../assets/dots_icon_yellow.png">
+						<img 
+							*ngIf="user.hasUnreadMessagesToActiveUser"
+							class="icon"
+							src="../../assets/unread_message_icon_yellow.png"
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="selectedChannel" class="chat_window">
+		<app-chat-channel></app-chat-channel>
+	</div>
+	<div *ngIf="selectedUser" class="chat_window">
+		<app-chat-direct-message></app-chat-direct-message>
+	</div>
+</div>
