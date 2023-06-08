@@ -6,6 +6,7 @@ import { GameDataService } from '../game-data.service';
 
 import { User } from '../user';
 import { UserDataService } from '../user-data.service';
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-home',
@@ -19,11 +20,14 @@ export class HomeComponent {
 	activeMatches?: Array<Game>;
 	
 	constructor(private cookie: CookieService, private userService: UserDataService,
-		private gameservice: GameDataService) {}
+		private gameservice: GameDataService, private socket: SocketService) {	}
 
 	ngOnInit() {
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
 		this.activeMatches = this.gameservice.getActiveMatches();
+		this.socket.listen('message').subscribe((data) => {
+			console.log(data);
+		})
 	}
 
 	onLogin() {
@@ -34,5 +38,9 @@ export class HomeComponent {
 	deleteAllCookies() {
 		this.cookie.deleteAll();
 		this.activeUser = undefined;
+	}
+
+	sendMessage(eventName: string, data: string) {
+		this.socket.emit(eventName, data);
 	}
 }

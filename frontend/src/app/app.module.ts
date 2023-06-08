@@ -11,7 +11,9 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [
@@ -27,6 +29,7 @@ import { MatchmakingComponent } from './matchmaking/matchmaking.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    SocketIoModule.forRoot(config),
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
