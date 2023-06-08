@@ -5,7 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { LoginComponent } from './login/login.component';
-import { LoginGuard } from './login.guard';
+import { LoginGuard } from './guard/login.guard';
 import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [

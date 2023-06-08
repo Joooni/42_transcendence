@@ -11,6 +11,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { PassportModule } from '@nestjs/passport';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PassportModule } from '@nestjs/passport';
     }),
     AuthModule,
     PassportModule,
+    SocketModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],
