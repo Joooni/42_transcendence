@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
@@ -56,9 +55,8 @@ export class UsersService {
       username: username,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
-      throw new EntityNotFoundError(User, {id: id });
+      throw new EntityNotFoundError(User, { id: id });
   }
-
 
   remove(id: number) {
     console.log('This action removes a user with %d id', id);
@@ -85,6 +83,6 @@ export class UsersService {
       isLoggedIn: state,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
-    throw new EntityNotFoundError(User, { id: id });
+      throw new EntityNotFoundError(User, { id: id });
   }
 }

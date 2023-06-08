@@ -1,11 +1,10 @@
- import {
+import {
   Controller,
   Get,
   Req,
   Res,
   BadRequestException,
   UseGuards,
-  Post,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
@@ -15,7 +14,7 @@ import { UsersService } from '../../users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../strategy/jwt.strategy';
-import { JwtAuthGuard } from '../guard/jwt.guard';
+
 @Controller('auth')
 export class Intra42Controller {
   constructor(
@@ -38,7 +37,7 @@ export class Intra42Controller {
       throw new BadRequestException('Verification with 42Intra failed');
 
     let user: User | CreateUserInput = req.user;
-    console.log(user);
+    console.log('/auth/callback user: ', user);
     try {
       user = await this.usersService.findOne(+user.id);
     } catch (error) {
@@ -73,29 +72,5 @@ export class Intra42Controller {
   logout(@Res({ passthrough: true }) res: Response): void {
     console.log('logout route');
     res.clearCookie('jwt', { httpOnly: true });
-  }
-
-  @Get()
-  headempty(): string {
-    return 'this is just /42intra, bruh!';
-  }
-
-  @Get('usertest')
-  testdiesdas(@Req() req: any): void {
-    const user: User | CreateUserInput = req.user;
-    console.log('user found!:');
-    console.log(user);
-  }
-
-  @UseGuards(Intra42OAuthGuard)
-  @Get('42guardtest')
-  test_42oauthguard() {
-    console.log('inside Intra42OAuthGuards');
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('jwtguardtest')
-  test_42jwtguard() {
-    console.log('inside JwtAuthGuards');
   }
 }

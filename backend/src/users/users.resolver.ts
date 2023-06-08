@@ -5,6 +5,8 @@ import { JwtPayload } from '../auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
 import { UpdateUsernameInput } from './dto/update-username.input';
 import { updateUserLoggedInInput } from './dto/update-loggedin.input';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { UseGuards } from '@nestjs/common';
 
 /**
  * compared to RESTful APIs, graphQL uses three different requests:
@@ -13,6 +15,7 @@ import { updateUserLoggedInInput } from './dto/update-loggedin.input';
  * Subscription: receive real-time updates from server and notificatgions when changes or updates occur
  */
 @Resolver('User')
+@UseGuards(JwtAuthGuard)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
@@ -26,7 +29,9 @@ export class UsersResolver {
     @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
     @CurrentJwtPayload() jwtPayload: JwtPayload,
   ) {
-    if (typeof id === 'undefined') return this.usersService.findOne(jwtPayload.id);
+    console.log('jwtPayload.id: ', jwtPayload.id);
+    if (typeof id === 'undefined')
+      return this.usersService.findOne(jwtPayload.id);
     return this.usersService.findOne(id);
   }
 
@@ -40,14 +45,11 @@ export class UsersResolver {
     @CurrentJwtPayload() jwtPayload: JwtPayload,
     @Args() updateUserUsernameInput: UpdateUsernameInput,
   ) {
-    console.log("jwtPayload: ", jwtPayload);
-    // console.log("jwtPayload.id: ", jwtPayload.id);
     await this.usersService.updateUsername(
-     // jwtPayload.id,
-      1,
+      jwtPayload.id,
       updateUserUsernameInput.username,
     );
-    return this.usersService.findOne(updateUserUsernameInput.username); // change back to jwtPayload.id
+    return this.usersService.findOne(jwtPayload.id);
   }
 
   @Mutation(() => User)

@@ -17,20 +17,23 @@ export function LoginGuard(): CanActivateFn {
     const route = inject(ActivatedRoute);
     const code = route.snapshot.paramMap.get('code');
     console.log('code', code);
-    if (authService.isAuthenticated() && router.url === '/login') {
+    const isAuthenticated: boolean = await authService.isAuthenticated();
+    if ( isAuthenticated && router.url === '/login') {
       console.log('isAuthenticated + route /login');
       return router.createUrlTree(['/home']);
     }
-    if (authService.isAuthenticated()) {
+    if (isAuthenticated) {
       console.log('isAuthenticated');
       return true;
     }
-    if ( router.url !== '/login') {
+    else if ( router.url !== '/login') {
       console.log('route not /login');
       return router.createUrlTree(['/login']);
     }
-    if ( router.url === '/login' && code) {
+    else if ( router.url === '/login' && code) {
       await userDataService.login(code);
+      if (await authService.isAuthenticated())
+        return true;
     }
   return false;
   }

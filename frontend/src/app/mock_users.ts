@@ -1,6 +1,7 @@
 import { User } from "./user";
 
 export const USERS: User[] = [
+	// this is an empty user that can be used to see if findUser functions work
 	{
 		id: -1,
 		intra: '',

@@ -1,11 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import  axios from 'axios';
-import { Response } from 'express';
-import { LoginGuard } from '../login.guard';
 import { UserDataService } from '../user-data.service';
 
 @Component({
@@ -30,12 +25,7 @@ export class LoginComponent {
   }
 
   onLogin() {
-    console.log('before window.location.href');
     window.location.href = 'http://localhost:3000/auth/login';
-    console.log('after window.location.href');
   };
 
-  findSelf() {
-    console.log('findself: ',this.userDataService.findSelf());
-  }
 }

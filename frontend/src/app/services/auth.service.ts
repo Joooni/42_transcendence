@@ -11,19 +11,11 @@ export class AuthService {
 
   constructor(private cookieService: CookieService, private readonly userDataService: UserDataService) { }
 
-  isAuthenticated() {
+  async isAuthenticated(): Promise<boolean> {
     let user: User = USERS[0];
-    const cookie = this.cookieService.get('jwt');
     try {
-      const user = this.userDataService.findSelf();
+      const user = await this.userDataService.findSelf();
     } catch (error) {
-      console.log('isAuthenticated() catch block');
-      return false;
-    }
-    console.log('user: ', user);
-    console.log('cookie: ', cookie);
-    if (!user || !cookie) {
-      console.log('inside if');
       return false;
     }
     return true;

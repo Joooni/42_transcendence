@@ -18,16 +18,20 @@ export class UserDataService {
 
 
   async fetchJwt(code: string) {
-      console.log('fetchJwt code: ', code);
-      return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true }).then((res) => {
-        if (typeof res.data.isAuthenticated === 'undefined')
-          throw new Error('Empty user authentication');
-        return { require2FAVerify: !res.data.isAuthenticated };
-      }).catch((error) => {
-        if (typeof error.response === 'undefined') throw error;
-        throw new Error(error.response.data.message);
-      })
-    }
+    console.log('fetchJwt code: ', code);
+    return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true })
+    .then((res) => {
+      console.log('axios then blog, activate!');
+      if (typeof res.data.isAuthenticated === 'undefined')
+        throw new Error('Empty user authentication');
+      console.log('isAuthenticated: ', res.data.isAuthenticated);
+      return { require2FAVerify: !res.data.isAuthenticated };
+    }).catch((error) => {
+      console.log('fetchJwt catch block');
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
 
   async login(code: string): Promise<void> {
     console.log('UserDataService login');
@@ -56,6 +60,7 @@ export class UserDataService {
     const user: User = await this.findSelf();
     if (user.isLoggedIn || user.id > 0) {
       await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
+        this.updateLoggedIn(user, false);
         return;
       }).catch((error) => {
         if (typeof error.response === 'undefined') throw error;
@@ -70,7 +75,7 @@ export class UserDataService {
   }
 
   async findSelf(): Promise<User> {
-    const user = await graphQLService.query(
+    const { user } = await graphQLService.query(
       `
       query {
         user {
@@ -84,6 +89,7 @@ export class UserDataService {
           twoFAEnabled
           wins
           losses
+          isLoggedIn
         }
       }
       `,
@@ -169,8 +175,8 @@ export class UserDataService {
   async updateLoggedIn(user: User, status: boolean) {
     const { updateLoggedIn } = await graphQLService.mutation(
       `
-      mutation updateLoggedIn( $status: boolean! ){
-        updateLoggedIn( status: $status ) {
+      mutation updateLoggedIn( $status: Boolean! ){
+        updateLoggedIn( isLoggedIn: $status ) {
           status
         }
       }
