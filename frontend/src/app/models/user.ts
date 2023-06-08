@@ -7,14 +7,13 @@ export interface User {
 	email: string;
 	picture: string;
 	twoFAEnabled: boolean;
-	twoFAsecret?: string;
+	twoFAsecret?: string; //tbd if necessary in FE?
 	status: string;
 	wins: number;
 	losses: number;
-	xp: number;
-	rank: number;
+	// xp: number;
+	// rank: number;
 	map: number;
 	// achievements: number[];
-	isLoggedIn: boolean;
-	hasUnreadMessagesToActiveUser?: boolean;
+	isLoggedIn: boolean; //tbd if redundant with status?
 }

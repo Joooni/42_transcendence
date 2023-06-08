@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
-import { User } from '../objects/user';
-import { Channel } from '../objects/channel';
+import { User } from '../models/user';
+import { Channel } from '../models/channel';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -29,6 +29,8 @@ export class ChatComponent implements OnInit {
 	selectedChannel?: Channel;
 	selectedUser?: User;
 
+	hasUnreadMessages: boolean = true;
+
 	constructor(
 	private userDataService: UserDataService,
 	private userRelationService: UserRelationService,
@@ -37,7 +39,12 @@ export class ChatComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		// this.userDataService.getAllUsersFor(parseInt(this.cookie.get("userid"))).subscribe(users => this.allUsers = users);
+		// for FE-testing - to be deleted when BE provides test data
+		// this.userDataService.getAllUsers().subscribe(users => this.allUsers = users);
+
+		// real function to user
+		this.userDataService.findAll().then(users => this.allUsers = users);
+
 		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
 		this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);

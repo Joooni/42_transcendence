@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "../models/user";
 
 export const USERS: User[] = [
 	{
@@ -14,10 +14,8 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 12,
 		losses: 23,
-		xp: 223,
-		rank: 1,
 		map: 2,
-		achievements: [1, 3, 5]
+		isLoggedIn: true,
 	},
 	{
 		id: 2,
@@ -31,10 +29,8 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 1,
 		losses: 12,
-		xp: 2,
-		rank: 3,
 		map: 1,
-		achievements: []
+		isLoggedIn: true,
 	},
 	{
 		id: 3,
@@ -49,11 +45,8 @@ export const USERS: User[] = [
 		status: "gaming",
 		wins: 600,
 		losses: 120,
-		xp: 4374,
-		rank: 2,
 		map: 3,
-		achievements: [4, 5],
-		hasUnreadMessagesToActiveUser: true
+		isLoggedIn: true,
 	},
 	{
 		id: 4,
@@ -67,11 +60,8 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 1,
 		losses: 120,
-		xp: 1,
-		rank: 4,
 		map: 3,
-		achievements: [1, 4],
-		hasUnreadMessagesToActiveUser: false,
+		isLoggedIn: false
 	},
 	{
 		id: 5,
@@ -86,11 +76,8 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 15,
 		losses: 12,
-		xp: 178,
-		rank: 5,
 		map: 1,
-		achievements: [3, 6],
-		hasUnreadMessagesToActiveUser: true
+		isLoggedIn: true
 	},
 	{
 		id: 6,
@@ -104,11 +91,8 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 12,
 		losses: 15,
-		xp: 174,
-		rank: 6,
 		map: 1,
-		achievements: [2, 3],
-		hasUnreadMessagesToActiveUser: false
+		isLoggedIn: false
 	},
 	{
 		id: 7,
@@ -122,11 +106,8 @@ export const USERS: User[] = [
 		status: "gaming",
 		wins: 15,
 		losses: 12,
-		xp: 178,
-		rank: 7,
 		map: 3,
-		achievements: [1, 6],
-		hasUnreadMessagesToActiveUser: true
+		isLoggedIn: true
 	},
 	{
 		id: 8,
@@ -140,11 +121,8 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 15,
 		losses: 12,
-		xp: 178,
-		rank: 8,
 		map: 2,
-		achievements: [4, 5, 6],
-		hasUnreadMessagesToActiveUser: false
+		isLoggedIn: false
 	},
 	{
 		id: 9,
@@ -158,10 +136,24 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 15,
 		losses: 12,
-		xp: 178,
-		rank: 9,
 		map: 2,
-		achievements: [1, 3, 4],
-		hasUnreadMessagesToActiveUser: true
+		isLoggedIn: true
+	},
+	// this is an empty user that can be used to see if findUser functions work
+	{
+		id: -1,
+		intra: '',
+		firstname: '',
+		lastname: '',
+		username: '',
+		email: '',
+		picture: '',
+		twoFAEnabled: false,
+		twoFAsecret: '',
+		status: '',
+		wins: 0,
+		losses: 0,
+		map: 0,
+		isLoggedIn: false
 	},
 ];
