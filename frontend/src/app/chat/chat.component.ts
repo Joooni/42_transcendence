@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { UserDataService } from '../services/user-data.service';
-import { UserRelationService } from '../services/user-relation.service';
-import { ChannelDataService } from '../services/channel-data.service';
+import { UserDataService } from '../services/user-data/user-data.service';
+import { UserRelationService } from '../services/user-relation/user-relation.service';
+import { ChannelDataService } from '../services/channel-data/channel-data.service';
 import { User } from '../objects/user';
 import { Channel } from '../objects/channel';
 import { CookieService } from 'ngx-cookie-service';

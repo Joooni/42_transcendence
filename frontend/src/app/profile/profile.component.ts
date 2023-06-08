@@ -4,9 +4,9 @@ import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 
 import { User } from '../objects/user';
-import { UserDataService } from '../services/user-data.service';
+import { UserDataService } from '../services/user-data/user-data.service';
 import { Game, GameHistory } from '../objects/game';
-import { GameDataService } from '../services/game-data.service';
+import { GameDataService } from '../services/game-data/game-data.service';
 
 @Component({
   selector: 'app-profile',

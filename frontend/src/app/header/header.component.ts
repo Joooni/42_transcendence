@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 
 import { User } from '../objects/user';
-import { UserDataService } from '../services/user-data.service';
+import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
   selector: 'app-header',

@@ -3,7 +3,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 
 import { User } from '../objects/user';
-import { UserDataService } from '../services/user-data.service';
+import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
   selector: 'app-settings',
