@@ -64,9 +64,9 @@ export function tokenGetter() {
         };
       },
       deps: [HttpLink],
-    }
+    },
+    ChatComponent
   ],
-  providers: [CookieService, ChatComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

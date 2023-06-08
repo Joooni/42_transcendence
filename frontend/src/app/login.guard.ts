@@ -2,7 +2,7 @@ import { ActivatedRoute, CanActivateFn, Router } from '@angular/router';
 
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { UserDataService } from './user-data.service';
+import { UserDataService } from './services/user-data/user-data.service';
 
 // export function LoginGuard: CanActivateFn(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
 //   return true;

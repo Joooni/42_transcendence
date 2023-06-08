@@ -13,7 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-	
+
 	friends?: number[];
 	blocked?: number[];
 	allUsers?: User[];
@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.userDataService.getAllUsersFor(parseInt(this.cookie.get("userid"))).subscribe(users => this.allUsers = users);
+		// this.userDataService.getAllUsersFor(parseInt(this.cookie.get("userid"))).subscribe(users => this.allUsers = users);
 		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
 		this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
