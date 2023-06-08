@@ -13,13 +13,13 @@ import { UserDataService } from '../services/user-data/user-data.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-	
+
 	activeUser?: User;
 	games = GAMES;
 	activeMatches?: Array<Game>;
-	
+
 	constructor(private cookie: CookieService, private userService: UserDataService,
-		private gameservice: GameDataService) {}
+		private gameservice: GameDataService, private router: Router) {}
 
 	ngOnInit() {
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
@@ -30,7 +30,10 @@ export class HomeComponent {
 		this.cookie.set("userid", "1");//has to be set to the active user after authentication
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
 	}
-
+	onLogintra() {
+		console.log('logintra pressed');
+		window.location.href = 'http://localhost:3000/auth/login';
+	}
 	deleteAllCookies() {
 		this.cookie.deleteAll();
 		this.activeUser = undefined;

@@ -12,10 +12,10 @@ dev:
 	docker-compose -f docker-compose.yaml logs --tail 100 -f
 
 logs:
-	docker compose -f docker-compose.yaml up --build
+	docker-compose -f docker-compose.yaml logs --tail 100 -f
 
 database:
-	docker exec -it postgresql_database bash
+	docker exec -it postgresql_database bash -c "psql -h localhost -U user postgres_db"
 #	psql -h localhost -U user postgres_db
 #	\dt for overview of all tables
 #	SELECT * FROM "table you want to see";

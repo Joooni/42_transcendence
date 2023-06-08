@@ -1,6 +1,12 @@
-import { Resolver, Query, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
+import { JwtPayload } from '../auth/strategy/jwt.strategy';
+import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
+import { UpdateUsernameInput } from './dto/update-username.input';
+import { updateUserLoggedInInput } from './dto/update-loggedin.input';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { UseGuards } from '@nestjs/common';
 
 /**
  * compared to RESTful APIs, graphQL uses three different requests:
@@ -9,6 +15,7 @@ import { User } from './entities/user.entity';
  * Subscription: receive real-time updates from server and notificatgions when changes or updates occur
  */
 @Resolver('User')
+@UseGuards(JwtAuthGuard)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
@@ -18,12 +25,42 @@ export class UsersResolver {
   }
 
   @Query(() => User, { name: 'user' })
-  findOneById(@Args('id', { type: () => Int, nullable: true }) id: number) {
+  findOneById(
+    @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+  ) {
+    console.log('jwtPayload.id: ', jwtPayload.id);
+    if (typeof id === 'undefined')
+      return this.usersService.findOne(jwtPayload.id);
     return this.usersService.findOne(id);
   }
 
-  @Query(() => User, { name: 'user' })
+  @Query(() => User, { name: 'userByName' })
   findOneByUsername(@Args('username') username: string) {
     return this.usersService.findOne(username);
+  }
+
+  @Mutation(() => User)
+  async updateUsername(
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+    @Args() updateUserUsernameInput: UpdateUsernameInput,
+  ) {
+    await this.usersService.updateUsername(
+      jwtPayload.id,
+      updateUserUsernameInput.username,
+    );
+    return this.usersService.findOne(jwtPayload.id);
+  }
+
+  @Mutation(() => User)
+  async updateLoggedIn(
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+    @Args() updateUserLoggedInInput: updateUserLoggedInInput,
+  ) {
+    await this.usersService.updateLoggedIn(
+      jwtPayload.id,
+      updateUserLoggedInInput.isLoggedIn,
+    );
+    return this.usersService.findOne(jwtPayload.id);
   }
 }

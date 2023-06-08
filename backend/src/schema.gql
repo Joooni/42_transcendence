@@ -14,9 +14,16 @@ type User {
   status: String!
   wins: Float!
   losses: Float!
+  isLoggedIn: Boolean!
 }
 
 type Query {
   users: [User!]!
-  user(username: String!): User!
+  user(id: Int): User!
+  userByName(username: String!): User!
+}
+
+type Mutation {
+  updateUsername(username: String!): User!
+  updateLoggedIn(isLoggedIn: Boolean!): User!
 }

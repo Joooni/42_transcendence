@@ -8,7 +8,7 @@ import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersController } from './users/users.controller';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { PassportModule } from '@nestjs/passport';
 
@@ -30,11 +30,14 @@ import { PassportModule } from '@nestjs/passport';
         synchronize: true,
       }),
     }),
-    //GraphQL playground *should* be available at /graphql
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: {
+        origin: `http://${process.env.DOMAIN}`,
+        credentials: true,
+      },
     }),
     AuthModule,
     PassportModule,

@@ -1,0 +1,4 @@
+curl -i -X OPTIONS -H "Origin: http://127.0.0.1:3000" \
+    -H 'Access-Control-Request-Method: POST' \
+    -H 'Access-Control-Request-Headers: Content-Type, Authorization' \
+    "http://localhost:3000/auth/callback"
