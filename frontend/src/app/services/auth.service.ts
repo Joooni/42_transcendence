@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { USERS } from '../mock_users';
-import { User } from '../user';
-import { UserDataService } from '../user-data.service';
+import { User } from '../objects/user';
+import { UserDataService } from './user-data/user-data.service';
 
 @Injectable({
   providedIn: 'root'

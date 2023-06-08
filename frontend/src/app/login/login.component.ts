@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserDataService } from '../user-data.service';
+import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
   selector: 'app-login',

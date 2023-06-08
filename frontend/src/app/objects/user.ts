@@ -14,7 +14,7 @@ export interface User {
 	xp: number;
 	rank: number;
 	map: number;
-	achievements: number[];
-
+	// achievements: number[];
+	isLoggedIn: boolean;
 	hasUnreadMessagesToActiveUser?: boolean;
 }

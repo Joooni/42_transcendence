@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [LoginGuard()] },
   { path: 'profile/:username', component: ProfileComponent, canActivate: [LoginGuard()] },
   { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard()] },
-  { path: 'chat', component: ChatComponent },
+  { path: 'chat', component: ChatComponent, canActivate: [LoginGuard()] },
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 
