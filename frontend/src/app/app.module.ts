@@ -19,14 +19,10 @@ import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { LoginComponent } from './login/login.component';
+import { TwoFAComponent } from './two-fa/two-fa.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
-export function tokenGetter() {
-  const token = localStorage.getItem('jwt');
-  // console.log('jwt: ', token);
-  return token;
-}
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,6 +35,7 @@ export function tokenGetter() {
     ChatComponent,
     ChatDirectMessageComponent,
     ChatChannelComponent,
+    TwoFAComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +45,6 @@ export function tokenGetter() {
     ApolloModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter,
         allowedDomains: ['localhost:3000']
       }
     }),

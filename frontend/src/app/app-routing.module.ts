@@ -7,14 +7,15 @@ import { SettingsComponent } from './settings/settings.component';
 import { LoginComponent } from './login/login.component';
 import { LoginGuard } from './guard/login.guard';
 import { ChatComponent } from './chat/chat.component';
+import { loginPageGuard } from './guard/login-page.guard';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [loginPageGuard] },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, canActivate: [LoginGuard()] },
-  { path: 'profile/:username', component: ProfileComponent, canActivate: [LoginGuard()] },
-  { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard()] },
-  { path: 'chat', component: ChatComponent, canActivate: [LoginGuard()] },
+  { path: 'home', component: HomeComponent, canActivate: [LoginGuard] },
+  { path: 'profile/:username', component: ProfileComponent, canActivate: [LoginGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard] },
+  { path: 'chat', component: ChatComponent, canActivate: [LoginGuard] },
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 

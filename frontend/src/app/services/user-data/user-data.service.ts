@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { User } from '../../objects/user';
 import { USERS } from '../../mock_users';
 import axios from 'axios';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class UserDataService {
 
   users = USERS;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
 
   async fetchJwt(code: string) {
@@ -38,6 +39,7 @@ export class UserDataService {
       }
       const user: User = await this.findSelf();
       this.updateLoggedIn(user, true);
+      this.router.navigate(['/home']);
     } catch (error: any) {
       await this.logout();
       if (typeof error.response === 'undefined') throw error;
@@ -45,8 +47,51 @@ export class UserDataService {
     }
   }
 
-  async verify2FA(code: string): Promise<void> {
+  async generate2FA(): Promise<string> {
+    return axios.get('http://localhost:3000/2fa/generate', {
+      withCredentials: true,
+    }).then((res) => {
+      return URL.createObjectURL(res.data);
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
 
+  async verify2FA(code: string): Promise<void> {
+    console.log('UserDataService verify2FA with code: ', code);
+    return axios.get('http://localhost:3000/2fa/verify', {
+      params: { code },
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
+
+  async enable2FA(code: string): Promise<void> {
+    return axios.get('http://localhost:3000/2fa/enable', {
+      params: { code },
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
+
+  async disable2FA(): Promise<void> {
+    return axios.get('http://localhost:3000/2fa/disable', {
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
   }
 
   async logout(): Promise<void> {
