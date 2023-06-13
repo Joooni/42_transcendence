@@ -1,0 +1,15 @@
+.game-display {
+	background-color: black;
+	border-style: solid;
+	border-color: red;
+	border-width: 3px;
+
+	width: 60%;
+	height: 30rem;
+
+	font-family: 'jumpman';
+	color: red;
+	text-align: center;
+
+	margin: auto;
+}
