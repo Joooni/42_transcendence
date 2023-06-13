@@ -20,4 +20,12 @@ export class AuthService {
     }
     return true;
   }
+
+  async twoFAEnabled(): Promise<boolean> {
+    let user: User = USERS[0];
+    try {
+      const user = await this.userDataService.findSelf();
+    } catch (error) {}
+    return user.twoFAEnabled;
+  }
 }

@@ -9,6 +9,13 @@
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
 				<input type="checkbox" id="switch" [(ngModel)]="changedUserData.twoFAEnabled" name="twoFAEnabled"/>
+				<!-- here we need to insert something that checks if the user has already activated 2FA
+					(e.g. if there is a secret in the database) and if not, generate and display the QR code with generate2FA
+					If he has already has a 2FA secret, this just just call enable2FA/disable2FA, depending on
+					whether or not it is already enabled
+					generate2FA returns a data URI string, so we just need to figure out how to display it, probably with an
+					<img> tag?
+				 -->
 				<label for="switch" class="toggle"></label>
 			</td>
 		</tr>

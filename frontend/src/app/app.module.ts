@@ -24,11 +24,6 @@ import { GameDisplayComponent } from './game/game-display/game-display.component
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
-export function tokenGetter() {
-  const token = localStorage.getItem('jwt');
-  // console.log('jwt: ', token);
-  return token;
-}
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +47,6 @@ export function tokenGetter() {
     ApolloModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter,
         allowedDomains: ['localhost:3000']
       }
     }),
