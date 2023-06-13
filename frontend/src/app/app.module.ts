@@ -19,7 +19,6 @@ import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { LoginComponent } from './login/login.component';
-import { TwoFAComponent } from './two-fa/two-fa.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -35,7 +34,6 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ChatComponent,
     ChatDirectMessageComponent,
     ChatChannelComponent,
-    TwoFAComponent,
   ],
   imports: [
     BrowserModule,

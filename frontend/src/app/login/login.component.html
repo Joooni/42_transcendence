@@ -5,6 +5,7 @@
 		<input [(ngModel)]="twoFAString" type="text" placeholder="OTP" (keyup.enter)="onEnter()">
 	</table>
 </div>
+<!-- todo: clear the field after onEnter() if Code is wrong -->
 <div *ngIf="activeUser && twoFAEnabled">
 	<input [(ngModel)]="twoFAString" type="text" placeholder="OTP" (keyup.enter)="onEnter()">
 </div>

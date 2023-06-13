@@ -43,6 +43,7 @@ export class LoginComponent {
     });
   }
 
+
   onEnter() {
     if (typeof this.twoFAString === 'undefined' || this.twoFAString.length === 0)
       return ;

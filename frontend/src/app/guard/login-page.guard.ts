@@ -10,8 +10,6 @@ export const loginPageGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const isAuthenticated: boolean = await authService.isAuthenticated();
-  // const twoFAEnabled: boolean = await authService.twoFAEnabled();
-  // console.log('login page guard isAuthed: ', isAuthenticated);
   if ( isAuthenticated ) {
     return router.createUrlTree(['/home']);
   }

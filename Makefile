@@ -8,11 +8,11 @@ up:
 
 dev:
 	cp actual.env .env
-	docker-compose -f docker-compose.yaml up --build --remove-orphans -d
-	docker-compose -f docker-compose.yaml logs --tail 100 -f
+	docker compose -f docker-compose.yaml up --build --remove-orphans -d
+	docker compose -f docker-compose.yaml logs --tail 100 -f
 
 logs:
-	docker-compose -f docker-compose.yaml logs --tail 100 -f
+	docker compose -f docker-compose.yaml logs --tail 100 -f
 
 database:
 	docker exec -it postgresql_database bash -c "psql -h localhost -U user postgres_db"
@@ -22,10 +22,10 @@ database:
 #
 
 down:
-	docker-compose -f docker-compose.yaml down
+	docker compose -f docker-compose.yaml down
 
 ps:
-	docker-compose -f docker-compose.yaml ps
+	docker compose -f docker-compose.yaml ps
 
 clean:
 	docker volume rm $(FOLDER_NAME)_postgres-data
