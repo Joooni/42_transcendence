@@ -14,9 +14,7 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [UsersController],
 })
 export class UsersModule implements OnModuleInit {
-  constructor(
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async onModuleInit() {
     console.log('Seeding database...');
