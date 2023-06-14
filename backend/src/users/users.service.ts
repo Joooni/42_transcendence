@@ -4,6 +4,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { User } from './entities/user.entity';
+import { mockUser1, mockUser2 } from './entities/user.entity.mock';
 import {
   EntityNotFoundError,
   Like,
@@ -85,4 +86,10 @@ export class UsersService {
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
   }
+
+  async seedDatabase(){
+    await this.userRepository.save(mockUser1);
+    await this.userRepository.save(mockUser2);
+  }
+  
 }
