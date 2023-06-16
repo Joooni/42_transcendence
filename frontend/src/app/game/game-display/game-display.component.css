@@ -1,4 +1,4 @@
-.game-display {
+/* .game-display {
 	background-color: black;
 	border-style: solid;
 	border-color: red;
@@ -12,4 +12,20 @@
 	text-align: center;
 
 	margin: auto;
+} */
+
+canvas {
+	width:  90%;
+	height: 100%;
+	/* border: 2px solid black; */
+	margin-left:	5vmin;
+	margin-right:	5vmin;
+	margin-top:		5vmin;
+	margin-bottom:	2vmin;
+}
+
+.buttonReady {
+	margin-top: 	10vmin;
+	margin-left:	40%;
+
 }

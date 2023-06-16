@@ -1,3 +1,15 @@
+
+
 <div class="game-display">
-	RENDER GAME HERE
+	
+	<!-- <canvas #canvasEle></canvas>
+	<button (window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" (click)="startGame()">Start Game</button> -->
+
+	<button class="buttonReady" *ngIf="ready"
+		(click)="startGame()" (click)="ready = false">I am ready</button>
+
+	<canvas #canvasEle
+		(window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" ></canvas>
+	
+
 </div>>
