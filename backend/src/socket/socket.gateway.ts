@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'http';
 import { Socket } from 'socket.io';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({cors: 'http://localhost:80'})
 export class SocketGateway
@@ -15,6 +16,7 @@ export class SocketGateway
 {
   @WebSocketServer()
   server: Server;
+  userService: UsersService;
 
   afterInit() {
     console.log('ChatGateway initialized');
@@ -33,7 +35,6 @@ export class SocketGateway
     console.log(client.id, 'send a message:', message);
     
     this.server.emit('message', 'Hello from the server');
-    
     return 'Hello world!';
   }
 }

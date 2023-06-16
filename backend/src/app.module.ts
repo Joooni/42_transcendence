@@ -12,11 +12,14 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { PassportModule } from '@nestjs/passport';
 import { SocketModule } from './socket/socket.module';
+import { Message } from './messages/entities/message.entity';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
     UsersModule,
+    MessagesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,7 +30,7 @@ import { SocketModule } from './socket/socket.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User],
+        entities: [User, Message],
         synchronize: true,
       }),
     }),

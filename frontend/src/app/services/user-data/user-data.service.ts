@@ -100,8 +100,8 @@ export class UserDataService {
       return user;
   }
 
-  async findAll(): Promise<User> {
-    const user = await graphQLService.query(
+  async findAll(): Promise<User[]> {
+    const response = await graphQLService.query(
       `
       query {
         users {
@@ -113,16 +113,21 @@ export class UserDataService {
           email
           picture
           twoFAEnabled
+          status
           wins
           losses
+          isLoggedIn
         }
       }
       `,
       undefined,
       { fetchPolicy: 'network-only' },
     );
-    if (typeof user === 'undefined') throw new Error('Empty user data');
-    return user;
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    const users = response.users;
+    return users;
   }
 
   async findUserById(id: number): Promise<User> {
