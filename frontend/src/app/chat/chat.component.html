@@ -52,7 +52,7 @@
 		<div *ngIf="showOtherUsers" class="chat_contact_list">
 			<div *ngFor="let user of allUsers">
 				<div 
-					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id)"
+					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id) && user.id !== activeUser?.id"
 					class="contact"
 					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']"
 					(click)="selectUser(user)"
