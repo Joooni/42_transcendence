@@ -63,4 +63,37 @@ export class UsersResolver {
     );
     return this.usersService.findOne(jwtPayload.id);
   }
+
+  // Test function:
+  // @Mutation(() => User)
+  // async createUser(
+  //   @CurrentJwtPayload() jwtPayload: JwtPayload,
+  //   @Args('id') id: number,
+  //   @Args('intra') intra: string,
+  //   @Args('firstname') firstname: string,
+  //   @Args('lastname') lastname: string,
+  //   @Args('username') username: string,
+  //   @Args('email') email: string,
+  //   @Args('picture') picture: string,
+  //   @Args('twoFAEnabled') twoFAEnabled: boolean,
+  //   @Args('status') status: string,
+  //   @Args('wins') wins: number,
+  //   @Args('losses') losses: number,
+  //   @Args('isLoggedIn') isLoggedIn: boolean,
+  // ) {
+  //   return this.usersService.createUser(
+  //     id,
+  //     intra,
+  //     firstname,
+  //     lastname,
+  //     username,
+  //     email,
+  //     picture,
+  //     twoFAEnabled,
+  //     status,
+  //     wins,
+  //     losses,
+  //     isLoggedIn,
+  //     );
+  // }
 }

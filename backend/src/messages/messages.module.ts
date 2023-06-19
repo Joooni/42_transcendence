@@ -11,7 +11,6 @@ import { MessagesResolver } from './messages.resolver';
 	providers: [MessagesService, MessagesResolver],
 	imports: [TypeOrmModule.forFeature([Message]), ConfigModule, HttpModule],
 	exports: [MessagesService],
-	controllers: [],
 })
 export class MessagesModule {
 	constructor(private dataSource: DataSource) {}

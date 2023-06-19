@@ -1,5 +1,5 @@
-import { Query, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from 'src/users/decorator/current-jwt-payload.decorator';
@@ -12,7 +12,7 @@ import { MessagesService } from './messages.service';
 export class MessagesResolver {
 	constructor(private readonly messagesService: MessagesService) {}
 
-	@Query(() => [Message], {})
+	@Query(() => [Message], { name: 'messages' })
 	async findAll() : Promise<Message[]> {
 		return this.messagesService.findAll();
 	}

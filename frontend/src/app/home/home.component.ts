@@ -19,8 +19,6 @@ export class HomeComponent {
 	games = GAMES;
 	activeMatches?: Array<Game>;
 
-	test: any;
-
 	constructor(private cookie: CookieService, private userService: UserDataService,
 		private gameservice: GameDataService, private socket: SocketService, private router: Router) {	}
 
@@ -28,10 +26,6 @@ export class HomeComponent {
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
 		this.activeMatches = this.gameservice.getActiveMatches();
 		this.socket.listen('message').subscribe((data) => {
-			this.test = data;
-			console.log(this.test);
-		})
-		this.socket.listen('game').subscribe((data) => {
 			console.log(data);
 		})
 	}

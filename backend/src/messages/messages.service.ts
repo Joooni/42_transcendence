@@ -13,11 +13,10 @@ export class MessagesService {
 
 	async findAll(): Promise<Message[]> {
 		console.log('This action returns all messages');
-		const allMessages = await this.messageRepository.find();
-		return allMessages;
+		return this.messageRepository.find();
 	}
 	
-	create(createMessageInput: CreateMessageInput): Promise<void> {
+	async create(createMessageInput: CreateMessageInput): Promise<void> {
 		console.log('The message is added in the database');
 		try {
 			const message = new Message();
