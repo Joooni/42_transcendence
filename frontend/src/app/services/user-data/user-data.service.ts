@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { User } from '../../objects/user';
 import { USERS } from '../../mock_users';
 import axios from 'axios';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,27 +15,22 @@ export class UserDataService {
 
   users = USERS;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
 
   async fetchJwt(code: string) {
-    console.log('fetchJwt code: ', code);
     return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true })
     .then((res) => {
-      console.log('axios then blog, activate!');
       if (typeof res.data.isAuthenticated === 'undefined')
         throw new Error('Empty user authentication');
-      console.log('isAuthenticated: ', res.data.isAuthenticated);
       return { require2FAVerify: !res.data.isAuthenticated };
     }).catch((error) => {
-      console.log('fetchJwt catch block');
       if (typeof error.response === 'undefined') throw error;
       throw new Error(error.response.data.message);
     });
   }
 
   async login(code: string): Promise<void> {
-    console.log('UserDataService login');
     try {
       const { require2FAVerify } = await this.fetchJwt(code);
       if (require2FAVerify) {
@@ -42,9 +38,8 @@ export class UserDataService {
         return;
       }
       const user: User = await this.findSelf();
-      console.log('userDataService login user: ', user);
       this.updateLoggedIn(user, true);
-      console.log('userDataService login user after update: ', user);
+      this.router.navigate(['/home']);
     } catch (error: any) {
       await this.logout();
       if (typeof error.response === 'undefined') throw error;
@@ -52,8 +47,51 @@ export class UserDataService {
     }
   }
 
-  async verify2FA(code: string): Promise<void> {
+  async generate2FA(): Promise<string> {
+    return axios.get('http://localhost:3000/2fa/generate', {
+      withCredentials: true,
+    }).then((res) => {
+      return URL.createObjectURL(res.data);
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
 
+  async verify2FA(code: string): Promise<void> {
+    console.log('UserDataService verify2FA with code: ', code);
+    return axios.get('http://localhost:3000/2fa/verify', {
+      params: { code },
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
+
+  async enable2FA(code: string): Promise<void> {
+    return axios.get('http://localhost:3000/2fa/enable', {
+      params: { code },
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
+
+  async disable2FA(): Promise<void> {
+    return axios.get('http://localhost:3000/2fa/disable', {
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
   }
 
   async logout(): Promise<void> {
