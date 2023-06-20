@@ -12,8 +12,6 @@ import {
   Repository,
   UpdateResult,
 } from 'typeorm';
-//for adding mockUsers
-import { mockUser1, mockUser2 } from './entities/user.entity.mock';
 
 @Injectable()
 export class UsersService {
@@ -80,11 +78,6 @@ export class UsersService {
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
-  }
-//function to add mockUsers to userRepository
-  async seedDatabase(){
-    await this.userRepository.save(mockUser1);
-    await this.userRepository.save(mockUser2);
   }
 
   async updateLoggedIn(id: number, state: boolean) {
