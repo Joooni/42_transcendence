@@ -10,12 +10,10 @@ export const USERS: User[] = [
 		email: "mmuster@mock.com",
 		picture: "../../assets/cage.jpeg",
 		twoFAEnabled: true,
-		twoFAsecret: "i like big butts",
 		status: "online",
 		wins: 12,
 		losses: 23,
 		map: 2,
-		isLoggedIn: true,
 	},
 	{
 		id: 2,
@@ -30,7 +28,6 @@ export const USERS: User[] = [
 		wins: 1,
 		losses: 12,
 		map: 1,
-		isLoggedIn: true,
 	},
 	{
 		id: 3,
@@ -41,12 +38,10 @@ export const USERS: User[] = [
 		email: "jbiden@mock.com",
 		picture: "../assets/biden.jpeg",
 		twoFAEnabled: true,
-		twoFAsecret: "i stole the election",
 		status: "gaming",
 		wins: 600,
 		losses: 120,
 		map: 3,
-		isLoggedIn: true,
 	},
 	{
 		id: 4,
@@ -61,7 +56,6 @@ export const USERS: User[] = [
 		wins: 1,
 		losses: 120,
 		map: 3,
-		isLoggedIn: false
 	},
 	{
 		id: 5,
@@ -72,12 +66,10 @@ export const USERS: User[] = [
 		email: "smischni@student.42wolfsburg.de",
 		picture: "../assets/profile.jpg",
 		twoFAEnabled: true,
-		twoFAsecret: "I love Vinny more",
 		status: "online",
 		wins: 15,
 		losses: 12,
 		map: 1,
-		isLoggedIn: true
 	},
 	{
 		id: 6,
@@ -92,7 +84,6 @@ export const USERS: User[] = [
 		wins: 12,
 		losses: 15,
 		map: 1,
-		isLoggedIn: false
 	},
 	{
 		id: 7,
@@ -107,7 +98,6 @@ export const USERS: User[] = [
 		wins: 15,
 		losses: 12,
 		map: 3,
-		isLoggedIn: true
 	},
 	{
 		id: 8,
@@ -122,7 +112,6 @@ export const USERS: User[] = [
 		wins: 15,
 		losses: 12,
 		map: 2,
-		isLoggedIn: false
 	},
 	{
 		id: 9,
@@ -137,7 +126,6 @@ export const USERS: User[] = [
 		wins: 15,
 		losses: 12,
 		map: 2,
-		isLoggedIn: true
 	},
 	// this is an empty user that can be used to see if findUser functions work
 	// {

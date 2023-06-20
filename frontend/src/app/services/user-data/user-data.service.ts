@@ -96,7 +96,7 @@ export class UserDataService {
 
   async logout(): Promise<void> {
     const user: User = await this.findSelf();
-    if (user.isLoggedIn || user.id > 0) {
+    if (user.status !== "offline" || user.id > 0) {
       await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
         this.updateLoggedIn(user, false);
         return;
