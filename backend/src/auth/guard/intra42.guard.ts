@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { AuthGuard } from '@nestjs/passport';
-import { mockUser1 } from 'src/users/entities/user.entity.mock';
+import { mockUser1, mockUser2 } from 'src/users/entities/user.entity.mock';
 
 @Injectable()
 export class Intra42OAuthGuard extends AuthGuard('intra42') {
@@ -14,7 +14,7 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
-    // bypass for testing purposes
+    // bypass for testing purposes, should be removed before eval
     const code: string | null = req.query['code'];
     const id: string | null = req.query['id'];
     if (
@@ -22,16 +22,13 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
       code &&
       code === this.configService.get<string>('FOR_REAL_NO_BYPASS')
     ) {
+      console.log('backdoor activate!');
       req.user = mockUser1;
-      req.user.id = +mockUser1.id;
-      req.user.username = 'DoKong_mock';
+      req.user.id = +id;
+      req.user.username = `Kong_${id}`;
+      req.user.picture = 'https://mario.wiki.gallery/images/8/84/MPS_Donkey_Kong_Artwork.png';
       return true;
     }
-    // console.log('id: ', id);
-    // console.log('code: ', code);
-    // console.log('req: ', req);
-    // console.log('context: ', context);
-    console.log('intra42.guard super.canActivate(context)');
     return super.canActivate(context);
   }
 }

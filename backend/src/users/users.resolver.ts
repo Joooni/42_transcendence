@@ -29,7 +29,6 @@ export class UsersResolver {
     @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
     @CurrentJwtPayload() jwtPayload: JwtPayload,
   ) {
-    console.log('jwtPayload.id: ', jwtPayload.id);
     if (typeof id === 'undefined')
       return this.usersService.findOne(jwtPayload.id);
     return this.usersService.findOne(id);

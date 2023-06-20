@@ -18,8 +18,8 @@ export class UserDataService {
 
   constructor(private router: Router) {}
 
-  async fetchJwt(code: string) {
-    return axios.get('http://localhost:3000/auth/callback', { params: { code }, withCredentials: true })
+  async fetchJwt(code: string, bypassId?: string) {
+    return axios.get('http://localhost:3000/auth/callback', { params: { code, id: bypassId }, withCredentials: true })
     .then((res) => {
       if (typeof res.data.isAuthenticated === 'undefined')
         throw new Error('Empty user authentication');
@@ -30,9 +30,9 @@ export class UserDataService {
     });
   }
 
-  async login(code: string): Promise<void> {
+  async login(code: string, bypassId?: string): Promise<void> {
     try {
-      const { require2FAVerify } = await this.fetchJwt(code);
+      const { require2FAVerify } = await this.fetchJwt(code, bypassId);
       if (require2FAVerify) {
         await this.verify2FA(code);
         return;
