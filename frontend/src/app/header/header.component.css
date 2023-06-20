@@ -1,3 +1,8 @@
+h2 {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+
 img {
 	height: 15vmin;
 }
@@ -10,6 +15,23 @@ img {
 	margin-left: 1vmin;
 	margin-right: 2vmin;
 	margin-bottom: 2vmin;
+}
+
+.link-icons {
+	display: flex;
+	flex-direction: row;
+	column-gap: 5rem;
+}
+
+.flex_chat_icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.chat_icon {
+	height: 3.5rem;
+	width: 3.5rem;
 }
 
 .flex_header_profile {

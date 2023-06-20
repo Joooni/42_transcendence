@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { AuthService } from '../services/auth.service';
 import { loginPageGuard } from '../guard/login-page.guard';
-import { User } from '../objects/user';
 
 @Component({
   selector: 'app-login',

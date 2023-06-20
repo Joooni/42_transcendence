@@ -2,9 +2,16 @@
 	<div class="chat-box contact-name">
 		<h4>{{chatComponent.selectedUser?.username}}</h4>
 	</div>
-	<div class="chat-box message-display">saskia: tzuerewgrjehrjdshfjh</div>
+	<div class="chat-box message-display" id="chatHistory">
+			<div class="message" *ngFor="let message of messages">
+				<div class="sender">{{ message.sender.username }}:</div>
+				<div>{{ message.content }}</div>
+			</div>
+			<div id="anchor"></div>
+	</div>
+
 	<div class="chat-box message-input">
-		<input type="text" class="chat_input">
-		<button class="button_small">SEND</button>
+		<input type="text" class="chat_input" [formControl]="messageInput">
+		<button class="button_small" (click)="sendInput()">SEND</button>
 	</div>
 </div>>

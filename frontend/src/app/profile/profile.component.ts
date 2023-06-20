@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 
-import { User } from '../objects/user';
+import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { Game, GameHistory } from '../objects/game';
+import { Game, GameHistory } from '../models/game';
 import { GameDataService } from '../services/game-data/game-data.service';
 
 @Component({

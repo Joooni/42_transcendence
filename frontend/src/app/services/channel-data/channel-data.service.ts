@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { Channel } from '../../objects/channel';
-import { CHANNELS } from '../../objects/mock_channels';
+import { Channel } from '../../models/channel';
+import { CHANNELS } from '../../mock-data/mock_channels';
 
 @Injectable({
   providedIn: 'root'

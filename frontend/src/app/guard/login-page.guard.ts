@@ -2,8 +2,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { USERS } from '../mock_users';
-import { User } from '../objects/user';
 
 export const loginPageGuard: CanActivateFn = async () => {
   console.log('loginPageGuard');

@@ -3,9 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
-import { User } from '../objects/user';
-import { Channel } from '../objects/channel';
+import { User } from '../models/user';
+import { Channel } from '../models/channel';
 import { CookieService } from 'ngx-cookie-service';
+import { ChatDirectMessageComponent } from './chat-direct-message/chat-direct-message.component';
+import { MessageService } from '../services/message/message.service';
 
 @Component({
   selector: 'app-chat',
@@ -13,6 +15,8 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
+
+	activeUser?: User;
 
 	friends?: number[];
 	blocked?: number[];
@@ -29,15 +33,24 @@ export class ChatComponent implements OnInit {
 	selectedChannel?: Channel;
 	selectedUser?: User;
 
+	hasUnreadMessages: boolean = true;
+
 	constructor(
-	private userDataService: UserDataService,
-	private userRelationService: UserRelationService,
-	private channelDataService: ChannelDataService,
-	private cookie: CookieService
+		private userDataService: UserDataService,
+		private userRelationService: UserRelationService,
+		private channelDataService: ChannelDataService,
+		private cookie: CookieService,
+		private messageService: MessageService
 	) {}
 
 	ngOnInit(): void {
-		// this.userDataService.getAllUsersFor(parseInt(this.cookie.get("userid"))).subscribe(users => this.allUsers = users);
+		this.userDataService.findSelf().then(user => this.activeUser = user);
+		// for FE-testing - to be deleted when BE provides test data
+		this.userDataService.getAllUsers().subscribe(users => this.allUsers = users);
+
+		// real function to user
+		// this.userDataService.findAll().then(users => this.allUsers = users);
+
 		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
 		this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
@@ -84,5 +97,6 @@ export class ChatComponent implements OnInit {
 		if (this.selectedChannel)
 			this.selectedChannel = undefined;
 		this.selectedUser = user;
+		this.messageService.changeOfDM('change of DM');
 	}
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
-import { User } from '../objects/user';
+import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
