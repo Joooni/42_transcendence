@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -21,6 +20,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { LoginComponent } from './login/login.component';
 import { GameComponent } from './game/game.component';
 import { GameDisplayComponent } from './game/game-display/game-display.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -51,6 +51,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       }
     }),
     SocketIoModule.forRoot(config),
+		ReactiveFormsModule
   ],
   providers: [
     CookieService,
@@ -66,7 +67,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       },
       deps: [HttpLink],
     },
-    ChatComponent
+    ChatComponent,
   ],
   bootstrap: [AppComponent]
 })

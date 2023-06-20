@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { USERS } from '../mock_users';
-import { User } from '../objects/user';
+import { USERS } from '../mock-data/mock_users';
+import { User } from '../models/user';
 import { UserDataService } from './user-data/user-data.service';
 
 @Injectable({

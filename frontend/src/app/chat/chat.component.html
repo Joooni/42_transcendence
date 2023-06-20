@@ -22,13 +22,13 @@
 					(click)="selectUser(user)"
 				>
 					<div class="user">
-						<img class="profile_picture" src="{{'../' + user.picture}}">
+						<img class="profile_picture" src="{{user.picture}}">
 						<h4>{{user.username}}</h4>
 					</div>
 					<div class="icons">
 						<img class="icon" src="../../assets/dots_icon_yellow.png">
 						<img 
-							*ngIf="user.hasUnreadMessagesToActiveUser"
+							*ngIf="hasUnreadMessages"
 							class="icon"
 							src="../../assets/unread_message_icon_yellow.png"
 						>
@@ -52,7 +52,7 @@
 		<div *ngIf="showOtherUsers" class="chat_contact_list">
 			<div *ngFor="let user of allUsers">
 				<div 
-					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id)"
+					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id) && user.id !== activeUser?.id"
 					class="contact"
 					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']"
 					(click)="selectUser(user)"
@@ -64,7 +64,7 @@
 					<div class="icons">
 						<img class="icon" src="../../assets/dots_icon_yellow.png">
 						<img 
-							*ngIf="user.hasUnreadMessagesToActiveUser"
+							*ngIf="hasUnreadMessages"
 							class="icon"
 							src="../../assets/unread_message_icon_yellow.png">
 					</div>
@@ -101,7 +101,7 @@
 							JOIN
 						</button>
 						<img 
-							*ngIf="channel.hasUnreadMessagesToActiveUser" 
+							*ngIf="hasUnreadMessages" 
 							class="icon" 
 							src="../../assets/unread_message_icon_yellow.png"
 						>
@@ -136,11 +136,6 @@
 					</div>
 					<div class="icons">
 						<img class="icon" src="../../assets/dots_icon_yellow.png">
-						<img 
-							*ngIf="user.hasUnreadMessagesToActiveUser"
-							class="icon"
-							src="../../assets/unread_message_icon_yellow.png"
-						>
 					</div>
 				</div>
 			</div>

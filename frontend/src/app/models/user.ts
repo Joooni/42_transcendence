@@ -7,14 +7,10 @@ export interface User {
 	email: string;
 	picture: string;
 	twoFAEnabled: boolean;
-	twoFAsecret?: string;
 	status: string;
 	wins: number;
 	losses: number;
-	xp: number;
-	rank: number;
+	// xp: number;
 	map: number;
 	// achievements: number[];
-	isLoggedIn: boolean;
-	hasUnreadMessagesToActiveUser?: boolean;
 }
