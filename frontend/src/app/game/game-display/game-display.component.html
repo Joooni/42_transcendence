@@ -5,11 +5,13 @@
 	<!-- <canvas #canvasEle></canvas>
 	<button (window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" (click)="startGame()">Start Game</button> -->
 
-	<button class="buttonReady" *ngIf="ready"
+	<button class="buttonReady" *ngIf="ready==true"
 		(click)="startGame()" (click)="ready = false">I am ready</button>
 
 	<canvas #canvasEle
 		(window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" ></canvas>
 	
+
+	<button *ngIf="gameRunning==true" (click)="stopGame()">Stop Game</button>
 
 </div>>

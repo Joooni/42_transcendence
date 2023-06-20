@@ -1,6 +1,8 @@
-import { Component, ViewChild, HostListener, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
+import { SocketService } from 'src/app/services/socket/socket.service';
+import { objPositions } from './objPositions';
 
 @Component({
   selector: 'app-game-display',
@@ -13,17 +15,20 @@ export class GameDisplayComponent implements AfterViewInit {
 	moveUp: boolean;
 	moveDown: boolean;
 	ready: boolean;
+	gameRunning: boolean;
+
+	nbr: number;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
 
-	intervalID : any;
-
-	constructor(private gameDisplayService: GameDisplayService) {
+	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService) {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.ready = true;
+		this.gameRunning = false;
+		this.nbr = 0;
 		this.gameDisplayService.loadImages();
 	}
 
@@ -31,17 +36,28 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.context = this.canvasEle.nativeElement.getContext('2d');
 		this.context.canvas.width = 1024;
 		this.context.canvas.height = this.context.canvas.width / 1.333;
+		this.socketService.listen2('getGameData').subscribe((data) => {
+			this.runGame(data)
+		})
 	}
 
 	startGame() {
-		this.intervalID = setInterval(() => {this.runGame()}, 1000 / 25);	
+		this.gameRunning = true;
+		this.socketService.emit('startGame', undefined);
 	}
 
-	runGame() {
+	stopGame() {
+		this.socketService.emit('stopGame', undefined);
+	}
+
+	runGame(data: objPositions) {
 		this.racketMovement();
 		this.gameDisplayService.gameControl();
 		this.gameDisplayService.ballMovement();
-		this.draw();
+		this.draw(data);
+		// if (this.gameDisplayService.gameEnds == true) {
+		// 	clearInterval(this.intervalRunGame);
+		// }
 	}
 
 	racketMovement() {
@@ -53,7 +69,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		}
 	}
 
-	draw() {
+	draw(data: objPositions) {
 		this.context.drawImage(this.gameDisplayService.background.img, 0, 0, this.context.canvas.width, this.context.canvas.height);
 		this.context.drawImage(this.gameDisplayService.racketLeft.img, this.gameDisplayService.positions.racketLeftX, this.gameDisplayService.positions.racketLeftY, this.gameDisplayService.racketLeft.width, this.gameDisplayService.racketLeft.height);
 		this.context.drawImage(this.gameDisplayService.racketRight.img, this.gameDisplayService.positions.racketRightX, this.gameDisplayService.positions.racketRightY, this.gameDisplayService.racketRight.width, this.gameDisplayService.racketRight.height);
@@ -61,7 +77,10 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.context.drawImage(this.gameDisplayService.goalsLeft.img, this.gameDisplayService.goalsLeft.x, this.gameDisplayService.goalsLeft.y, this.gameDisplayService.goalsLeft.width, this.gameDisplayService.goalsLeft.height);
 		this.context.drawImage(this.gameDisplayService.goalsRight.img, this.gameDisplayService.goalsRight.x, this.gameDisplayService.goalsRight.y, this.gameDisplayService.goalsRight.width, this.gameDisplayService.goalsRight.height);
 	
-		this.context.drawImage(this.gameDisplayService.ball.img, this.gameDisplayService.positions.ballX, this.gameDisplayService.positions.ballY, this.gameDisplayService.ball.width, this.gameDisplayService.ball.height);
+		// this.context.drawImage(this.gameDisplayService.ball.img, this.gameDisplayService.positions.ballX, this.gameDisplayService.positions.ballY, this.gameDisplayService.ball.width, this.gameDisplayService.ball.height);
+		this.context.drawImage(this.gameDisplayService.ball.img, this.gameDisplayService.positions.ballX, data.ballY, this.gameDisplayService.ball.width, this.gameDisplayService.ball.height);
+
+
 
 		if (this.gameDisplayService.goalTrigger == true) {
 			this.context.drawImage(this.gameDisplayService.goal.img, this.gameDisplayService.goal.x, this.gameDisplayService.goal.y, this.gameDisplayService.goal.width, this.gameDisplayService.goal.height);

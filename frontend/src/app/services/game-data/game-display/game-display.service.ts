@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { objPositions } from './objPositions'
+import { objPositions } from '../../../game/game-display/objPositions'
 import { interval } from 'rxjs';
 
 @Injectable({
@@ -126,7 +126,7 @@ export class GameDisplayService {
 			this.goalTrigger = true;
 			this.ballMoveSpeed = 0;
 			this.positions.ballX = this.ball.startX;
-			this.positions.ballY =  this.ball.startY;				
+			this.positions.ballY = this.ball.startY;				
 			if (this.goalTriggerLeft == true) {
 				this.goalsRight.count++;
 				if (this.goalsRight.count == 1) {
@@ -166,7 +166,7 @@ export class GameDisplayService {
 	ballMovement() {
 		var ballPosY : number = this.positions.ballY + this.ball.height / 2;
 		var racketLeftPosY : number = this.positions.racketLeftY + (this.racketLeft.height / 2);
-		var raracketRightPosY  = this.positions.racketRightY + (this.racketRight.height / 2);
+		var racketRightPosY  = this.positions.racketRightY + (this.racketRight.height / 2);
 
 		if (this.positions.ballY <= 5 || this.positions.ballY >= 663)
 			this.ballMoveDegree = 180 - this.ballMoveDegree;
@@ -199,27 +199,27 @@ export class GameDisplayService {
 				this.ballMoveSpeed += 1;
 		}
 		if (this.positions.ballX >= 854) {
-			if (ballPosY >= raracketRightPosY - 100 && ballPosY < raracketRightPosY - 82)
+			if (ballPosY >= racketRightPosY - 100 && ballPosY < racketRightPosY - 82)
 				this.ballMoveDegree = -160;
-			else if (ballPosY >= raracketRightPosY - 82 && ballPosY < raracketRightPosY - 64)
+			else if (ballPosY >= racketRightPosY - 82 && ballPosY < racketRightPosY - 64)
 				this.ballMoveDegree = -146;	
-			else if (ballPosY >= raracketRightPosY - 64 && ballPosY < raracketRightPosY - 46)
+			else if (ballPosY >= racketRightPosY - 64 && ballPosY < racketRightPosY - 46)
 				this.ballMoveDegree = -132;
-			else if (ballPosY >= raracketRightPosY - 46 && ballPosY < raracketRightPosY - 28)
+			else if (ballPosY >= racketRightPosY - 46 && ballPosY < racketRightPosY - 28)
 				this.ballMoveDegree = -118; 
-			else if (ballPosY >= raracketRightPosY - 28 && ballPosY < raracketRightPosY - 10)
+			else if (ballPosY >= racketRightPosY - 28 && ballPosY < racketRightPosY - 10)
 				this.ballMoveDegree = -104; 
-			else if (ballPosY >= raracketRightPosY - 10 && ballPosY < raracketRightPosY + 10)
+			else if (ballPosY >= racketRightPosY - 10 && ballPosY < racketRightPosY + 10)
 				this.ballMoveDegree = -90;
-			else if (ballPosY >= raracketRightPosY + 10 && ballPosY < raracketRightPosY + 28)
+			else if (ballPosY >= racketRightPosY + 10 && ballPosY < racketRightPosY + 28)
 				this.ballMoveDegree = -76;
-			else if (ballPosY >= raracketRightPosY + 28 && ballPosY < raracketRightPosY + 48)
+			else if (ballPosY >= racketRightPosY + 28 && ballPosY < racketRightPosY + 48)
 				this.ballMoveDegree = -62; 
-			else if (ballPosY >= raracketRightPosY + 48 && ballPosY < raracketRightPosY + 64)
+			else if (ballPosY >= racketRightPosY + 48 && ballPosY < racketRightPosY + 64)
 				this.ballMoveDegree = -48;
-			else if (ballPosY >= raracketRightPosY + 64 && ballPosY < raracketRightPosY + 82)
+			else if (ballPosY >= racketRightPosY + 64 && ballPosY < racketRightPosY + 82)
 				this.ballMoveDegree = -34; 	
-			else if (ballPosY >= raracketRightPosY + 82 && ballPosY < raracketRightPosY + 100)
+			else if (ballPosY >= racketRightPosY + 82 && ballPosY < racketRightPosY + 100)
 				this.ballMoveDegree = -20;
 			else if (this.ballMoveDegree > 0)
 				this.goalTriggerRight = true;
