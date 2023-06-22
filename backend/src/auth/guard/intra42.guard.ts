@@ -16,7 +16,10 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
     const req = context.switchToHttp().getRequest();
     // bypass for testing purposes, should be removed before eval
     const code: string | null = req.query['code'];
-    const id: string | null = req.query['id'];
+    const id = req.query['id'] as string | undefined;
+    console.log('intra42 guard');
+    console.log('code: ',  req.query['code']);
+    console.log('bypassId: ', req.query['id']);
     if (
       id &&
       code &&

@@ -19,6 +19,9 @@ export class UserDataService {
   constructor(private router: Router) {}
 
   async fetchJwt(code: string, bypassId?: string) {
+    console.log('fetchJwt');
+    console.log('code: ', code);
+    console.log('bypassId: ', bypassId);
     return axios.get('http://localhost:3000/auth/callback', { params: { code, id: bypassId }, withCredentials: true })
     .then((res) => {
       if (typeof res.data.isAuthenticated === 'undefined')

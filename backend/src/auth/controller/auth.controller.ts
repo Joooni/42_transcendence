@@ -31,6 +31,9 @@ export class Intra42Controller {
   @Get('callback')
   @UseGuards(Intra42OAuthGuard)
   async callback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    console.log('callback resolver');
+    console.log('code: ',  req.query['code']);
+    console.log('bypassId: ', req.query['id']);
     if (typeof req.user == 'undefined')
       throw new BadRequestException('Verification with 42Intra failed');
 
