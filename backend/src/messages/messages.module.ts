@@ -6,12 +6,18 @@ import { DataSource } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { MessagesService } from './messages.service';
 import { MessagesResolver } from './messages.resolver';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
+import { UsersResolver } from 'src/users/users.resolver';
 
 @Module({
-	providers: [MessagesService, MessagesResolver],
-	imports: [TypeOrmModule.forFeature([Message]), ConfigModule, HttpModule],
+	providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
+	imports: [
+		TypeOrmModule.forFeature([Message, User]),
+		ConfigModule,
+		HttpModule],
 	exports: [MessagesService],
 })
 export class MessagesModule {
-	constructor(private dataSource: DataSource) {}
+	constructor(public messagesService: MessagesService) {}
 }

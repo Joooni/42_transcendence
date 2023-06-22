@@ -10,7 +10,8 @@ export class UserRelationService {
 	friends: number[] = [
 		3,
 		6,
-		7
+		7,
+		98468
 	];
 
 	//initalization can be deleted afterwards
