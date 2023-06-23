@@ -14,9 +14,6 @@ export const LoginGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) =
     // todo: if user is not logged in yet and 2FA is active,
     // show OTP input field and wait for this to verify
     // Maybe do this in the frontend component, though
-    console.log('frontend login guard');
-    console.log('code: ', code);
-    console.log('bypassId: ', bypassId);
     if ( !isAuthenticated && code) {
       await userDataService.login(code, bypassId);
     }

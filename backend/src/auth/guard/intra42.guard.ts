@@ -17,15 +17,11 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
     // bypass for testing purposes, should be removed before eval
     const code: string | null = req.query['code'];
     const id = req.query['id'] as string | undefined;
-    console.log('intra42 guard');
-    console.log('code: ',  req.query['code']);
-    console.log('bypassId: ', req.query['id']);
     if (
       id &&
       code &&
       code === this.configService.get<string>('FOR_REAL_NO_BYPASS')
     ) {
-      console.log('backdoor activate!');
       req.user = mockUser1;
       req.user.id = +id;
       req.user.username = `Kong_${id}`;
