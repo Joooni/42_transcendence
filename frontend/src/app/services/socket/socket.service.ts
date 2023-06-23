@@ -18,14 +18,6 @@ export class SocketService {
     });
   }
 
-  listen2(eventName: string) {
-    return new Observable<objPositions>((subscriber) => {
-      this.socket.on(eventName, (data: objPositions) => {
-        subscriber.next(data);
-      })
-    });
-  }
-
   emit(eventName: string, data: any) {
     this.socket.emit(eventName, data);
   }

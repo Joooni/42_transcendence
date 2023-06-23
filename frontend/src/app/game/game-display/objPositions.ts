@@ -1,8 +1,12 @@
 export interface objPositions {
 	ballX: number,
 	ballY: number,
-	racketLeftX: number,
 	racketLeftY: number,
-	racketRightX: number,
-	racketRightY: number
+	racketRightY: number,
+	goalTriggerLeft: boolean,
+	goalTriggerRight: boolean,
+	goalsRight: number,
+	goalsLeft: number,
+	isPlayerLeft: boolean
 }
+

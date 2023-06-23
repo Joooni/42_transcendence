@@ -15,18 +15,19 @@ export class GameDisplayService {
 		img: new Image
 	}
 
+	racketPositionY: number;
+	racketPositionStartY: number;
+
 	racketLeft = {
-		startX: 20,
-		startY: 298,
+		racketLeftX: 20,
 		width: 60,
 		height: 160,
 		src : '../../../../assets/gameObjects/banane_links.png',
 		img: new Image
 	}
 
-	racketRight = {
-		startX: 944,
-		startY: 298, 
+	racketRight = { 
+		racketRightX: 944,
 		width: 60,
 		height: 160,
 		src : '../../../../assets/gameObjects/banane_rechts.png',
@@ -34,29 +35,11 @@ export class GameDisplayService {
 	}
 
 	ball = {
-		startX: 472,
-		startY: 324,
 		width: 100,
 		height: 100,
 		src : '../../../../assets/gameObjects/DK_Fass1.png',
 		img: new Image
 	}
-
-	ballMoveSpeed : number;
-	ballMoveDegree : number;
-
-	positions = {
-		ballX: 472,
-		ballY: 324,
-		racketLeftX: 20,
-		racketLeftY: 298,
-		racketRightX: 944,
-		racketRightY: 298
-	};
-
-	goalTriggerLeft : boolean;
-	goalTriggerRight : boolean;
-	goalTrigger : boolean;
 
 	goal = {
 		x: 156,
@@ -68,7 +51,6 @@ export class GameDisplayService {
 	}
 	
 	goalsLeft = {
-		count: 0,
 		x: 206,
 		y: 101,
 		width: 101,
@@ -77,7 +59,6 @@ export class GameDisplayService {
 	}
 	
 	goalsRight = {
-		count: 0,
 		x: 718,
 		y: 101,
 		width: 101,
@@ -94,7 +75,9 @@ export class GameDisplayService {
 		img: new Image
 	}
 
+	goalTrigger: boolean;
 	gameEnds : boolean;
+	gameReset: boolean;
 
 	result = {
 		x: 232,
@@ -106,129 +89,50 @@ export class GameDisplayService {
 	}
 
 	constructor() {
-		this.ballMoveSpeed = 10;
-		this.ballMoveDegree = -90;
-
-		this.goalTriggerLeft = false;
-		this.goalTriggerRight = false;
 		this.goalTrigger = false;
-
 		this.gameEnds = false;
+		this.gameReset = false;
+		this.racketPositionStartY = 298;
+		this.racketPositionY = this.racketPositionStartY
 	}
 
-	gameControl() {
-		if (this.goalTriggerLeft == true || this.goalTriggerRight == true) {
-			this.explosion.y = this.positions.ballY - 50;
-			if (this.goalTriggerLeft == true)
-				this.explosion.x = this.positions.ballX - 100; 
-			else 
-				this.explosion.x = this.positions.ballX; 
-			this.goalTrigger = true;
-			this.ballMoveSpeed = 0;
-			this.positions.ballX = this.ball.startX;
-			this.positions.ballY = this.ball.startY;				
-			if (this.goalTriggerLeft == true) {
-				this.goalsRight.count++;
-				if (this.goalsRight.count == 1) {
+	imageControl(data: objPositions) {
+		if (data.goalTriggerLeft == true || data.goalTriggerRight == true || this.gameReset == true) {
+			if (this.gameReset == false) {
+				this.goalTrigger = true;
+			}
+			this.explosion.y = data.ballY - 55;
+			if (data.goalTriggerLeft == true) {
+				this.explosion.x = data.ballX - 80;
+			}
+			else {
+				this.explosion.x = data.ballX - 35;
+			}	
+			if (data.goalTriggerLeft == true || this.gameReset == true) {
+				if (data.goalsRight == 1) {
 					this.goalsRight.width = 56;
 				}
 				else {
 					this.goalsRight.width = 101;
 				}
-				this.goalsRight.img.src = '../../../../assets/gameObjects/nbr' + this.goalsRight.count + '.png' ;
-				this.ballMoveDegree = -90;
+				this.goalsRight.img.src = '../../../../assets/gameObjects/nbr' + data.goalsRight + '.png' ;
 			}
-			if (this.goalTriggerRight == true) {
-				this.goalsLeft.count++;
-				if (this.goalsLeft.count == 1) {
+			if (data.goalTriggerRight == true || this.gameReset == true) {
+				if (data.goalsLeft == 1) {
 					this.goalsLeft.width = 56;
 				}
 				else {
 					this.goalsLeft.width = 101;
 				}
-				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + this.goalsLeft.count + '.png' ;
-				this.ballMoveDegree = 90;
+				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + data.goalsLeft + '.png' ;
 			}
-			this.goalTriggerLeft = false;
-			this.goalTriggerRight = false;
-
+			this.gameReset = false;
 			setTimeout(() => {
+				this.racketPositionY = this.racketPositionStartY;
 				this.goalTrigger = false;
-				this.positions.racketLeftY = this.racketLeft.startY;
-				if (this.goalsLeft.count < 5 && this.goalsRight.count < 5)
-					this.ballMoveSpeed = 10;
-				else
+				if (data.goalsLeft >= 5 || data.goalsRight >= 5)
 					this.gameEnds = true;
 			}, 3000);
-		}
-	}
-
-	ballMovement() {
-		var ballPosY : number = this.positions.ballY + this.ball.height / 2;
-		var racketLeftPosY : number = this.positions.racketLeftY + (this.racketLeft.height / 2);
-		var racketRightPosY  = this.positions.racketRightY + (this.racketRight.height / 2);
-
-		if (this.positions.ballY <= 5 || this.positions.ballY >= 663)
-			this.ballMoveDegree = 180 - this.ballMoveDegree;
-		if (this.positions.ballX <= 70) {
-			if (ballPosY >= racketLeftPosY - 100 && ballPosY < racketLeftPosY - 82)
-				this.ballMoveDegree = 160;
-			else if (ballPosY >= racketLeftPosY - 82 && ballPosY < racketLeftPosY - 64)
-				{this.ballMoveDegree = 146;} 	
-			else if (ballPosY >= racketLeftPosY - 64 && ballPosY < racketLeftPosY - 46)
-				this.ballMoveDegree = 132;
-			else if (ballPosY >= racketLeftPosY - 46 && ballPosY < racketLeftPosY - 28)
-				this.ballMoveDegree = 118; 
-			else if (ballPosY >= racketLeftPosY - 28 && ballPosY < racketLeftPosY - 10)
-				this.ballMoveDegree = 104; 
-			else if (ballPosY >= racketLeftPosY - 10 && ballPosY < racketLeftPosY + 10)
-				this.ballMoveDegree = 90;
-			else if (ballPosY >= racketLeftPosY + 10 && ballPosY < racketLeftPosY + 28)
-				this.ballMoveDegree = 76;
-			else if (ballPosY >= racketLeftPosY + 28 && ballPosY < racketLeftPosY + 48)
-				this.ballMoveDegree = 62; 
-			else if (ballPosY >= racketLeftPosY + 48 && ballPosY < racketLeftPosY + 64)
-				this.ballMoveDegree = 48;
-			else if (ballPosY >= racketLeftPosY + 64 && ballPosY < racketLeftPosY + 82)
-				this.ballMoveDegree = 34; 	
-			else if (ballPosY >= racketLeftPosY + 82 && ballPosY < racketLeftPosY + 100)
-				this.ballMoveDegree = 20;
-			else if (this.ballMoveDegree < 0)
-				this.goalTriggerLeft = true;
-			if (this.ballMoveSpeed < 70)
-				this.ballMoveSpeed += 1;
-		}
-		if (this.positions.ballX >= 854) {
-			if (ballPosY >= racketRightPosY - 100 && ballPosY < racketRightPosY - 82)
-				this.ballMoveDegree = -160;
-			else if (ballPosY >= racketRightPosY - 82 && ballPosY < racketRightPosY - 64)
-				this.ballMoveDegree = -146;	
-			else if (ballPosY >= racketRightPosY - 64 && ballPosY < racketRightPosY - 46)
-				this.ballMoveDegree = -132;
-			else if (ballPosY >= racketRightPosY - 46 && ballPosY < racketRightPosY - 28)
-				this.ballMoveDegree = -118; 
-			else if (ballPosY >= racketRightPosY - 28 && ballPosY < racketRightPosY - 10)
-				this.ballMoveDegree = -104; 
-			else if (ballPosY >= racketRightPosY - 10 && ballPosY < racketRightPosY + 10)
-				this.ballMoveDegree = -90;
-			else if (ballPosY >= racketRightPosY + 10 && ballPosY < racketRightPosY + 28)
-				this.ballMoveDegree = -76;
-			else if (ballPosY >= racketRightPosY + 28 && ballPosY < racketRightPosY + 48)
-				this.ballMoveDegree = -62; 
-			else if (ballPosY >= racketRightPosY + 48 && ballPosY < racketRightPosY + 64)
-				this.ballMoveDegree = -48;
-			else if (ballPosY >= racketRightPosY + 64 && ballPosY < racketRightPosY + 82)
-				this.ballMoveDegree = -34; 	
-			else if (ballPosY >= racketRightPosY + 82 && ballPosY < racketRightPosY + 100)
-				this.ballMoveDegree = -20;
-			else if (this.ballMoveDegree > 0)
-				this.goalTriggerRight = true;
-			if (this.ballMoveSpeed < 70)
-				this.ballMoveSpeed += 1;
-		}
-		if (this.positions.ballX >= 0 && this.positions.ballX <= 924) {
-			this.positions.ballX += Math.sin(this.radInDegrees(this.ballMoveDegree)) * this.ballMoveSpeed;
-			this.positions.ballY += Math.cos(this.radInDegrees(this.ballMoveDegree)) * this.ballMoveSpeed;
 		}
 	}
 
