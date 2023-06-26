@@ -26,7 +26,6 @@ export class TwoFAController {
   @Get('generate')
   @UseGuards(JwtAuthGuard, TwoFAGuard)
   async generate(@Req() req: any): Promise<string> {
-    console.log('inside 2fa/generate');
     try {
       const user: User = await this.usersService.findOne(req.user.id);
       const { otpAuthUrl } = await this.twoFAService.generate2FASecret(user);
@@ -49,7 +48,6 @@ export class TwoFAController {
     @Res() res: Response,
     @Query('code') code: string | null,
   ) {
-    console.log('inside 2fa/verify');
     if (req.user.isAuthenticated)
       throw new BadRequestException('User is already authenticated');
     if (!code) throw new BadRequestException('2FA code missing');
@@ -74,7 +72,6 @@ export class TwoFAController {
     @Req() req: any,
     @Query('code') code: string | null,
   ): Promise<void> {
-    console.log('inside 2fa/enable');
     if (!code) throw new BadRequestException('2FA code missing');
     try {
       const user: User = await this.usersService.findOne(req.user.id);
@@ -87,7 +84,6 @@ export class TwoFAController {
   @Get('disable')
   @UseGuards(JwtAuthGuard, TwoFAGuard)
   async disableTwoFA(@Req() req: any): Promise<void> {
-    console.log('inside 2fa/disable');
     try {
       const user: User = await this.usersService.findOne(req.user.id);
       await this.twoFAService.disable2FA(user);

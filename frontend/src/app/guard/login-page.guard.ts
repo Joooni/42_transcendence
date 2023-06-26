@@ -4,7 +4,6 @@ import { inject } from '@angular/core';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 export const loginPageGuard: CanActivateFn = async () => {
-  console.log('loginPageGuard');
   const authService = inject(AuthService);
   const router = inject(Router);
   const isAuthenticated: boolean = await authService.isAuthenticated();

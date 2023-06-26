@@ -28,8 +28,9 @@ export class LoginComponent {
     this.twoFAEnabled = await this.authService.twoFAEnabled();
     this.activatedRoute.queryParamMap.subscribe((params) => {
       const code = params.get('code');
+      const bypassId = params.get('id') as string | undefined;
       if (code) {
-        this.userDataService.login(code);
+        this.userDataService.login(code, bypassId);
         this.router.navigate([], {
           queryParams: {
             'code': null,
