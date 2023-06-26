@@ -12,6 +12,7 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { PassportModule } from '@nestjs/passport';
 import { SocketModule } from './socket/socket.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { SocketModule } from './socket/socket.module';
     AuthModule,
     PassportModule,
     SocketModule,
+    GameModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],

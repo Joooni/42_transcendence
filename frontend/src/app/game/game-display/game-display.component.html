@@ -1,15 +1,12 @@
-
-
 <div class="game-display">
 	
-	<!-- <canvas #canvasEle></canvas>
-	<button (window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" (click)="startGame()">Start Game</button> -->
-
-	<button class="buttonReady" *ngIf="ready"
+	<button class="buttonReady" *ngIf="ready==true"
 		(click)="startGame()" (click)="ready = false">I am ready</button>
+
+	<button class="buttonStopGame" *ngIf="gameRunning==true"
+		(click)="stopGame()" (click)="ready = true" (click)="gameRunning = false">Reset Game</button>
 
 	<canvas #canvasEle
 		(window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" ></canvas>
 	
-
 </div>>

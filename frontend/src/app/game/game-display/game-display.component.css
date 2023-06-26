@@ -15,9 +15,9 @@
 } */
 
 canvas {
-	width:  90%;
-	height: 100%;
-	/* border: 2px solid black; */
+	
+	position: absolute;
+	display: block;
 	margin-left:	5vmin;
 	margin-right:	5vmin;
 	margin-top:		5vmin;
@@ -25,7 +25,11 @@ canvas {
 }
 
 .buttonReady {
-	margin-top: 	10vmin;
+	margin-top: 	5vmin;
 	margin-left:	40%;
+}
 
+.buttonStopGame {
+	margin-top: 	5vmin;
+	margin-left:	40%;
 }
