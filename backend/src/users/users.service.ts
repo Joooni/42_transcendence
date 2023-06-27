@@ -35,12 +35,10 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    console.log('This action returns all users');
     return this.userRepository.find();
   }
 
   findOne(identifier: number | string): Promise<User> {
-    console.log('This action returns a user');
     if (typeof identifier === 'number')
       return this.userRepository.findOneByOrFail({ id: identifier });
     else if (typeof identifier === 'string')

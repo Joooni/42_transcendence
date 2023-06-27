@@ -14,6 +14,7 @@ import { PassportModule } from '@nestjs/passport';
 import { SocketModule } from './socket/socket.module';
 import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { MessagesModule } from './messages/messages.module';
     AuthModule,
     PassportModule,
     SocketModule,
+    GameModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],

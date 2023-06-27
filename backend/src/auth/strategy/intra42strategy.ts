@@ -6,11 +6,10 @@ import { ConfigService } from '@nestjs/config';
 // @ts-ignore
 import { Strategy, VerifyCallback } from 'passport-42';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
-import { config } from 'process';
 /* eslint-enable */
 @Injectable()
 export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     // super() calls parent class constructor and is used to initialize additional stuff for the instance of PassportStrategy
     super({
       clientID: configService.get<string>('INTRA42_AUTH_ID'),
@@ -25,9 +24,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
     refreshToken: string,
     profile: any,
     done: VerifyCallback,
-  ): Promise<any> {
-    console.log('access token: %s', accessToken);
-    console.log('refesh token: %s', refreshToken);
+  ): Promise<void> {
     const user: CreateUserInput = {
       id: +profile.id,
       intra: profile.username,
@@ -42,7 +39,6 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
       losses: profile.losses,
       socketId: profile.socketId,
     };
-    console.log(user);
     done(null, { ...user, accessToken });
   }
 }
