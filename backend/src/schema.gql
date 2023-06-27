@@ -15,6 +15,7 @@ type User {
   wins: Float!
   losses: Float!
   isLoggedIn: Boolean!
+  socketId: String!
 }
 
 type Message {

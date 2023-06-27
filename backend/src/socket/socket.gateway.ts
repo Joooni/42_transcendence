@@ -20,26 +20,53 @@ import { MessagesService } from 'src/messages/messages.service';
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly usersService: UsersService,
+    ) {}
 
   @WebSocketServer()
   server: Server;
-  userService: UsersService;
 
   afterInit() {
-    console.log('ChatGateway initialized');
+    console.log('SocketGateway initialized');
   }
 
-  handleConnection(client: Socket) {
-    console.log('Client connected:', client.id);
+  async handleConnection(client: Socket) {
+    client.emit('identify');
+    console.log('SocketClient connected:', client.id);
+    //Save client.id in database user
+    //set user status to online
   }
 
-  handleDisconnect(client: Socket) {
-    console.log('Client disconnected:', client.id);
+  async handleDisconnect(client: Socket) {
+    console.log('SocketClient disconnected:', client.id);
+    let user = await this.usersService.findOnebySocketId(client.id);
+    this.usersService.updateSocketId(user.id, '');
+    //Function does not exist yet:
+    //this.usersService.updateStatus(userid, 'online');
+
+    //Delete client.id from database user
+    //set user status to offline
   }
 
   @SubscribeMessage('message')
   handleMessage(client: Socket, message: MessageObj): void {
     this.messagesService.receiveMessage(client, message);
   }
+
+  @SubscribeMessage('identify')
+  identifyUser(client: Socket, userid: number | undefined): void {
+    if (typeof userid !== 'undefined') {
+      console.log('SocketId will be updated in database', userid);
+      this.usersService.updateSocketId(userid, client.id);
+      //Function does not exist yet:
+      //this.usersService.updateStatus(userid, 'online');
+    }
+    else {
+      console.log('Error Socket: User not identified');
+      client.emit('identify');
+    }
+  }
+
 }

@@ -15,7 +15,8 @@ import { UsersResolver } from 'src/users/users.resolver';
 	imports: [
 		TypeOrmModule.forFeature([Message, User]),
 		ConfigModule,
-		HttpModule],
+		HttpModule
+	],
 	exports: [MessagesService],
 })
 export class MessagesModule {

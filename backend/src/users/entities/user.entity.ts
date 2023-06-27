@@ -55,4 +55,8 @@ export class User {
   @Field()
   @Column({ default: false })
   isLoggedIn: boolean;
+
+  @Field()
+  @Column({ default: '' })
+  socketId: string;
 }

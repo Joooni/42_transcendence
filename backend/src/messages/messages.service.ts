@@ -15,9 +15,9 @@ export class MessagesService {
 	constructor(
 		@InjectRepository(Message)
 		private messageRepository: Repository<Message>,
-		// @InjectRepository(User)
-		// private userRepository: Repository<User>,
+		@InjectRepository(User)
 		private server: Server,
+		// private userRepository: Repository<User>,
 		private readonly userService: UsersService,
 	) {}
 
@@ -59,6 +59,7 @@ export class MessagesService {
 			}
 			else {
 				// Not a user, but a channel
+				console.log('Messages to a channel are not working yet!');
 			}
 			
 			//Test output
@@ -76,9 +77,11 @@ export class MessagesService {
 
 			// Save & Send the message
 			this.messageRepository.insert(mesEntity);
-			//NEED the receiver socketclient here
-			//this.server.to('room') .emit('message', mesEntity);
-			client.emit('message', mesEntity);
+			
+			//NEED to send to the right user
+			//this.server.emit('message', mesEntity); //to all user
+			client.emit('message', mesEntity); // answer the sender
+			//client. to(dbUserReceiver.socketId).emit('message', mesEntity); // to specific user
 		}
 		catch (error) {
 			console.log('Error: \n', error);

@@ -46,10 +46,10 @@ export class ChatComponent implements OnInit {
 	ngOnInit(): void {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 		// for FE-testing - to be deleted when BE provides test data
-		this.userDataService.getAllUsers().subscribe(users => this.allUsers = users);
+		// this.userDataService.getAllUsers().subscribe(users => this.allUsers = users);
 
 		// real function to user
-		// this.userDataService.findAll().then(users => this.allUsers = users);
+		this.userDataService.findAll().then(users => this.allUsers = users);
 
 		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);

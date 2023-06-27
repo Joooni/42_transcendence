@@ -48,6 +48,11 @@ export class UsersService {
     throw new EntityNotFoundError(User, {});
   }
 
+  findOnebySocketId(identifier: string): Promise<User> {
+    console.log('This action returns a user');
+    return this.userRepository.findOneByOrFail({ socketId: identifier });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   async updateUsername(id: number, username: any): Promise<void> {
@@ -86,34 +91,11 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
-  //Test function:
-  // async createUser(
-  //   id: number,
-  //   intra: string,
-  //   firstname: string,
-  //   lastname: string,
-  //   username: string,
-  //   email: string,
-  //   picture: string,
-  //   twoFAEnabled: boolean,
-  //   status: string,
-  //   wins: number,
-  //   losses: number,
-  //   isLoggedIn: boolean,
-  //   )
-  //   {
-  //     const user: User = new User();
-  //     user.id = id;
-  //     user.intra = intra;
-  //     user.firstname = firstname;
-  //     user.lastname = lastname;
-  //     user.username = username;
-  //     user.email = email;
-  //     user.picture = picture;
-  //     user.twoFAEnabled = twoFAEnabled,
-  //     user.status = status;
-  //     user.wins = wins;
-  //     user.losses = losses;
-  //     user.isLoggedIn = isLoggedIn;
-  //   }
+  async updateSocketId(id: number, newsocketId: string) {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      socketId: newsocketId,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
 }

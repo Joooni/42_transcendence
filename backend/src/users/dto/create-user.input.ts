@@ -38,4 +38,7 @@ export class CreateUserInput {
 
   @Field()
   losses: number;
+
+  @Field()
+  socketId: string;
 }
