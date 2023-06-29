@@ -142,6 +142,5 @@ export const USERS: User[] = [
 	// 	wins: 0,
 	// 	losses: 0,
 	// 	map: 0,
-	// 	isLoggedIn: false
 	// },
 ];

@@ -19,9 +19,6 @@ export class UserDataService {
   constructor(private router: Router) {}
 
   async fetchJwt(code: string, bypassId?: string) {
-    console.log('fetchJwt');
-    console.log('code: ', code);
-    console.log('bypassId: ', bypassId);
     return axios.get('http://localhost:3000/auth/callback', { params: { code, id: bypassId }, withCredentials: true })
     .then((res) => {
       if (typeof res.data.isAuthenticated === 'undefined')
@@ -41,7 +38,7 @@ export class UserDataService {
         return;
       }
       const user: User = await this.findSelf();
-      this.updateLoggedIn(user, true);
+      this.updateStatus(user, 'online');
       this.router.navigate(['/home']);
     } catch (error: any) {
       await this.logout();
@@ -101,7 +98,7 @@ export class UserDataService {
     const user: User = await this.findSelf();
     if (user.status !== "offline" || user.id > 0) {
       await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
-        this.updateLoggedIn(user, false);
+        this.updateStatus(user, 'offline');
         return;
       }).catch((error) => {
         if (typeof error.response === 'undefined') throw error;
@@ -125,7 +122,8 @@ export class UserDataService {
           twoFAEnabled
           wins
           losses
-          isLoggedIn
+          xp
+          achievements
         }
       }
       `,
@@ -152,7 +150,8 @@ export class UserDataService {
           status
           wins
           losses
-          isLoggedIn
+          xp
+          achievements
         }
       }
       `,
@@ -182,7 +181,8 @@ export class UserDataService {
           twoFAEnabled
           wins
           losses
-          isLoggedIn
+          xp
+          achievements
         }
       }
       `,
@@ -209,20 +209,20 @@ export class UserDataService {
     return updateUsername;
   }
 
-  async updateLoggedIn(user: User, status: boolean) {
-    const { updateLoggedIn } = await graphQLService.mutation(
+  async updateStatus(user: User, status: string) {
+    const { updateStatus } = await graphQLService.mutation(
       `
-      mutation updateLoggedIn( $status: Boolean! ){
-        updateLoggedIn( isLoggedIn: $status ) {
+      mutation updateStatus( $status: String! ){
+        updateStatus( status: $status ) {
           status
         }
       }
       `,
       { status },
     );
-    if (typeof updateLoggedIn === 'undefined')
+    if (typeof updateStatus === 'undefined')
       throw new Error('Empty user data');
-    return updateLoggedIn;
+    return updateStatus;
   }
 
   // for FE-testing - to be deleted when BE provides test data

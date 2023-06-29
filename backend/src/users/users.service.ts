@@ -76,9 +76,10 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
-  async updateLoggedIn(id: number, state: boolean) {
+  async updateStatus(id: number, newStatus: string): Promise<void> {
     const result: UpdateResult = await this.userRepository.update(id, {
-      isLoggedIn: state,
+      status: newStatus,
+      lastLoginTimestamp: newStatus === 'online' ? new Date(Date.now()) : undefined,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
