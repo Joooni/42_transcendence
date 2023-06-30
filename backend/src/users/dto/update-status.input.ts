@@ -2,8 +2,8 @@ import { ArgsType, Field } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @ArgsType()
-export class updateUserLoggedInInput {
+export class UpdateUserStatusInput {
   @IsNotEmpty()
   @Field()
-  isLoggedIn: boolean;
+  status: string;
 }

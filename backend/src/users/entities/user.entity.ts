@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 
 @ObjectType()
@@ -53,6 +53,15 @@ export class User {
   losses: number;
 
   @Field()
-  @Column({ default: false })
-  isLoggedIn: boolean;
+  @Column({ default: 0})
+  xp: number;
+
+  @Field(() => [Number], { nullable: true })
+  @Column({ type: Number, array: true, nullable: true, default: [] })
+  achievements: number[];
+
+  @Field(() => GraphQLTimestamp)
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  lastLoginTimestamp: Date;
+
 }
