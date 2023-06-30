@@ -46,6 +46,7 @@ export class ChatDirectMessageComponent implements OnInit {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedUser) {
 			this.messageService.getDMs(this.chatComponent.activeUser, this.chatComponent.selectedUser)
 			.subscribe(dms => this.messages = dms);
+			console.log('updateMessages was called');
 		}
 	}
 }

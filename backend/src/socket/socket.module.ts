@@ -9,16 +9,16 @@ import { UsersService } from 'src/users/users.service';
 import { SocketGateway } from './socket.gateway';
 import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
+import { SocketService } from './socket.service';
 
 @Module({
   imports: [
-    MessagesModule,
     TypeOrmModule.forFeature([Message, User]),
     HttpModule,
-    GameModule
+    GameModule,
   ],
-  providers: [SocketGateway, MessagesService, UsersService],
-	// exports: [SocketGateway]
+  providers: [SocketGateway, UsersService, SocketService, GameService, MessagesService],
+	exports: [SocketGateway]
 })
 
 

@@ -18,17 +18,24 @@ import { Any } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
+import { SocketService } from './socket.service';
 
-@WebSocketGateway({cors: 'http://localhost:80'})
+@WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
+
+
 export class SocketGateway
 implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   intervalRunGame : any;
   
   constructor(
-    private readonly messagesService: MessagesService,
     private readonly usersService: UsersService,
-    private gameService: GameService
+    private gameService: GameService,
+    //private socketModule: SocketModule
+    @Inject(SocketService)
+    private socketService: SocketService,
+    @Inject(MessagesService)
+    private readonly messagesService: MessagesService,
     ) {}
 
   @WebSocketServer()
@@ -41,31 +48,42 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
   async handleConnection(client: Socket) {
     client.emit('identify');
     console.log('SocketClient connected:', client.id);
-    //Save client.id in database user
-    //set user status to online
   }
 
   async handleDisconnect(client: Socket) {
     console.log('SocketClient disconnected:', client.id);
-    let user = await this.usersService.findOnebySocketId(client.id);
-    this.usersService.updateSocketId(user.id, '');
-    //Function does not exist yet:
-    //this.usersService.updateStatus(userid, 'online');
-
-    //Delete client.id from database user
-    //set user status to offline
+    try {
+      let user = await this.usersService.findOnebySocketId(client.id);
+      this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
+      this.socketService.removeSocket(user.id); // Remove Socket from SocketMap
+      
+      //Function does not exist yet:
+      //this.usersService.updateStatus(userid, 'online');
+    } catch (error) {
+      console.log('Error Socket: User not found');
+    }
   }
+
+  
 
   @SubscribeMessage('message')
   handleMessage(client: Socket, message: MessageObj): void {
+    console.log('Message received:');
     this.messagesService.receiveMessage(client, message);
+    let socket = this.socketService.getSocket(message.receiver.id);
+    client.emit('message', "Test");
+    // if (socket) {
+    //   socket.emit('message', message);
+    // }
   }
 
   @SubscribeMessage('identify')
   identifyUser(client: Socket, userid: number | undefined): void {
-    if (typeof userid !== 'undefined') {
+    if (typeof userid !== 'undefined' && userid !== null) {
       console.log('SocketId will be updated in database', userid);
-      this.usersService.updateSocketId(userid, client.id);
+      this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
+      this.socketService.addSocket(userid, client); // Add Socket to SocketMap
+
       //Function does not exist yet:
       //this.usersService.updateStatus(userid, 'online');
     }

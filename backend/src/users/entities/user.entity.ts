@@ -58,5 +58,5 @@ export class User {
 
   @Field()
   @Column({ default: '' })
-  socketId: string;
+  socketid: string;
 }

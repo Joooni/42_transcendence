@@ -37,7 +37,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
       status: profile.status,
       wins: profile.wins,
       losses: profile.losses,
-      socketId: profile.socketId,
+      socketid: profile.socketid,
     };
     done(null, { ...user, accessToken });
   }

@@ -9,6 +9,8 @@ import { MessagesResolver } from './messages.resolver';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UsersResolver } from 'src/users/users.resolver';
+import { SocketModule } from 'src/socket/socket.module';
+import { SocketService } from 'src/socket/socket.service';
 
 @Module({
 	providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
@@ -20,5 +22,5 @@ import { UsersResolver } from 'src/users/users.resolver';
 	exports: [MessagesService],
 })
 export class MessagesModule {
-	constructor(public messagesService: MessagesService) {}
+	constructor(private messagesService: MessagesService) {}
 }

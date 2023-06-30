@@ -6,19 +6,18 @@ import { Message } from './entities/message.entity';
 import { MessageObj } from 'src/objects/message';
 import { Socket } from 'socket.io';
 import { Server } from 'http';
-import { SocketGateway } from 'src/socket/socket.gateway';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { SocketModule } from 'src/socket/socket.module';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class MessagesService {
 	constructor(
-		@InjectRepository(Message)
-		private messageRepository: Repository<Message>,
-		@InjectRepository(User)
-		private server: Server,
-		// private userRepository: Repository<User>,
+		@InjectRepository(Message) private messageRepository: Repository<Message>,
+		// @InjectRepository(User) private userRepository: Repository<User>,
 		private readonly userService: UsersService,
+		// @Inject(SocketService) private socketService: SocketService,
 	) {}
 
 	async findAll(): Promise<Message[]> {
@@ -26,10 +25,10 @@ export class MessagesService {
 		return this.messageRepository.find();
 	}
 	
-	async create(createMessageInput: CreateMessageInput): Promise<void> {
+	async create(createMessageInput: CreateMessageInput): Promise<Message> {
 		console.log('The message is added in the database');
+		const message = new Message();
 		try {
-			const message = new Message();
 			message.content = createMessageInput.content;
 			message.id = createMessageInput.id;
 			message.receiver = createMessageInput.receiver;
@@ -41,49 +40,56 @@ export class MessagesService {
 		{
 			if (!(error instanceof QueryFailedError)) return Promise.reject(error);
 		}
-		return Promise.resolve();
+		return Promise.resolve(message);
 	}
 
 	async receiveMessage(client: Socket,  message: MessageObj): Promise<void> {
-
+		
 		let dbUserSender: User = new User();
 		let dbUserReceiver: User = new User();
-		
+
 		try {
 			// Get the Senderuser from the database
+			if(!('intra' in message.sender)) {
+				//Message to channel
+				console.log("Message to channel isn't working yet");
+				return;
+			}
 			dbUserSender = await this.userService.findOne(message.sender.id);
 			
 			// Get the Receiver from the database
-			if ('intra' in message.receiver) {
-				dbUserReceiver = await this.userService.findOne(message.receiver.id);
-			}
-			else {
-				// Not a user, but a channel
-				console.log('Messages to a channel are not working yet!');
-			}
-			
-			//Test output
-			console.log('Das ist der Sender User: ', dbUserSender);
-			if ('intra' in message.receiver) {
-				console.log('Das ist der Receiver User: ', dbUserReceiver);
-			}
+			dbUserReceiver = await this.userService.findOne(message.receiver.id);
 
 			// Create the Message Entity
-			const mesEntity = new Message();
-			mesEntity.sender = dbUserSender;
-			mesEntity.receiver = dbUserReceiver;
-			mesEntity.content = message.content;
-			mesEntity.timestamp = message.timestamp;
+			if (dbUserReceiver && dbUserReceiver.id) {
 
-			// Save & Send the message
-			this.messageRepository.insert(mesEntity);
-			
-			//NEED to send to the right user
-			//this.server.emit('message', mesEntity); //to all user
-			client.emit('message', mesEntity); // answer the sender
-			//client. to(dbUserReceiver.socketId).emit('message', mesEntity); // to specific user
-		}
-		catch (error) {
+				const mesEntity = new Message();
+				mesEntity.sender = dbUserSender;
+				mesEntity.receiver = dbUserReceiver;
+				mesEntity.content = message.content;
+				mesEntity.timestamp = message.timestamp;
+
+				// Save in DB
+				this.messageRepository.insert(mesEntity);
+				
+				// Send message
+				// this.socketService.getSocket(dbUserReceiver.id)?.emit('message', "Hello");
+				// console.log('Send the message to receiver now', dbUserReceiver.id, socket?.id);
+				// this.socketService.getSocket(dbUserReceiver.id)?.emit('message', {
+				
+				
+				// this.socketGateway.server.emit('message', {
+				// 	id: undefined,
+				// 	sender: mesEntity.sender,
+				// 	receiver: mesEntity.receiver,
+				// 	timestamp: mesEntity.timestamp,
+				// 	content: mesEntity.content,
+				// });
+
+			} else {
+				console.log('Error: Receiver not found');
+			}
+		} catch (error) {
 			console.log('Error: \n', error);
 		}
 	}
