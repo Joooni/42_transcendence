@@ -10,7 +10,6 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UsersResolver } from 'src/users/users.resolver';
 import { SocketModule } from 'src/socket/socket.module';
-import { SocketService } from 'src/socket/socket.service';
 
 @Module({
 	providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],

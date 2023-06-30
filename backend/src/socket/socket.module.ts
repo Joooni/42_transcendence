@@ -9,7 +9,6 @@ import { UsersService } from 'src/users/users.service';
 import { SocketGateway } from './socket.gateway';
 import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
-import { SocketService } from './socket.service';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { SocketService } from './socket.service';
     HttpModule,
     GameModule,
   ],
-  providers: [SocketGateway, UsersService, SocketService, GameService, MessagesService],
+  providers: [SocketGateway, UsersService, GameService, MessagesService],
 	exports: [SocketGateway]
 })
 

@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ChatComponent } from '../chat.component';
 import { Message } from '../../models/message'
 import { MessageService } from 'src/app/services/message/message.service';
+import { SocketService } from 'src/app/services/socket/socket.service';
 
 @Component({
   selector: 'app-chat-direct-message',
@@ -18,6 +19,7 @@ export class ChatDirectMessageComponent implements OnInit {
 	constructor(
 		public chatComponent: ChatComponent,
 		private messageService: MessageService,
+		private socketService: SocketService,
 	) {}
 
 	ngOnInit(): void {
@@ -26,6 +28,12 @@ export class ChatDirectMessageComponent implements OnInit {
 			.subscribe(dms => this.messages = dms);
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
+		console.log('Now i will listen to messages');
+		this.socketService.listen('message').subscribe((data) => {
+			console.log('received a message from the server');
+			this.messageService.receiveInput(data as Message);
+			this.updateMessages();
+		});
 	}
 
 	sendInput() {

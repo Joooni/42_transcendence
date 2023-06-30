@@ -9,7 +9,6 @@ import { Server } from 'http';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { SocketModule } from 'src/socket/socket.module';
-import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class MessagesService {

@@ -26,11 +26,11 @@ export class MessageService implements OnInit {
 
 	ngOnInit(): void {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
-		console.log('Now i will listen to messages');
-		this.socketService.listen('message').subscribe((data) => {
-			console.log('received a message from the server');
-			this.receiveInput(data as Message);
-		});
+		// console.log('Now i will listen to messages');
+		// this.socketService.listen('message').subscribe((data) => {
+		// 	console.log('received a message from the server');
+		// 	this.receiveInput(data as Message);
+		// });
 	}
 
 	sendMessage(message: Message) {
@@ -45,6 +45,7 @@ export class MessageService implements OnInit {
 	receiveInput(message: Message) {
 		console.log('receiveInput was called');
 		message.id = this.id;
+		message.timestamp = new Date(message.timestamp);
 		this.messages.push(message);
 		this.id++;
 		console.log('the message should be saved now', this.messages);

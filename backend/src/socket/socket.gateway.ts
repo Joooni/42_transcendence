@@ -18,7 +18,6 @@ import { Any } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
-import { SocketService } from './socket.service';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 
@@ -27,16 +26,15 @@ export class SocketGateway
 implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   intervalRunGame : any;
+  private socketMap: Map<number, Socket> = new Map<number, Socket>()
   
   constructor(
     private readonly usersService: UsersService,
     private gameService: GameService,
     //private socketModule: SocketModule
-    @Inject(SocketService)
-    private socketService: SocketService,
     @Inject(MessagesService)
     private readonly messagesService: MessagesService,
-    ) {}
+    ) {} 
 
   @WebSocketServer()
   server: Server;
@@ -55,7 +53,7 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
     try {
       let user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
-      this.socketService.removeSocket(user.id); // Remove Socket from SocketMap
+      this.removeSocket(user.id); // Remove Socket from SocketMap
       
       //Function does not exist yet:
       //this.usersService.updateStatus(userid, 'online');
@@ -64,17 +62,29 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
     }
   }
 
+  addSocket(userid: number, socket: Socket): void {
+	  this.socketMap.set(userid, socket);
+	}
+  
+	getSocket(userid: number): Socket | undefined {
+	  return this.socketMap.get(userid);
+	}
+  
+	removeSocket(userid: number): void {
+	  this.socketMap.delete(userid);
+	}
+
   
 
   @SubscribeMessage('message')
   handleMessage(client: Socket, message: MessageObj): void {
-    console.log('Message received:');
+    console.log('Message received');
     this.messagesService.receiveMessage(client, message);
-    let socket = this.socketService.getSocket(message.receiver.id);
-    client.emit('message', "Test");
-    // if (socket) {
-    //   socket.emit('message', message);
-    // }
+    let socket = this.getSocket(message.receiver.id);
+    // client.emit('message', message); // Zurück an den Absender
+    if (socket) {
+      socket.emit('message', message);
+    }
   }
 
   @SubscribeMessage('identify')
@@ -82,7 +92,7 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
     if (typeof userid !== 'undefined' && userid !== null) {
       console.log('SocketId will be updated in database', userid);
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
-      this.socketService.addSocket(userid, client); // Add Socket to SocketMap
+      this.addSocket(userid, client); // Add Socket to SocketMap
 
       //Function does not exist yet:
       //this.usersService.updateStatus(userid, 'online');

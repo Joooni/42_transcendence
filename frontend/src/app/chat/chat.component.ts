@@ -8,6 +8,7 @@ import { Channel } from '../models/channel';
 import { CookieService } from 'ngx-cookie-service';
 import { ChatDirectMessageComponent } from './chat-direct-message/chat-direct-message.component';
 import { MessageService } from '../services/message/message.service';
+import { SocketService } from '../services/socket/socket.service';
 
 @Component({
   selector: 'app-chat',
@@ -40,7 +41,8 @@ export class ChatComponent implements OnInit {
 		private userRelationService: UserRelationService,
 		private channelDataService: ChannelDataService,
 		private cookie: CookieService,
-		private messageService: MessageService
+		private messageService: MessageService,
+		private socket: SocketService,
 	) {}
 
 	ngOnInit(): void {
@@ -55,6 +57,9 @@ export class ChatComponent implements OnInit {
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
 		this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
 		this.channelDataService.getChannelsOf(parseInt(this.cookie.get("userid"))).subscribe(member => this.memberChannels = member);
+		this.socket.listen('identify').subscribe(() => {
+			this.socket.emit('identify', this.activeUser?.id);
+		});
 	}
 
 	changeShowFriends() {

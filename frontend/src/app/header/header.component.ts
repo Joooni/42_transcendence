@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 
 import { User } from '../models/user';
+import { SocketService } from '../services/socket/socket.service';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
