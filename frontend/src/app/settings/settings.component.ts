@@ -21,8 +21,8 @@ export class SettingsComponent {
 		private router: Router
 		) {}
 
-	ngOnInit() {
-		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+	async ngOnInit() {
+		await this.userService.findSelf().then(user => this.activeUser = user)
 		this.changedUserData = Object.assign({}, this.activeUser);
 		this.selectedGameDesign = this.changedUserData.map.toString();
 	}

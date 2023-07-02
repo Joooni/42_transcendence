@@ -167,7 +167,7 @@ export class UserDataService {
   }
 
   async findUserById(id: number): Promise<User> {
-    const user = await graphQLService.query(
+    const { user } = await graphQLService.query(
       `
       query User($id: Int!) {
         user(id: $id) {
@@ -187,6 +187,31 @@ export class UserDataService {
       }
       `,
       { id },
+    );
+      if (typeof user === 'undefined') throw new Error('Empty user data');
+      return user;
+  }
+
+	async findUserByUsername(username: string): Promise<User> {
+    const { user } = await graphQLService.query(
+      `
+      query User($username: String!) {
+        userByName(username: $username) {
+          id
+          intra
+          firstname
+          lastname
+          username
+          email
+          picture
+          twoFAEnabled
+          wins
+          losses
+          isLoggedIn
+        }
+      }
+      `,
+      { username },
     );
       if (typeof user === 'undefined') throw new Error('Empty user data');
       return user;
@@ -240,18 +265,6 @@ export class UserDataService {
     if (typeof updateStatus === 'undefined')
       throw new Error('Empty user data');
     return updateStatus;
-  }
-
-  // for FE-testing - to be deleted when BE provides test data
-  getUserByID(id: number): Observable<User> {
-    const User = this.users.find(elem => elem.id === id)!;
-    return of(User);
-  }
-
-  // for FE-testing - to be deleted when BE provides test data
-  getUserByUsername(name: string): Observable<User> {
-    const User = this.users.find(elem => elem.username === name)!;
-    return of(User);
   }
 
   // for FE-testing - to be deleted when BE provides test data

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { Component, OnInit } from '@angular/core';
 
 import { User } from '../models/user';
 import { SocketService } from '../services/socket/socket.service';
+import { AuthService } from '../services/auth.service';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({
@@ -10,16 +10,25 @@ import { UserDataService } from '../services/user-data/user-data.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 	
 	activeUser?: User;
+	isAuthenticated: boolean = false;
 	
-	constructor(private cookie: CookieService, private userService: UserDataService) {}
+	constructor(
+		private authService: AuthService,
+		private userDataService: UserDataService
+		) {}
 
-	checkForActiveUser(): boolean {
-		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
-		if (this.activeUser)
-			return true;
-		return false;
+	async ngOnInit() {
+		this.checkForActiveUser();
+	}
+
+	checkForActiveUser() {
+		setInterval(() => {
+			this.authService.isAuthenticated().then(isAuthenticated => this.isAuthenticated = isAuthenticated);
+			if (this.isAuthenticated)
+				this.userDataService.findSelf().then(user => this.activeUser = user);
+		}, 500);
 	}
 }

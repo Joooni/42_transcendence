@@ -21,8 +21,6 @@ const routes: Routes = [
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ];
 
- // can we check here if the user is logged in and if he is not, only allow him to access the home/login route? f.e. in form of a guard?
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
