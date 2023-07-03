@@ -4,7 +4,7 @@ import { User } from './entities/user.entity';
 import { JwtPayload } from '../auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
 import { UpdateUsernameInput } from './dto/update-username.input';
-import { updateUserLoggedInInput } from './dto/update-loggedin.input';
+import { UpdateUserStatusInput } from './dto/update-status.input';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UseGuards } from '@nestjs/common';
 
@@ -52,13 +52,13 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  async updateLoggedIn(
+  async updateStatus(
     @CurrentJwtPayload() jwtPayload: JwtPayload,
-    @Args() updateUserLoggedInInput: updateUserLoggedInInput,
+    @Args() updateUserStatusInput: UpdateUserStatusInput,
   ) {
-    await this.usersService.updateLoggedIn(
+    await this.usersService.updateStatus(
       jwtPayload.id,
-      updateUserLoggedInInput.isLoggedIn,
+      updateUserStatusInput.status,
     );
     return this.usersService.findOne(jwtPayload.id);
   }

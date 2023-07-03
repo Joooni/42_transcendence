@@ -14,9 +14,16 @@ type User {
   status: String!
   wins: Float!
   losses: Float!
-  isLoggedIn: Boolean!
   socketid: String!
+  xp: Float!
+  achievements: [Float!]
+  lastLoginTimestamp: Timestamp!
 }
+
+"""
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
 
 type Message {
   id: Int!
@@ -40,5 +47,5 @@ type Query {
 
 type Mutation {
   updateUsername(username: String!): User!
-  updateLoggedIn(isLoggedIn: Boolean!): User!
+  updateStatus(status: String!): User!
 }
