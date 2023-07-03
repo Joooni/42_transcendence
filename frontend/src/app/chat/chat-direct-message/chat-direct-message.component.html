@@ -11,7 +11,7 @@
 	</div>
 
 	<div class="chat-box message-input">
-		<input type="text" class="chat_input" [formControl]="messageInput">
+		<input type="text" class="chat_input" (keyup.enter)="sendInput()" [formControl]="messageInput">
 		<button class="button_small" (click)="sendInput()">SEND</button>
 	</div>
 </div>>

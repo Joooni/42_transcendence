@@ -23,11 +23,13 @@ export class HomeComponent {
 		private gameservice: GameDataService, private socket: SocketService, private router: Router) {	}
 
 	ngOnInit() {
-		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+		this.userService.findSelf().then(user => {
+			this.activeUser = user;
+		});
 		this.activeMatches = this.gameservice.getActiveMatches();
-		this.socket.listen('message').subscribe((data) => {
-			console.log(data);
-		})
+		this.socket.listen('identify').subscribe(() => {
+			this.socket.emit('identify', this.activeUser?.id);
+		});
 	}
 
 	onLogin() {
@@ -41,9 +43,5 @@ export class HomeComponent {
 	deleteAllCookies() {
 		this.cookie.deleteAll();
 		this.activeUser = undefined;
-	}
-
-	sendMessage(eventName: string, data: string) {
-		this.socket.emit(eventName, data);
 	}
 }

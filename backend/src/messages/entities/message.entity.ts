@@ -1,26 +1,29 @@
-import { Field, Int } from "@nestjs/graphql";
-import { User } from "src/users/entities/user.entity";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
+import { User } from "../../users/entities/user.entity";
 
+@ObjectType()
+@Entity()
 export class Message {
+	@Field(() => Int)
+	@PrimaryGeneratedColumn({ type: 'int' })
+	id: number;
 
-@Field(() => Int)
-@PrimaryGeneratedColumn({ type: 'int'})
-id: number;
+	@ManyToOne(() => User)
+	@JoinColumn()
+	@Field(() => User)
+	sender: User;
 
-@Field()
-@Column()
-sender: User;
+	@ManyToOne(() => User)
+	@JoinColumn()
+	@Field(() => User)
+	receiver: User; //Or Channel
 
-@Field()
-@Column()
-receiver: User /*| Channel*/;
+	@Field()
+	@CreateDateColumn()
+	timestamp: Date;
 
-@Field()
-@Column()
-content: string;
-
-@Field()
-@Column()
-timestamp: Date;
+	@Field()
+	@Column("text")
+	content: string;
 }

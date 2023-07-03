@@ -123,7 +123,6 @@ export class UserDataService {
           wins
           losses
           xp
-          achievements
         }
       }
       `,
@@ -151,7 +150,6 @@ export class UserDataService {
           wins
           losses
           xp
-          achievements
         }
       }
       `,
@@ -182,7 +180,6 @@ export class UserDataService {
           wins
           losses
           xp
-          achievements
         }
       }
       `,
