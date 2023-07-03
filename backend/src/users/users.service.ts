@@ -84,4 +84,28 @@ export class UsersService {
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
   }
+
+  async updateAchievements(id: number, newAchievement: number): Promise<void> {
+    const user = await this.findOne(id);
+    if (user.achievements.includes(newAchievement)) {
+      console.log("Duplicate value present in Achievements, did not add to it");
+      return Promise.resolve();
+    }
+    const result: UpdateResult = await this.userRepository.update(id, {
+      achievements: () => `array_append(achievements, ${newAchievement})`
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+/*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
+    const result: UpdateResult = await this.userRepository.createQueryBuilder()
+    .update(User)
+    .set({ achievements: () => `array_append(achievements, ${newAchievement})` })
+    .where('id = :id', { id: id })
+    .execute();
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  } */
+
 }

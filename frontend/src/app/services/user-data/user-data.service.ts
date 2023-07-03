@@ -123,7 +123,7 @@ export class UserDataService {
           wins
           losses
           xp
-          achievements
+          
         }
       }
       `,
