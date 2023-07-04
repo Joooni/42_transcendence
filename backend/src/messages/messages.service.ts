@@ -1,14 +1,12 @@
-import { ConsoleLogger, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Db, EntityNotFoundError, QueryFailedError, Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { CreateMessageInput } from './dto/create-message.input';
 import { Message } from './entities/message.entity';
 import { MessageObj } from 'src/objects/message';
 import { Socket } from 'socket.io';
-import { Server } from 'http';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { SocketModule } from 'src/socket/socket.module';
 
 @Injectable()
 export class MessagesService {

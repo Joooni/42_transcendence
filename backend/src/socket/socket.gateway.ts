@@ -8,15 +8,10 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'http';
 import { Socket } from 'socket.io';
-import { Message } from 'src/messages/entities/message.entity';
 import { MessageObj } from 'src/objects/message';
-import { User } from 'src/objects/user';
 import { UsersService } from 'src/users/users.service';
 import { Inject } from '@nestjs/common';
 import { MessagesService } from 'src/messages/messages.service';
-import { Any } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
@@ -98,8 +93,9 @@ export class SocketGateway
     }
   }
 
+  // startGame(client: Socket, message: string) {
   @SubscribeMessage('startGame')
-  startGame(client: Socket, message: string) {
+  startGame() {
     this.intervalRunGame = setInterval(() => {
       this.gameService.runGame();
       this.server.emit('getGameData', this.gameService.gameData);
@@ -109,20 +105,23 @@ export class SocketGateway
     }
   }
 
+  // stopGame(client: Socket, message: string) {
   @SubscribeMessage('stopGame')
-  stopGame(client: Socket, message: string) {
+  stopGame() {
     clearInterval(this.intervalRunGame);
     this.gameService.resetGame();
     this.server.emit('getGameData', this.gameService.gameData);
   }
 
+  // getRacketPositionLeft(client: Socket, position: number) {
   @SubscribeMessage('sendRacketPositionLeft')
-  getRacketPositionLeft(client: Socket, position: number) {
+  getRacketPositionLeft(position: number) {
     this.gameService.gameData.racketLeftY = position;
   }
 
+  // getRacketPositionRight(client: Socket, position: number ) {
   @SubscribeMessage('sendRacketPositionRight')
-  getRacketPositionRight(client: Socket, position: number) {
+  getRacketPositionRight(position: number) {
     this.gameService.gameData.racketRightY = position;
   }
 }
