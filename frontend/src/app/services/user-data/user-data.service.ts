@@ -188,8 +188,8 @@ export class UserDataService {
       `,
       { id },
     );
-      if (typeof user === 'undefined') throw new Error('Empty user data');
-      return user;
+		if (typeof user === 'undefined') throw new Error('Empty user data');
+		return user;
   }
 
 	async findUserByUsername(username: string): Promise<User> {
@@ -207,14 +207,16 @@ export class UserDataService {
           twoFAEnabled
           wins
           losses
-          isLoggedIn
+          xp
+          achievements
         }
       }
       `,
       { username },
     );
-      if (typeof user === 'undefined') throw new Error('Empty user data');
-      return user;
+		console.log(user);
+    if (typeof user === 'undefined') throw new Error('Empty user data');
+    return user;
   }
 
   async updateUsername(username: string) {
