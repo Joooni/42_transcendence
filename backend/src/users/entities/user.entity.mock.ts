@@ -38,7 +38,7 @@ export const mockUser2: User = createMockUser({
   lastname: 'Kong',
   username: 'BongosAreMyJam',
   email: 'redcapsrule@kongs.com',
-  picture: 'https://www.mariowiki.com/Diddy_Kong#/media/File:DiddyKong2.png',
+  picture: 'https://mario.wiki.gallery/images/thumb/0/06/DiddyKong2.png/1200px-DiddyKong2.png',
   wins: 42,
   losses: 69,
 });

@@ -26,6 +26,11 @@ export class MessageService implements OnInit {
 
 	ngOnInit(): void {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
+		// console.log('Now i will listen to messages');
+		// this.socketService.listen('message').subscribe((data) => {
+		// 	console.log('received a message from the server');
+		// 	this.receiveInput(data as Message);
+		// });
 	}
 
 	sendMessage(message: Message) {
@@ -37,17 +42,32 @@ export class MessageService implements OnInit {
 		this.id++;
 	}
 
+	receiveInput(message: Message) {
+		console.log('receiveInput was called');
+		message.id = this.id;
+		message.timestamp = new Date(message.timestamp);
+		this.messages.push(message);
+		this.id++;
+		console.log('the message should be saved now', this.messages);
+	}
+
 	getDMs(user1: User, user2: User): Observable<Message[]> {
 		//FE implementation for testing
 		let dms: Message[] = [];
 
 		for (let message of this.messages) {
-			if (message.sender === user1 && message.receiver === user2)
+			if (message.sender.id === user1.id && message.receiver.id === user2.id) {
 				dms.push(message);
-			if (message.sender === user2 && message.receiver === user1)
+			}
+			else if (message.sender.id === user2.id && message.receiver.id === user1.id) {
 				dms.push(message);
+			}
+			else {
+				console.log('Found a strange message');
+			}
 		}
 		dms.sort((objA, objB) => objA.timestamp.getTime() - objB.timestamp.getTime());
+		console.log('Aktuelle dms:', dms);
 		return of(dms);
 
 		//BE implementation as soon as available

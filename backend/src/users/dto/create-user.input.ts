@@ -1,5 +1,6 @@
 import { Field, Int } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsUrl } from 'class-validator';
+import { Socket } from 'socket.io';
 
 export class CreateUserInput {
   @Field(() => Int)
@@ -39,4 +40,6 @@ export class CreateUserInput {
   @Field()
   losses: number;
 
+  @Field()
+  socketid: string;
 }

@@ -53,6 +53,10 @@ export class User {
   losses: number;
 
   @Field()
+  @Column({ default: '' })
+  socketid: string;
+
+  @Field()
   @Column({ default: 0})
   xp: number;
 

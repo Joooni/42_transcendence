@@ -40,10 +40,14 @@ export class UsersService {
 
   findOne(identifier: number | string): Promise<User> {
     if (typeof identifier === 'number')
-      return this.userRepository.findOneByOrFail({ id: identifier });
+      return this.userRepository.findOneOrFail({ where: {id: identifier } });
     else if (typeof identifier === 'string')
-      return this.userRepository.findOneByOrFail({ username: identifier });
+      return this.userRepository.findOneOrFail({ where: { username: identifier } });
     throw new EntityNotFoundError(User, {});
+  }
+
+  findOnebySocketId(identifier: string): Promise<User> {
+    return this.userRepository.findOneByOrFail({ socketid: identifier });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -93,6 +97,17 @@ export class UsersService {
     }
     const result: UpdateResult = await this.userRepository.update(id, {
       achievements: () => `array_append(achievements, ${newAchievement})`
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+  
+  async updateSocketid(id: number, newsocketid: string) {
+    if (id === null || newsocketid === null)
+      throw new Error('id or socketid is null');
+    console.log('updateSocketid mit folgenden Werten', id, newsocketid);
+    const result: UpdateResult = await this.userRepository.update(id, {
+      socketid: newsocketid,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
