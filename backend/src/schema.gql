@@ -48,5 +48,5 @@ type Query {
 type Mutation {
   updateUsername(username: String!): User!
   updateStatus(status: String!): User!
-  updateAchievements(id: Float!, achievement: Float!): User!
+  updateAchievements(id: Float!, newAchievement: Float!): User!
 }

@@ -65,7 +65,7 @@ export class UsersResolver {
   @Mutation(() => User)
   async updateAchievements(
     @Args('id', { type: () => Number }) id: number,
-    @Args('achievement', { type: () => Number }) updateAchievement: number
+    @Args('newAchievement', { type: () => Number }) updateAchievement: number
     ) {
     console.log("This action updates user achievements");
     await this.usersService.updateAchievements(id, updateAchievement);

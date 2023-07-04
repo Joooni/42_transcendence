@@ -38,7 +38,7 @@ export class UserDataService {
         return;
       }
       const user: User = await this.findSelf();
-      this.updateStatus(user, 'online');
+      this.updateStatus('online');
       this.router.navigate(['/home']);
     } catch (error: any) {
       await this.logout();
@@ -98,7 +98,7 @@ export class UserDataService {
     const user: User = await this.findSelf();
     if (user.status !== "offline" || user.id > 0) {
       await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
-        this.updateStatus(user, 'offline');
+        this.updateStatus('offline');
         return;
       }).catch((error) => {
         if (typeof error.response === 'undefined') throw error;
@@ -123,6 +123,7 @@ export class UserDataService {
           wins
           losses
           xp
+          achievements
         }
       }
       `,
@@ -150,6 +151,7 @@ export class UserDataService {
           wins
           losses
           xp
+          achievements
         }
       }
       `,
@@ -180,6 +182,7 @@ export class UserDataService {
           wins
           losses
           xp
+          achievements
         }
       }
       `,
@@ -206,7 +209,7 @@ export class UserDataService {
     return updateUsername;
   }
 
-  async updateStatus(user: User, status: string) {
+  async updateStatus(status: string) {
     const { updateStatus } = await graphQLService.mutation(
       `
       mutation updateStatus( $status: String! ){
@@ -216,6 +219,23 @@ export class UserDataService {
       }
       `,
       { status },
+    );
+    if (typeof updateStatus === 'undefined')
+      throw new Error('Empty user data');
+    return updateStatus;
+  }
+
+  async updateAchievements(user: User, newAchievement: number) {
+    const id = user.id;
+    const { updateStatus } = await graphQLService.mutation(
+      `
+      mutation updateAchievements($id: Float!, $newAchievement: Float!) {
+        updateAchievements(id: $id, newAchievement: $newAchievement) {
+          achievements
+        }
+      }
+      `,
+      { id, newAchievement },
     );
     if (typeof updateStatus === 'undefined')
       throw new Error('Empty user data');

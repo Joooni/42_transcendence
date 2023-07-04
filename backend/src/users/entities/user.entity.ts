@@ -61,7 +61,7 @@ export class User {
   xp: number;
 
   @Field(() => [Int])
-  @Column({ type: 'integer', array: true, default: ['1'], unique: true })
+  @Column({ type: 'integer', array: true, default: ['1'] })
   achievements: number[];
 
   @Field(() => GraphQLTimestamp)
