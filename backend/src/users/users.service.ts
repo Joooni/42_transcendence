@@ -40,9 +40,11 @@ export class UsersService {
 
   findOne(identifier: number | string): Promise<User> {
     if (typeof identifier === 'number')
-      return this.userRepository.findOneOrFail({ where: {id: identifier } });
+      return this.userRepository.findOneOrFail({ where: { id: identifier } });
     else if (typeof identifier === 'string')
-      return this.userRepository.findOneOrFail({ where: { username: identifier } });
+      return this.userRepository.findOneOrFail({
+        where: { username: identifier },
+      });
     throw new EntityNotFoundError(User, {});
   }
 
@@ -83,7 +85,21 @@ export class UsersService {
   async updateStatus(id: number, newStatus: string): Promise<void> {
     const result: UpdateResult = await this.userRepository.update(id, {
       status: newStatus,
-      lastLoginTimestamp: newStatus === 'online' ? new Date(Date.now()) : undefined,
+      lastLoginTimestamp:
+        newStatus === 'online' ? new Date(Date.now()) : undefined,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async updateAchievements(id: number, newAchievement: number): Promise<void> {
+    const user = await this.findOne(id);
+    if (user.achievements.includes(newAchievement)) {
+      console.log('Duplicate value present in Achievements, did not add to it');
+      return Promise.resolve();
+    }
+    const result: UpdateResult = await this.userRepository.update(id, {
+      achievements: () => `array_append(achievements, ${newAchievement})`,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
@@ -99,4 +115,14 @@ export class UsersService {
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
   }
+
+  /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
+    const result: UpdateResult = await this.userRepository.createQueryBuilder()
+    .update(User)
+    .set({ achievements: () => `array_append(achievements, ${newAchievement})` })
+    .where('id = :id', { id: id })
+    .execute();
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  } */
 }

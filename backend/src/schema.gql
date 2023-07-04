@@ -16,7 +16,7 @@ type User {
   losses: Float!
   socketid: String!
   xp: Float!
-  achievements: [Float!]
+  achievements: [Int!]!
   lastLoginTimestamp: Timestamp!
 }
 
@@ -48,4 +48,5 @@ type Query {
 type Mutation {
   updateUsername(username: String!): User!
   updateStatus(status: String!): User!
+  updateAchievements(id: Float!, newAchievement: Float!): User!
 }
