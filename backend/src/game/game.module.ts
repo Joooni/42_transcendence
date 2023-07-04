@@ -3,11 +3,8 @@ import { GameService } from './game.service';
 
 @Module({
   providers: [GameService],
-  exports: [GameService]
+  exports: [GameService],
 })
-
 export class GameModule {
-
-	constructor(public gameService: GameService) {}
-
+  constructor(public gameService: GameService) {}
 }

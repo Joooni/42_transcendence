@@ -12,14 +12,14 @@ import { UsersResolver } from 'src/users/users.resolver';
 import { SocketModule } from 'src/socket/socket.module';
 
 @Module({
-	providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
-	imports: [
-		TypeOrmModule.forFeature([Message, User]),
-		ConfigModule,
-		HttpModule
-	],
-	exports: [MessagesService],
+  providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
+  imports: [
+    TypeOrmModule.forFeature([Message, User]),
+    ConfigModule,
+    HttpModule,
+  ],
+  exports: [MessagesService],
 })
 export class MessagesModule {
-	constructor(private messagesService: MessagesService) {}
+  constructor(private messagesService: MessagesService) {}
 }

@@ -10,18 +10,18 @@ import { MessagesService } from './messages.service';
 @Resolver('Message')
 @UseGuards(JwtAuthGuard)
 export class MessagesResolver {
-	constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesService: MessagesService) {}
 
-	@Query(() => [Message], { name: 'messages' })
-	async findAll() : Promise<Message[]> {
-		return this.messagesService.findAll();
-	}
+  @Query(() => [Message], { name: 'messages' })
+  async findAll(): Promise<Message[]> {
+    return this.messagesService.findAll();
+  }
 
-	// @Mutation(() => Message)
-	// async addMessage(
-	// 	@CurrentJwtPayload() jwtPayload: JwtPayload,
-	// 	@Args() createMessage: CreateMessageInput,
-	// ) {
-	// 	await this.messagesService.create(createMessage);
-	// }
+  // @Mutation(() => Message)
+  // async addMessage(
+  // 	@CurrentJwtPayload() jwtPayload: JwtPayload,
+  // 	@Args() createMessage: CreateMessageInput,
+  // ) {
+  // 	await this.messagesService.create(createMessage);
+  // }
 }
