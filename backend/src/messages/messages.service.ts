@@ -21,7 +21,11 @@ export class MessagesService {
 
 	async findAll(): Promise<Message[]> {
 		console.log('This action returns all messages');
-		return this.messageRepository.find();
+		const messages = await this.messageRepository.createQueryBuilder('message')
+		.leftJoinAndSelect('message.sender', 'sender')
+		.leftJoinAndSelect('message.receiver', 'receiver')
+		.getMany();
+		return messages;
 	}
 	
 	async create(createMessageInput: CreateMessageInput): Promise<Message> {
@@ -40,6 +44,18 @@ export class MessagesService {
 			if (!(error instanceof QueryFailedError)) return Promise.reject(error);
 		}
 		return Promise.resolve(message);
+	}
+
+	async findMessagesForUser(id: number | undefined): Promise<Message[]> {
+		if (typeof id === 'undefined') 
+			throw new EntityNotFoundError(User, {});
+		
+		return await this.messageRepository.createQueryBuilder('message')
+		.leftJoinAndSelect('message.sender', 'sender')
+		.leftJoinAndSelect('message.receiver', 'receiver')
+		.where('message.receiver.id = :id', { id: id })
+		.orWhere('message.sender.id = :id', { id: id })
+		.getMany();
 	}
 
 	async receiveMessage(client: Socket,  message: MessageObj): Promise<void> {

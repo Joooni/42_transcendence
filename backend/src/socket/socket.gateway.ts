@@ -32,7 +32,7 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
     private readonly usersService: UsersService,
     private gameService: GameService,
     //private socketModule: SocketModule
-    @Inject(MessagesService)
+    // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
     ) {} 
 

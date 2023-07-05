@@ -17,11 +17,10 @@ export class MessagesResolver {
 		return this.messagesService.findAll();
 	}
 
-	// @Mutation(() => Message)
-	// async addMessage(
-	// 	@CurrentJwtPayload() jwtPayload: JwtPayload,
-	// 	@Args() createMessage: CreateMessageInput,
-	// ) {
-	// 	await this.messagesService.create(createMessage);
-	// }
+	@Query(() => [Message], { name: 'messagesUser' })
+	async messagesUser(
+		@Args('id', { type: () => Int, nullable: true }) id: number | undefined
+	) : Promise<Message[]> {
+		return this.messagesService.findMessagesForUser(id);
+	}
 }

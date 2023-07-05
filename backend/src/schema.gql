@@ -16,6 +16,7 @@ type User {
   losses: Float!
   socketid: String!
   xp: Float!
+  map: Float!
   achievements: [Float!]
   lastLoginTimestamp: Timestamp!
 }
@@ -43,6 +44,7 @@ type Query {
   user(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!
+  messagesUser(id: Int): [Message!]!
 }
 
 type Mutation {

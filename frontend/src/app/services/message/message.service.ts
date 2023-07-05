@@ -3,6 +3,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { Channel } from 'src/app/models/channel';
 import { Message } from 'src/app/models/message';
 import { User } from 'src/app/models/user';
+import graphQLService from '../graphQL/GraphQLService';
 import { SocketService } from '../socket/socket.service';
 import { UserDataService } from '../user-data/user-data.service';
 
@@ -22,11 +23,20 @@ export class MessageService implements OnInit {
 	constructor(
 		private userDataService: UserDataService,
 		private socketService: SocketService
-		) { }
+		) { this.initialize(); }
 
+	initialize() {
+		this.userDataService.findSelf()
+		.then(user => this.activeUser = user)
+		.then(() => this.getMessagesFromDatabase());
+	}
+	
+	//Doesn't work?
 	ngOnInit(): void {
-		this.userDataService.findSelf().then(user => this.activeUser = user);
-		// console.log('Now i will listen to messages');
+		this.userDataService.findSelf()
+		.then(user => this.activeUser = user);
+		console.log('message.service is initialized'); // Will never initialized?
+		this.getMessagesFromDatabase();
 		// this.socketService.listen('message').subscribe((data) => {
 		// 	console.log('received a message from the server');
 		// 	this.receiveInput(data as Message);
@@ -93,5 +103,60 @@ export class MessageService implements OnInit {
 
 	get events$ () {
 		return this.changeDMSubject.asObservable();
+	}
+
+	async getMessagesFromDatabase() {
+		console.log('will get messages from database');
+		const userId = this.activeUser?.id;
+		if (!userId) {
+			console.log('no user id in getMessagesFromDatabase()');
+			return;
+		}
+		const response: any = await graphQLService.query(
+			`
+			query{
+				messagesUser(id: ${userId}){
+					id
+					sender {
+						id
+						intra
+						firstname
+						lastname
+						username
+						email
+						picture
+						twoFAEnabled
+						status
+						wins
+						losses
+						map
+					}
+					receiver {
+						id
+						intra
+						firstname
+						lastname
+						username
+						email
+						picture
+						twoFAEnabled
+						status
+						wins
+						losses
+						map
+					}
+					timestamp
+					content
+				}
+			}
+			`,
+			undefined,
+			{ fetchPolicy: 'network-only' },
+		);
+		console.log('got messages from DB:', response);
+		response.messagesUser.forEach((message: Message) => {
+			let tmp: Message = {...message, timestamp: new Date(message.timestamp)};
+			this.messages?.push(tmp);
+		});
 	}
 }

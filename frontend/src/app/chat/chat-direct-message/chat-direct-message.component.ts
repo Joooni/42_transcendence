@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatComponent } from '../chat.component';
 import { Message } from '../../models/message'
 import { MessageService } from 'src/app/services/message/message.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
+import graphQLService from 'src/app/services/graphQL/GraphQLService';
+import { identifierName } from '@angular/compiler';
 
 @Component({
   selector: 'app-chat-direct-message',
@@ -28,6 +30,7 @@ export class ChatDirectMessageComponent implements OnInit {
 			.subscribe(dms => this.messages = dms);
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
+		
 		console.log('Now i will listen to messages');
 		this.socketService.listen('message').subscribe((data) => {
 			console.log('received a message from the server');

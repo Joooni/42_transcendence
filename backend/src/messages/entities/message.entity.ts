@@ -9,12 +9,12 @@ export class Message {
 	@PrimaryGeneratedColumn({ type: 'int' })
 	id: number;
 
-	@ManyToOne(() => User)
+	@ManyToOne((type) => User)
 	@JoinColumn()
 	@Field(() => User)
 	sender: User;
 
-	@ManyToOne(() => User)
+	@ManyToOne((type) => User)
 	@JoinColumn()
 	@Field(() => User)
 	receiver: User; //Or Channel
