@@ -25,6 +25,20 @@ type User {
 """
 scalar Timestamp
 
+type Match {
+  gameID: Int!
+  firstPlayer: String!
+  secondPlayer: String!
+  goalsFirstPlayer: Int!
+  goalsSecondPlayer: Int!
+  date: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Message {
   id: Int!
   sender: User!
@@ -33,16 +47,13 @@ type Message {
   content: String!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Query {
   users: [User!]!
   user(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!
+  matches: [Match!]!
+  match(id: Int): Match!
 }
 
 type Mutation {
