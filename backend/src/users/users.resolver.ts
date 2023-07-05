@@ -18,12 +18,12 @@ import { UseGuards } from '@nestjs/common';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Query(() => [User], { name: 'users' })
+  @Query(() => [User], { name: 'allUsers' })
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Query(() => User, { name: 'user' })
+  @Query(() => User, { name: 'userById' })
   findOneById(
     @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
     @CurrentJwtPayload() jwtPayload: JwtPayload,

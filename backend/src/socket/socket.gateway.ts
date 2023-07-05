@@ -49,6 +49,7 @@ export class SocketGateway
       this.removeSocket(user.id); // Remove Socket from SocketMap
 
       //Function does not exist yet:
+      //  actually it does now!
       //this.usersService.updateStatus(userid, 'online');
     } catch (error) {
       console.log('Error Socket: User not found');
@@ -86,6 +87,7 @@ export class SocketGateway
       this.addSocket(userid, client); // Add Socket to SocketMap
 
       //Function does not exist yet:
+      //  actually it does now!
       //this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');
@@ -93,9 +95,8 @@ export class SocketGateway
     }
   }
 
-  // startGame(client: Socket, message: string) {
   @SubscribeMessage('startGame')
-  startGame() {
+    startGame(client: Socket, message: string) {
     this.intervalRunGame = setInterval(() => {
       this.gameService.runGame();
       this.server.emit('getGameData', this.gameService.gameData);
@@ -105,23 +106,20 @@ export class SocketGateway
     }
   }
 
-  // stopGame(client: Socket, message: string) {
   @SubscribeMessage('stopGame')
-  stopGame() {
+  stopGame(client: Socket, message: string) {
     clearInterval(this.intervalRunGame);
     this.gameService.resetGame();
     this.server.emit('getGameData', this.gameService.gameData);
   }
 
-  // getRacketPositionLeft(client: Socket, position: number) {
   @SubscribeMessage('sendRacketPositionLeft')
-  getRacketPositionLeft(position: number) {
+  getRacketPositionLeft(client: Socket, position: number) {
     this.gameService.gameData.racketLeftY = position;
   }
 
-  // getRacketPositionRight(client: Socket, position: number ) {
   @SubscribeMessage('sendRacketPositionRight')
-  getRacketPositionRight(position: number) {
+  getRacketPositionRight(client: Socket, position: number ) {
     this.gameService.gameData.racketRightY = position;
   }
 }

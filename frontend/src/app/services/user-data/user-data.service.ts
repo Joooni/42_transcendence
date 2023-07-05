@@ -108,10 +108,10 @@ export class UserDataService {
   }
 
   async findSelf(): Promise<User> {
-    const { user } = await graphQLService.query(
+    const { userById } = await graphQLService.query(
       `
       query {
-        user {
+        userById {
           id
           intra
           firstname
@@ -131,15 +131,15 @@ export class UserDataService {
       undefined,
       { fetchPolicy: 'network-only' },
     );
-      if (typeof user === 'undefined') throw new Error('Empty user data');
-      return user;
+      if (typeof userById === 'undefined') throw new Error('Empty user data');
+      return userById;
   }
 
   async findAll(): Promise<User[]> {
     const response = await graphQLService.query(
       `
       query {
-        users {
+        allUsers {
           id
           intra
           firstname
@@ -168,10 +168,10 @@ export class UserDataService {
   }
 
   async findUserById(id: number): Promise<User> {
-    const { user } = await graphQLService.query(
+    const { userById } = await graphQLService.query(
       `
-      query User($id: Int!) {
-        user(id: $id) {
+      query findUserById($id: Int!) {
+        userById(id: $id) {
           id
           intra
           firstname
@@ -189,14 +189,15 @@ export class UserDataService {
       `,
       { id },
     );
-		if (typeof user === 'undefined') throw new Error('Empty user data');
-		return user;
+		if (typeof userById === 'undefined') throw new Error('Empty user data');
+		return userById;
   }
 
 	async findUserByUsername(username: string): Promise<User> {
-    const { user } = await graphQLService.query(
+    console.log("findUserbyUsername in user-data.service.ts");
+    const { userByName } = await graphQLService.query(
       `
-      query User($username: String!) {
+      query findUserByUsername($username: String!) {
         userByName(username: $username) {
           id
           intra
@@ -215,9 +216,9 @@ export class UserDataService {
       `,
       { username },
     );
-		console.log(user);
-    if (typeof user === 'undefined') throw new Error('Empty user data');
-    return user;
+		console.log(userByName);
+    if (typeof userByName === 'undefined') throw new Error('Empty user data');
+    return userByName;
   }
 
   async updateUsername(username: string) {
@@ -255,7 +256,7 @@ export class UserDataService {
 
   async updateAchievements(user: User, newAchievement: number) {
     const id = user.id;
-    const { updateStatus } = await graphQLService.mutation(
+    const { updateAchievements } = await graphQLService.mutation(
       `
       mutation updateAchievements($id: Float!, $newAchievement: Float!) {
         updateAchievements(id: $id, newAchievement: $newAchievement) {
@@ -265,9 +266,9 @@ export class UserDataService {
       `,
       { id, newAchievement },
     );
-    if (typeof updateStatus === 'undefined')
+    if (typeof updateAchievements === 'undefined')
       throw new Error('Empty user data');
-    return updateStatus;
+    return updateAchievements;
   }
 
   // for FE-testing - to be deleted when BE provides test data

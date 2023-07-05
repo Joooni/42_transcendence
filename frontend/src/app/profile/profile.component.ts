@@ -14,11 +14,11 @@ import { GameDataService } from '../services/game-data/game-data.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent {
-  
+
   selectedUser?: User;
   activeUser?: User;
   gameHistory?: Array<GameHistory>;
-  
+
   constructor(
     private userService: UserDataService,
     private route: ActivatedRoute,
