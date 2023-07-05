@@ -11,8 +11,10 @@ import { Socket } from 'socket.io';
 import { Any } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
-import { GameModule } from '../game/game.module';
-import { GameService } from 'src/game/game.service';
+// import { GameModule } from '../game/game.module';
+// import { GameService } from 'src/game/game.service';
+import { MatchModule } from 'src/game/match/match.module';
+import { MatchService } from 'src/game/match/match.service';
 
 @WebSocketGateway({cors: 'http://localhost:80'})
 export class SocketGateway
@@ -21,7 +23,7 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 
 	intervalRunGame : any;
 
-	constructor(private gameService: GameService) {}
+	constructor(private matchService: MatchService) {}
 
 
 	@WebSocketServer()
@@ -52,9 +54,9 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 	startGame(client: Socket, message: string) {
 	
 		this.intervalRunGame = setInterval(() => {
-			this.gameService.runGame(); 
-			this.server.emit('getGameData', this.gameService.gameData)}, 1000 / 25);
-			if (this.gameService.gameEnds === true) {
+			this.matchService.runGame(); 
+			this.server.emit('getGameData', this.matchService.gameData)}, 1000 / 25);
+			if (this.matchService.gameEnds === true) {
 				clearInterval(this.intervalRunGame);
 			}
 
@@ -64,22 +66,22 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 	stopGame(client: Socket, message: string) {
  	 
 		clearInterval(this.intervalRunGame);
-		this.gameService.resetGame();
-		this.server.emit('getGameData', this.gameService.gameData);
+		this.matchService.resetGame();
+		this.server.emit('getGameData', this.matchService.gameData);
 	}
 	
 	@SubscribeMessage('sendRacketPositionLeft')
 	getRacketPositionLeft(client: Socket, position: number) {
  	 
-		this.gameService.gameData.racketLeftY = position;
+		this.matchService.gameData.racketLeftY = position;
 	}
 
 
 
 	@SubscribeMessage('sendRacketPositionRight')
 	getRacketPositionRight(client: Socket, position: number) {
- 	 
-		this.gameService.gameData.racketRightY = position;
+ 	
+		this.matchService.gameData.racketRightY = position;
 	}
 
 }

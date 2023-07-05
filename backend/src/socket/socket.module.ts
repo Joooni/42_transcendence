@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { SocketGateway } from './socket.gateway';
-import { GameModule } from '../game/game.module';
-import { GameService } from 'src/game/game.service';
+// import { GameModule } from '../game/game.module';
+// import { GameService } from 'src/game/game.service';
+import { MatchModule } from 'src/game/match/match.module';
+import { MatchService } from 'src/game/match/match.service';
 
 @Module({
-	imports: [GameModule],
+	// imports: [GameModule],
+	imports: [MatchModule],
 	providers: [SocketGateway],
 	// exports: [SocketGateway]
 })
@@ -12,6 +15,6 @@ import { GameService } from 'src/game/game.service';
 
 export class SocketModule {
 
-	constructor(private gameService: GameService) {}
+	constructor(private matchService: MatchService) {}
 
 }
