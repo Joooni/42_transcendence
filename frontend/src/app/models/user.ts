@@ -10,7 +10,7 @@ export interface User {
 	status: string;
 	wins: number;
 	losses: number;
-	// xp: number;
-	map: number;
-	// achievements: number[];
+	xp: number;
+	// map: number;
+	achievements: number[];
 }

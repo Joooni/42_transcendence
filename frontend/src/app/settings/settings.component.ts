@@ -13,25 +13,29 @@ export class SettingsComponent {
 
 	activeUser?: User;
 	changedUserData?: User;
-	selectedGameDesign?: string;
+	selectedGameDesign?: string = '1';
 
 	constructor(
-		private cookie: CookieService,
 		private userService: UserDataService,
 		private router: Router
 		) {}
 
 	async ngOnInit() {
 		await this.userService.findSelf().then(user => this.activeUser = user)
+		console.log(this.activeUser);
 		this.changedUserData = Object.assign({}, this.activeUser);
-		this.selectedGameDesign = this.changedUserData.map.toString();
+		// this.selectedGameDesign = this.changedUserData.map.toString();
+	}
+
+	toggle2FA() {
+		console.log('TEST');
 	}
 
 	saveChanges() {
 		console.log('saveChanges called');
 		if (this.selectedGameDesign && this.changedUserData)
 		{
-			this.changedUserData.map = parseInt(this.selectedGameDesign);
+			// this.changedUserData.map = parseInt(this.selectedGameDesign);
 			// see if this works
 			console.log("new username: ", this.changedUserData.username);
 			this.userService.updateUsername(this.changedUserData.username);

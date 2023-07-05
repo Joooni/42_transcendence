@@ -120,6 +120,7 @@ export class UserDataService {
           email
           picture
           twoFAEnabled
+					status
           wins
           losses
           xp
