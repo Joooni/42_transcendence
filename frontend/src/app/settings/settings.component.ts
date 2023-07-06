@@ -14,6 +14,8 @@ export class SettingsComponent {
 	activeUser?: User;
 	changedUserData?: User;
 	selectedGameDesign?: string = '1';
+	has2FASecret?: boolean = false;
+	test: boolean = true;
 
 	constructor(
 		private userService: UserDataService,
@@ -28,7 +30,12 @@ export class SettingsComponent {
 	}
 
 	toggle2FA() {
-		console.log('TEST');
+		//if toggle was inactive activate 
+		//call either generate or enable 2FA based on if there is a secret already
+		//generate 2FA: show a QR code in a pop-up
+		//enable 2FA: enter code in a pop-up
+		//if toggle activate, deactivate : call disable 2FA
+		console.log(this.changedUserData);
 	}
 
 	saveChanges() {
