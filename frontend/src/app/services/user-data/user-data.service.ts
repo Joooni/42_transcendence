@@ -59,7 +59,6 @@ export class UserDataService {
   }
 
   async verify2FA(code: string): Promise<void> {
-    console.log('UserDataService verify2FA with code: ', code);
     return axios.get('http://localhost:3000/2fa/verify', {
       params: { code },
       withCredentials: true,
@@ -163,7 +162,6 @@ export class UserDataService {
       return Promise.reject(new Error('Empty user data'));
     }
     const users = response.users;
-    console.log(users);
     return users;
   }
 
@@ -194,7 +192,6 @@ export class UserDataService {
   }
 
 	async findUserByUsername(username: string): Promise<User> {
-    console.log("findUserbyUsername in user-data.service.ts");
     const { userByName } = await graphQLService.query(
       `
       query findUserByUsername($username: String!) {
@@ -216,13 +213,11 @@ export class UserDataService {
       `,
       { username },
     );
-		console.log(userByName);
     if (typeof userByName === 'undefined') throw new Error('Empty user data');
     return userByName;
   }
 
   async updateUsername(username: string) {
-    console.log('inside UserDataService.updateUsername');
     const { updateUsername } = await graphQLService.mutation(
       `
       mutation updateUsername( $username: String! ){
