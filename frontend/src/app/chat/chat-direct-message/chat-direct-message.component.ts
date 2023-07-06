@@ -38,7 +38,7 @@ export class ChatDirectMessageComponent implements OnInit {
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
 				this.messages?.push(tmpMes);
-				this.updateMessages();
+				// this.updateMessages();
 			}
 		});
 	}
@@ -55,7 +55,7 @@ export class ChatDirectMessageComponent implements OnInit {
 			this.messages?.push(message);
 		}
 		this.messageInput.setValue('');
-		this.updateMessages();
+		// this.updateMessages();
 	}
 
 	updateMessages() {
