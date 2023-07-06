@@ -105,9 +105,7 @@ export class SocketGateway
 		this.matchService.gameData.leftUserID = userID;
 	}
 	else if (this.matchService.gameData.rightUserID === 0 && userID !== this.matchService.gameData.leftUserID) {
-		this.matchService.gameData.rightUserID = userID;
-			// console.log("After setting left and right, the leftUserID in GameData is:   ", this.matchService.gameData.leftUserID);
-		
+		this.matchService.gameData.rightUserID = userID;		
 		this.intervalRunGame = setInterval(() => {
 			this.matchService.runGame();
 			this.server.emit('getGameData', this.matchService.gameData);
@@ -117,8 +115,6 @@ export class SocketGateway
 		}
 	}
   }
-
-
   
 
   @SubscribeMessage('stopGame')
