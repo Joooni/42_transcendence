@@ -4,17 +4,29 @@ import { EntityNotFoundError, Like, QueryFailedError, Repository, UpdateResult }
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Match } from './match.entity';
+import { MatchService } from './match/match.service';
 import { createMatch } from './create-match.input';
 
 
 @Injectable()
 export class GameService {
 
+	leftUserID: number;
+
 	constructor(
 		@InjectRepository(Match) private readonly matchRepository: Repository<Match>,
 		private readonly configService: ConfigService,
 		private readonly httpService: HttpService,
-	) {}
+		private matchService: MatchService)
+	{
+		this.leftUserID = 0;
+	}
+
+	startMatch() {
+		this.matchService.runGame();
+	}
+
+
 
 	// async createMatchDB(newMatch: createMatch): Promise<void> {
 	// 	try {

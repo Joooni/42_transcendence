@@ -15,7 +15,6 @@
 } */
 
 canvas {
-	
 	position: absolute;
 	display: block;
 	margin-left:	5vmin;
@@ -24,12 +23,13 @@ canvas {
 	margin-bottom:	2vmin;
 }
 
-.buttonReady {
+.buttonSearch {
+	width:			570px;
 	margin-top: 	5vmin;
-	margin-left:	40%;
+	/* margin-left:	auto;
+	margin-right: 	auto; */
 }
 
 .buttonStopGame {
 	margin-top: 	5vmin;
-	margin-left:	40%;
 }

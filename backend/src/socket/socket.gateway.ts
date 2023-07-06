@@ -12,11 +12,9 @@ import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { Inject } from '@nestjs/common';
 import { MessagesService } from 'src/messages/messages.service';
+
+import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
-
-
-// import { GameModule } from '../game/game.module';
-// import { GameService } from 'src/game/game.service';
 import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
 
@@ -24,12 +22,14 @@ import { MatchService } from 'src/game/match/match.service';
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  intervalSearchOpp: any;
   intervalRunGame: any;
   private socketMap: Map<number, Socket> = new Map<number, Socket>();
 
   constructor(
     private readonly usersService: UsersService,
     private matchService: MatchService,
+	private gameService: GameService,
     //private socketModule: SocketModule
     @Inject(MessagesService)
     private readonly messagesService: MessagesService,
@@ -99,35 +99,46 @@ export class SocketGateway
     }
   }
 
-  // startGame(client: Socket, message: string) {
   @SubscribeMessage('startGame')
-  startGame() {
-    this.intervalRunGame = setInterval(() => {
-      this.matchService.runGame();
-      this.server.emit('getGameData', this.matchService.gameData);
-    }, 1000 / 25);
-    if (this.matchService.gameEnds === true) {
-      clearInterval(this.intervalRunGame);
-    }
+  startGame(client: Socket, userID: number) {
+	if (this.matchService.gameData.leftUserID === 0) {
+		this.matchService.gameData.leftUserID = userID;
+	}
+	else if (this.matchService.gameData.rightUserID === 0 && userID !== this.matchService.gameData.leftUserID) {
+		this.matchService.gameData.rightUserID = userID;
+			// console.log("After setting left and right, the leftUserID in GameData is:   ", this.matchService.gameData.leftUserID);
+		
+		this.intervalRunGame = setInterval(() => {
+			this.matchService.runGame();
+			this.server.emit('getGameData', this.matchService.gameData);
+		}, 1000 / 25);
+		if (this.matchService.gameEnds === true) {
+			clearInterval(this.intervalRunGame);
+		}
+	}
   }
 
-  // stopGame(client: Socket, message: string) {
+
+  
+
   @SubscribeMessage('stopGame')
-  stopGame() {
+  stopGame(client: Socket) {
     clearInterval(this.intervalRunGame);
     this.matchService.resetGame();
     this.server.emit('getGameData', this.matchService.gameData);
   }
 
-  // getRacketPositionLeft(client: Socket, position: number) {
+
+
   @SubscribeMessage('sendRacketPositionLeft')
-  getRacketPositionLeft(position: number) {
+  getRacketPositionLeft(client: Socket, position: number) {
     this.matchService.gameData.racketLeftY = position;
   }
 
-  // getRacketPositionRight(client: Socket, position: number ) {
+
   @SubscribeMessage('sendRacketPositionRight')
-  getRacketPositionRight(position: number) {
+  getRacketPositionRight(client: Socket, position: number) {
     this.matchService.gameData.racketRightY = position;
   }
 }
+

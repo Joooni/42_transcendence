@@ -7,6 +7,7 @@ export interface objPositions {
 	goalTriggerRight: boolean,
 	goalsRight: number,
 	goalsLeft: number,
-	isPlayerLeft: boolean
+	leftUserID: number;
+	rightUserID: number;
 }
 

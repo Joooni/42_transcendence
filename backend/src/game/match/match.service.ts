@@ -14,7 +14,8 @@ export class MatchService {
 		goalTriggerRight: false,
 		goalsRight: 0,
 		goalsLeft: 0,
-		isPlayerLeft: true
+		leftUserID: 0,
+		rightUserID: 0
 	}
 
 	ballMoveSpeed : number;
@@ -42,12 +43,15 @@ export class MatchService {
 		this.ballMoveDegree = -90;
 		this.gameEnds = false;
 	}
+	
 
 	runGame() {
+		// console.log("in runGame the leftUserID in GameData is:   ", this.gameData.leftUserID);
 		this.prepareAfterGoal();
 		this.ballMovement();
 		this.goalControl();
 	}
+
 
 	ballMovement() {
 		var ballPosY : number = this.gameData.ballY + 100 / 2;							/* 100 == ball.height */
@@ -164,7 +168,14 @@ export class MatchService {
 		this.gameData.goalTriggerLeft = false,
 		this.gameData.goalTriggerRight = false,
 		this.gameData.goalsRight = 0,
-		this.gameData.goalsLeft = 0,
-		this.gameData.isPlayerLeft = true
+		this.gameData.goalsLeft = 0
+	}
+
+	setUsers(leftUserID: number, rightUserID: number) {
+
+		this.gameData.leftUserID = leftUserID;
+		this.gameData.rightUserID = rightUserID;
+		console.log("in setUsers the leftUserID in GameData is:   ", this.gameData.leftUserID);
+
 	}
 }
