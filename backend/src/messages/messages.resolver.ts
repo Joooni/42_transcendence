@@ -17,10 +17,11 @@ export class MessagesResolver {
 		return this.messagesService.findAll();
 	}
 
-	@Query(() => [Message], { name: 'messagesUser' })
-	async messagesUser(
-		@Args('id', { type: () => Int, nullable: true }) id: number | undefined
+	@Query(() => [Message], { name: 'messagesDM' })
+	async messagesDM(
+		@Args('id', { type: () => Int, nullable: true }) id: number | undefined,
+		@Args('idReceiver', { type: () => Int, nullable: true }) idReceiver: number | undefined
 	) : Promise<Message[]> {
-		return this.messagesService.findMessagesForUser(id);
+		return this.messagesService.findMessagesDM(id, idReceiver);
 	}
 }

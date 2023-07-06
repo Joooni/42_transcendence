@@ -44,7 +44,7 @@ type Query {
   user(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!
-  messagesUser(id: Int): [Message!]!
+  messagesDM(id: Int, idReceiver: Int): [Message!]!
 }
 
 type Mutation {

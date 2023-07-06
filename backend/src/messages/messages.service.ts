@@ -46,15 +46,16 @@ export class MessagesService {
 		return Promise.resolve(message);
 	}
 
-	async findMessagesForUser(id: number | undefined): Promise<Message[]> {
-		if (typeof id === 'undefined') 
+	async findMessagesDM(id: number | undefined, idReceiver: number | undefined): Promise<Message[]> {
+		if (typeof id === 'undefined' || typeof idReceiver === 'undefined') 
 			throw new EntityNotFoundError(User, {});
 		
 		return await this.messageRepository.createQueryBuilder('message')
 		.leftJoinAndSelect('message.sender', 'sender')
 		.leftJoinAndSelect('message.receiver', 'receiver')
-		.where('message.receiver.id = :id', { id: id })
-		.orWhere('message.sender.id = :id', { id: id })
+		.where('message.receiver.id = :id AND message.sender.id = :idReceiver', { id: id, idReceiver: idReceiver })
+		.orWhere('message.receiver.id = :idReceiver AND message.sender.id = :id', { id: id, idReceiver: idReceiver })
+		.take(200)
 		.getMany();
 	}
 
@@ -86,20 +87,6 @@ export class MessagesService {
 
 				// Save in DB
 				this.messageRepository.insert(mesEntity);
-				
-				// Send message
-				// this.socketService.getSocket(dbUserReceiver.id)?.emit('message', "Hello");
-				// console.log('Send the message to receiver now', dbUserReceiver.id, socket?.id);
-				// this.socketService.getSocket(dbUserReceiver.id)?.emit('message', {
-				
-				
-				// this.socketGateway.server.emit('message', {
-				// 	id: undefined,
-				// 	sender: mesEntity.sender,
-				// 	receiver: mesEntity.receiver,
-				// 	timestamp: mesEntity.timestamp,
-				// 	content: mesEntity.content,
-				// });
 
 			} else {
 				console.log('Error: Receiver not found');
