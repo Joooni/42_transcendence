@@ -17,7 +17,7 @@ export class ChatDirectMessageComponent implements OnInit {
 	messageInput = new FormControl('');
 
 	messages?: Message[];
-	
+
 	constructor(
 		public chatComponent: ChatComponent,
 		private messageService: MessageService,
@@ -27,15 +27,19 @@ export class ChatDirectMessageComponent implements OnInit {
 	ngOnInit(): void {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedUser) {
 			this.messageService.getDMs(this.chatComponent.activeUser, this.chatComponent.selectedUser)
-			.subscribe(dms => this.messages = dms);
+			.then(dms => this.messages = dms);
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
 		
 		console.log('Now i will listen to messages');
 		this.socketService.listen('message').subscribe((data) => {
 			console.log('received a message from the server');
-			this.messageService.receiveInput(data as Message);
-			this.updateMessages();
+
+			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
+			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
+				this.messages?.push(tmpMes);
+				this.updateMessages();
+			}
 		});
 	}
 
@@ -48,15 +52,16 @@ export class ChatDirectMessageComponent implements OnInit {
 				content: this.messageInput.value
 			}
 			this.messageService.sendMessage(message);
+			this.messages?.push(message);
 		}
-		this.updateMessages();
 		this.messageInput.setValue('');
+		this.updateMessages();
 	}
 
 	updateMessages() {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedUser) {
 			this.messageService.getDMs(this.chatComponent.activeUser, this.chatComponent.selectedUser)
-			.subscribe(dms => this.messages = dms);
+			.then(dms => this.messages = dms);
 			console.log('updateMessages was called');
 		}
 	}
