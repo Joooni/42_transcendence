@@ -3,19 +3,13 @@
 	<table>
 		<tr>
 			<td><h4>Nickname:</h4></td>
+			<!-- fix input form -> doesnt take input -->
 			<td><input form="newUsername" name="username" type="text" placeholder="{{activeUser?.username}}"></td>
 		</tr>
 		<tr>
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
 				<input type="checkbox" id="switch" [(ngModel)]="twoFAEnabled" (click)="toggle2FA()"/>
-				<!-- here we need to insert something that checks if the user has already activated 2FA
-					(e.g. if there is a secret in the database) and if not, generate and display the QR code with generate2FA
-					If he has already has a 2FA secret, this just just call enable2FA/disable2FA, depending on
-					whether or not it is already enabled
-					generate2FA returns a data URI string, so we just need to figure out how to display it, probably with an
-					<img> tag?
-				 -->
 				<label for="switch" class="toggle"></label>
 			</td>
 		</tr>
@@ -45,7 +39,19 @@
 		</div>
 	</div>
 	<div class="settings_row">
-		<button >SAVE CHANGES</button>
+		<button (click)="saveChanges()">SAVE CHANGES</button>
 		<button class="button_reverse" routerLink="{{'/profile/' + activeUser?.username}}" routerLinkActive="active">CANCEL</button>
+	</div>
+</div>
+
+<div class="popup" id="popup-2FA-code">
+	<div class="popup-content">
+		<h2>2-Factor-Authentication</h2>
+		<h4>Please enter a code from your authenticator app to confirm</h4>
+		<!-- input field -->
+		<div class="popup-buttons">
+			<button class="button_medium">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-2FA-code')">CANCEL</button>
+		</div>
 	</div>
 </div>

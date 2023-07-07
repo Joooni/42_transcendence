@@ -32,6 +32,8 @@ export class SettingsComponent {
 			this.userService.disable2FA();
 		}
 		else {
+			const popup = document.getElementById("popup-2FA-code");
+			popup?.classList.toggle('show-popup');
 			// if has secret: enable() & get code
 			// if failure: error message & don't set toggle true/ maybe call generate
 			// else: generate
@@ -40,6 +42,14 @@ export class SettingsComponent {
 		console.log(this.twoFAEnabled);
 	}
 
+	closePopUp(popUpId: string) {
+		const popup = document.getElementById(popUpId);
+		popup?.classList.toggle('show-popup');
+	}
+
+	saveChanges() {
+		console.log(this.newUsername.value);
+	}
 	// saveChanges() {
 	// 	console.log('saveChanges called');
 	// 	if (this.selectedGameDesign && this.changedUserData)
