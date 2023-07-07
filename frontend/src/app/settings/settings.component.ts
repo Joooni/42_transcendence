@@ -3,6 +3,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
+import { USERS } from '../mock-data/mock_users';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
@@ -12,10 +14,8 @@ import { UserDataService } from '../services/user-data/user-data.service';
 export class SettingsComponent {
 
 	activeUser?: User;
-	changedUserData?: User;
-	selectedGameDesign?: string = '1';
-	has2FASecret?: boolean = false;
-	test: boolean = true;
+	newUsername: FormControl = new FormControl('');
+	twoFAEnabled: boolean = false;
 
 	constructor(
 		private userService: UserDataService,
@@ -24,35 +24,31 @@ export class SettingsComponent {
 
 	async ngOnInit() {
 		await this.userService.findSelf().then(user => this.activeUser = user)
-		console.log(this.activeUser);
-		this.changedUserData = Object.assign({}, this.activeUser);
-		// this.selectedGameDesign = this.changedUserData.map.toString();
+		this.twoFAEnabled = this.activeUser!.twoFAEnabled;
 	}
 
 	toggle2FA() {
-		if (this.changedUserData?.twoFAEnabled) {
-			console.log('enabled');
+		if (this.twoFAEnabled) {
+			this.userService.disable2FA();
 		}
 		else {
-			console.log('disabled');
+			// if has secret: enable() & get code
+			// if failure: error message & don't set toggle true/ maybe call generate
+			// else: generate
+			// if failure: error message & don't set toggle true
 		}
-		//if toggle was inactive activate 
-		//call either generate or enable 2FA based on if there is a secret already
-		//generate 2FA: show a QR code in a pop-up
-		//enable 2FA: enter code in a pop-up
-		//if toggle activate, deactivate : call disable 2FA
-		console.log(this.changedUserData);
+		console.log(this.twoFAEnabled);
 	}
 
-	saveChanges() {
-		console.log('saveChanges called');
-		if (this.selectedGameDesign && this.changedUserData)
-		{
-			// this.changedUserData.map = parseInt(this.selectedGameDesign);
-			// see if this works
-			console.log("new username: ", this.changedUserData.username);
-			this.userService.updateUsername(this.changedUserData.username);
-		}
-		this.router.navigate(['/profile/' + this.changedUserData?.username]);
-	}
+	// saveChanges() {
+	// 	console.log('saveChanges called');
+	// 	if (this.selectedGameDesign && this.changedUserData)
+	// 	{
+	// 		// this.changedUserData.map = parseInt(this.selectedGameDesign);
+	// 		// see if this works
+	// 		console.log("new username: ", this.changedUserData.username);
+	// 		this.userService.updateUsername(this.changedUserData.username);
+	// 	}
+	// 	this.router.navigate(['/profile/' + this.changedUserData?.username]);
+	// }
 }

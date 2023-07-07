@@ -1,14 +1,14 @@
-<div *ngIf="activeUser && changedUserData" class="settings_column">
+<div class="settings_column">
 	<h1> - ACCOUNT SETTINGS - </h1>
 	<table>
 		<tr>
 			<td><h4>Nickname:</h4></td>
-			<td><input [(ngModel)]="changedUserData.username" name="username" type="text" placeholder="{{activeUser.username}}"></td>
+			<td><input form="newUsername" name="username" type="text" placeholder="{{activeUser?.username}}"></td>
 		</tr>
 		<tr>
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
-				<input type="checkbox" id="switch" ng-checked="changedUserData?.twoFAEnabled" (click)="toggle2FA()"/>
+				<input type="checkbox" id="switch" [(ngModel)]="twoFAEnabled" (click)="toggle2FA()"/>
 				<!-- here we need to insert something that checks if the user has already activated 2FA
 					(e.g. if there is a secret in the database) and if not, generate and display the QR code with generate2FA
 					If he has already has a 2FA secret, this just just call enable2FA/disable2FA, depending on
@@ -25,27 +25,27 @@
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
 			<label for="design1" class="container">
-				<input type="radio" id="design1" name="game_design" value="1" [(ngModel)]="selectedGameDesign">
+				<input type="radio" id="design1" name="game_design" value="1">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
 			<label for="design2" class="container">
-				<input type="radio" id="design2" name="game_design" value="2" [(ngModel)]="selectedGameDesign">
+				<input type="radio" id="design2" name="game_design" value="2">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 		<div class="game_design_column">
 			<img class="game_design_preview" src="../../assets/game_design.png">
 			<label for="design3" class="container" hidden="true">
-				<input type="radio" id="design3" name="game_design" value="3" [(ngModel)]="selectedGameDesign">
+				<input type="radio" id="design3" name="game_design" value="3">
 				<span class="checkmark"></span>
 			</label>
 		</div>
 	</div>
 	<div class="settings_row">
-		<button (click)="saveChanges()">SAVE CHANGES</button>
-		<button class="button_reverse" routerLink="{{'/profile/' + activeUser.username}}" routerLinkActive="active">CANCEL</button>
+		<button >SAVE CHANGES</button>
+		<button class="button_reverse" routerLink="{{'/profile/' + activeUser?.username}}" routerLinkActive="active">CANCEL</button>
 	</div>
 </div>
