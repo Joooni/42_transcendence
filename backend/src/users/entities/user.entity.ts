@@ -64,8 +64,8 @@ export class User {
   @Column({ default: 1 })
   map: number;
 
-  @Field(() => [Number], { nullable: true })
-  @Column({ type: Number, array: true, nullable: true, default: [] })
+  @Field(() => [Int])
+  @Column({ type: 'integer', array: true, default: ['1'] })
   achievements: number[];
 
   @Field(() => GraphQLTimestamp)

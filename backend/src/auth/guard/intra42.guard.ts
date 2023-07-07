@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { AuthGuard } from '@nestjs/passport';
-import { mockUser1, mockUser2 } from 'src/users/entities/user.entity.mock';
+import { mockUser1 } from 'src/users/entities/user.entity.mock';
 
 @Injectable()
 export class Intra42OAuthGuard extends AuthGuard('intra42') {

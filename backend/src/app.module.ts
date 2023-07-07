@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
+import { Match } from './game/match.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersController } from './users/users.controller';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -15,12 +16,15 @@ import { SocketModule } from './socket/socket.module';
 import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
 import { GameModule } from './game/game.module';
+import { MatchModule } from './game/match/match.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
     UsersModule,
     MessagesModule,
+	GameModule,
+	MatchModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +35,7 @@ import { GameModule } from './game/game.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Message],
+        entities: [User, Message, Match],
         synchronize: true,
       }),
     }),
@@ -47,7 +51,6 @@ import { GameModule } from './game/game.module';
     AuthModule,
     PassportModule,
     SocketModule,
-    GameModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],

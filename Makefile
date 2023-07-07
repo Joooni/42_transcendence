@@ -5,6 +5,7 @@ all: up
 
 up:
 	docker-compose -f docker-compose.yaml up --remove-orphans -d
+	docker compose -f docker-compose.yaml logs --tail 100 -f
 
 dev:
 	cp actual.env .env

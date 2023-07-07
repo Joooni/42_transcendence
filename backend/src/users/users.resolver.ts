@@ -7,7 +7,6 @@ import { UpdateUsernameInput } from './dto/update-username.input';
 import { UpdateUserStatusInput } from './dto/update-status.input';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UseGuards } from '@nestjs/common';
-
 /**
  * compared to RESTful APIs, graphQL uses three different requests:
  * Query: used to retrieve data from server (REST analogue: GET)
@@ -61,5 +60,15 @@ export class UsersResolver {
       updateUserStatusInput.status,
     );
     return this.usersService.findOne(jwtPayload.id);
+  }
+
+  @Mutation(() => User)
+  async updateAchievements(
+    @Args('id', { type: () => Number }) id: number,
+    @Args('newAchievement', { type: () => Number }) updateAchievement: number,
+  ) {
+    console.log('This action updates user achievements');
+    await this.usersService.updateAchievements(id, updateAchievement);
+    return this.usersService.findOne(id);
   }
 }

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { objPositions } from '../../../game/game-display/objPositions'
-import { interval } from 'rxjs';
+
+import { User } from 'src/app/models/user';
+import { UserDataService } from '../../user-data/user-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class GameDisplayService {
+
+	activeUser?: User;
 
 	background = {
 		width: 1024,
@@ -88,12 +92,13 @@ export class GameDisplayService {
 		img: new Image
 	}
 
-	constructor() {
+	constructor(private userDataService: UserDataService) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
 		this.gameReset = false;
 		this.racketPositionStartY = 298;
 		this.racketPositionY = this.racketPositionStartY
+		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
 	imageControl(data: objPositions) {

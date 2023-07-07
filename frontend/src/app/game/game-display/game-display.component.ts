@@ -14,7 +14,7 @@ export class GameDisplayComponent implements AfterViewInit {
 	
 	moveUp: boolean;
 	moveDown: boolean;
-	ready: boolean;
+	search: boolean;
 	gameRunning: boolean;
 
 	@ViewChild('canvasEle')
@@ -24,7 +24,7 @@ export class GameDisplayComponent implements AfterViewInit {
 	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService) {
 		this.moveUp = false;
 		this.moveDown = false;
-		this.ready = true;
+		this.search = true;
 		this.gameRunning = false;
 		this.gameDisplayService.loadImages();
 	}
@@ -39,8 +39,6 @@ export class GameDisplayComponent implements AfterViewInit {
 		} else {
 			this.context.canvas.style.height = '58%';
 		}
-		console.log(window.innerHeight);
-		console.log(window.innerWidth);
 		this.socketService.listen('getGameData').subscribe((data) => {
 			this.runGame(data as objPositions)
 		})
@@ -48,7 +46,7 @@ export class GameDisplayComponent implements AfterViewInit {
 
 	startGame() {
 		this.gameRunning = true;
-		this.socketService.emit('startGame', undefined);
+		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
 	}
 
 	stopGame() {
@@ -64,9 +62,10 @@ export class GameDisplayComponent implements AfterViewInit {
 	}
 
 	sendRacketPosition(data: objPositions) {
-		if (data.isPlayerLeft === true) {
+		
+		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
 			this.socketService.emit('sendRacketPositionLeft', this.gameDisplayService.racketPositionY);
-		} else {
+		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
 			this.socketService.emit('sendRacketPositionRight', this.gameDisplayService.racketPositionY);
 		}
 	}
@@ -83,10 +82,10 @@ export class GameDisplayComponent implements AfterViewInit {
 	draw(data: objPositions) {
 		this.context.drawImage(this.gameDisplayService.background.img, 0, 0, this.gameDisplayService.background.width, this.gameDisplayService.background.height);
 
-		if (data.isPlayerLeft === true) {
+		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
 			this.context.drawImage(this.gameDisplayService.racketLeft.img, this.gameDisplayService.racketLeft.racketLeftX, this.gameDisplayService.racketPositionY, this.gameDisplayService.racketLeft.width, this.gameDisplayService.racketLeft.height);
 			this.context.drawImage(this.gameDisplayService.racketRight.img, this.gameDisplayService.racketRight.racketRightX, data.racketRightY, this.gameDisplayService.racketRight.width, this.gameDisplayService.racketRight.height);
-		} else {
+		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
 			this.context.drawImage(this.gameDisplayService.racketLeft.img, this.gameDisplayService.racketLeft.racketLeftX, data.racketLeftY, this.gameDisplayService.racketLeft.width, this.gameDisplayService.racketLeft.height);
 			this.context.drawImage(this.gameDisplayService.racketRight.img, this.gameDisplayService.racketRight.racketRightX, this.gameDisplayService.racketPositionY, this.gameDisplayService.racketRight.width, this.gameDisplayService.racketRight.height);
 		}
