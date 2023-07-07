@@ -54,7 +54,7 @@ export class SocketGateway
       this.removeSocket(user.id); // Remove Socket from SocketMap
 
       //Function does not exist yet:
-      //this.usersService.updateStatus(userid, 'online');
+      this.usersService.updateStatus(user.id, 'offline');
     } catch (error) {
       console.log('Error Socket: User not found');
     }
@@ -90,8 +90,7 @@ export class SocketGateway
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
 
-      //Function does not exist yet:
-      //this.usersService.updateStatus(userid, 'online');
+      this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');
       client.emit('identify');
