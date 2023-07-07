@@ -30,6 +30,12 @@ export class SettingsComponent {
 	}
 
 	toggle2FA() {
+		if (this.changedUserData?.twoFAEnabled) {
+			console.log('enabled');
+		}
+		else {
+			console.log('disabled');
+		}
 		//if toggle was inactive activate 
 		//call either generate or enable 2FA based on if there is a secret already
 		//generate 2FA: show a QR code in a pop-up
