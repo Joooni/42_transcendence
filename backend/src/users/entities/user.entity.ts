@@ -57,11 +57,11 @@ export class User {
   socketid: string;
 
   @Field()
-  @Column({ default: 0})
+  @Column({ default: 0 })
   xp: number;
 
   @Field()
-  @Column({ default: 1})
+  @Column({ default: 1 })
   map: number;
 
   @Field(() => [Number], { nullable: true })
@@ -71,5 +71,4 @@ export class User {
   @Field(() => GraphQLTimestamp)
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastLoginTimestamp: Date;
-
 }

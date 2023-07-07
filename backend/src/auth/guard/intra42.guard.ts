@@ -25,7 +25,8 @@ export class Intra42OAuthGuard extends AuthGuard('intra42') {
       req.user = mockUser1;
       req.user.id = +id;
       req.user.username = `Kong_${id}`;
-      req.user.picture = 'https://mario.wiki.gallery/images/8/84/MPS_Donkey_Kong_Artwork.png';
+      req.user.picture =
+        'https://mario.wiki.gallery/images/8/84/MPS_Donkey_Kong_Artwork.png';
       return true;
     }
     return super.canActivate(context);

@@ -2,24 +2,22 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { MessagesService } from './messages.service';
 import { MessagesResolver } from './messages.resolver';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UsersResolver } from 'src/users/users.resolver';
-import { SocketModule } from 'src/socket/socket.module';
 
 @Module({
-	providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
-	imports: [
-		TypeOrmModule.forFeature([Message, User]),
-		ConfigModule,
-		HttpModule
-	],
-	exports: [MessagesService],
+  providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
+  imports: [
+    TypeOrmModule.forFeature([Message, User]),
+    ConfigModule,
+    HttpModule,
+  ],
+  exports: [MessagesService],
 })
 export class MessagesModule {
-	constructor(private messagesService: MessagesService) {}
+  constructor(private messagesService: MessagesService) {}
 }

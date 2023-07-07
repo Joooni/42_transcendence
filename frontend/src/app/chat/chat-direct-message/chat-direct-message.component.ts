@@ -4,8 +4,6 @@ import { ChatComponent } from '../chat.component';
 import { Message } from '../../models/message'
 import { MessageService } from 'src/app/services/message/message.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import graphQLService from 'src/app/services/graphQL/GraphQLService';
-import { identifierName } from '@angular/compiler';
 
 @Component({
   selector: 'app-chat-direct-message',
@@ -38,7 +36,6 @@ export class ChatDirectMessageComponent implements OnInit {
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
 				this.messages?.push(tmpMes);
-				// this.updateMessages();
 			}
 		});
 	}
@@ -55,7 +52,6 @@ export class ChatDirectMessageComponent implements OnInit {
 			this.messages?.push(message);
 		}
 		this.messageInput.setValue('');
-		// this.updateMessages();
 	}
 
 	updateMessages() {
