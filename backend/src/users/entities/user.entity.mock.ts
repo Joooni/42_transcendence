@@ -11,7 +11,7 @@ export const createMockUser = (options: Partial<User> = {}): User => {
   user.picture = 'PictureLinkGoesHere.com';
   user.twoFAEnabled = false;
   user.twoFAsecret = null;
-  user.status = 'mock';
+  user.status = 'online';
   user.wins = 0;
   user.losses = 0;
 
