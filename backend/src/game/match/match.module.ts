@@ -3,11 +3,8 @@ import { MatchService } from './match.service';
 
 @Module({
   providers: [MatchService],
-  exports: [MatchService]
+  exports: [MatchService],
 })
 export class MatchModule {
-	
-	constructor(public matchService: MatchService) {}
-
+  constructor(public matchService: MatchService) {}
 }
-

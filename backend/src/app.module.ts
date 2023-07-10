@@ -23,8 +23,8 @@ import { MatchModule } from './game/match/match.module';
     ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
     UsersModule,
     MessagesModule,
-	GameModule,
-	MatchModule,
+    GameModule,
+    MatchModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

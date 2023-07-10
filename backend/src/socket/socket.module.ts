@@ -12,15 +12,18 @@ import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message, User]), HttpModule, MatchModule, GameModule],
+  imports: [
+    TypeOrmModule.forFeature([Message, User]),
+    HttpModule,
+    MatchModule,
+    GameModule,
+  ],
   providers: [SocketGateway, UsersService, MatchService, MessagesService],
   exports: [SocketGateway],
 })
-
 export class SocketModule {
-
-	constructor(private matchService: MatchService, private gameService: GameService) {}
-
+  constructor(
+    private matchService: MatchService,
+    private gameService: GameService,
+  ) {}
 }
-
-
