@@ -14,8 +14,10 @@ import { FormControl } from '@angular/forms';
 export class SettingsComponent {
 
 	activeUser?: User;
-	newUsername: FormControl = new FormControl('');
+	newUsername?: string;
 	twoFAEnabled: boolean = false;
+	selectedMap?: number;
+	twoFACode?: string;
 
 	constructor(
 		private userService: UserDataService,
@@ -25,6 +27,7 @@ export class SettingsComponent {
 	async ngOnInit() {
 		await this.userService.findSelf().then(user => this.activeUser = user)
 		this.twoFAEnabled = this.activeUser!.twoFAEnabled;
+		// this.selectedMap = this.activeUser.map;
 	}
 
 	toggle2FA() {
@@ -42,14 +45,22 @@ export class SettingsComponent {
 		console.log(this.twoFAEnabled);
 	}
 
-	closePopUp(popUpId: string) {
+	popUpConfirm() {
+		if (this.twoFACode)
+			this.userService.enable2FA(this.twoFACode)
+	}
+
+	popUpCancel(popUpId: string) {
 		const popup = document.getElementById(popUpId);
 		popup?.classList.toggle('show-popup');
+		this.twoFAEnabled = false;
 	}
 
 	saveChanges() {
-		console.log(this.newUsername.value);
+		console.log(this.newUsername);
+// 	this.router.navigate(['/profile/' + this.changedUserData?.username]);
 	}
+
 	// saveChanges() {
 	// 	console.log('saveChanges called');
 	// 	if (this.selectedGameDesign && this.changedUserData)

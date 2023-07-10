@@ -51,3 +51,8 @@ button {
 	margin: 3vmin 3vmin;
 	column-gap: 15vmin;
 }
+
+.popup-2FA-code-input {
+	margin-bottom: 1rem;
+	width: 10rem;
+}
