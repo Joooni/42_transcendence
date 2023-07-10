@@ -7,10 +7,11 @@ export interface User {
 	email: string;
 	picture: string;
 	twoFAEnabled: boolean;
+	hasTwoFASecret?: boolean;
 	status: string;
 	wins: number;
 	losses: number;
 	xp: number;
-	// map: number;
+	selectedMap?: number;
 	achievements: number[];
 }

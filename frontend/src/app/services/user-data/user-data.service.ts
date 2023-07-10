@@ -119,10 +119,12 @@ export class UserDataService {
           email
           picture
           twoFAEnabled
+					hasTwoFASecret
 					status
           wins
           losses
           xp
+					selectedMap
           achievements
         }
       }

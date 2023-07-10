@@ -11,12 +11,14 @@ type User {
   email: String!
   picture: String!
   twoFAEnabled: Boolean!
+  hasTwoFASecret: Boolean!
   status: String!
   wins: Float!
   losses: Float!
   socketid: String!
   xp: Float!
   achievements: [Int!]!
+  selectedMap: Float!
   lastLoginTimestamp: Timestamp!
 }
 
