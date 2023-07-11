@@ -6,8 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
@@ -86,9 +85,9 @@ export class SocketGateway
   @SubscribeMessage('identify')
   identifyUser(client: Socket, userid: number | undefined): void {
     if (typeof userid !== 'undefined' && userid !== null) {
-      console.log('SocketId will be updated in database', userid);
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
+      
       this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');

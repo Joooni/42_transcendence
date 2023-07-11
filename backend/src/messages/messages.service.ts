@@ -12,8 +12,7 @@ import { UsersService } from 'src/users/users.service';
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepository: Repository<Message>,
-    // @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly userService: UsersService, // @Inject(SocketService) private socketService: SocketService,
+    private readonly userService: UsersService,
   ) {}
 
   async findAll(): Promise<Message[]> {

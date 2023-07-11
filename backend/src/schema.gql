@@ -50,6 +50,26 @@ type Message {
   content: String!
 }
 
+type Channel {
+  id: Int!
+  owner: User!
+  name: String!
+  type: ChannelType!
+  password: String!
+  createdAt: DateTime!
+  users: [User!]!
+  admins: [User!]!
+  mutedUsers: [User!]!
+  invitedUsers: [User!]!
+  bannedUsers: [User!]!
+}
+
+enum ChannelType {
+  public
+  private
+  protected
+}
+
 type Query {
   allUsers: [User!]!
   userById(id: Int): User!
@@ -58,6 +78,7 @@ type Query {
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   matches: [Match!]!
   match(id: Int): Match!
+  channels: [Channel!]!
 }
 
 type Mutation {

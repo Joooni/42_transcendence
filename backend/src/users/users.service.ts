@@ -137,8 +137,10 @@ export class UsersService {
   async seedDatabase() {
     try {
       for (const user of mockUsers) {
-        await this.userRepository.insert(user);
+      await this.userRepository.insert(user);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

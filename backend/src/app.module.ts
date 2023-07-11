@@ -17,6 +17,10 @@ import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
 import { GameModule } from './game/game.module';
 import { MatchModule } from './game/match/match.module';
+import { ChannelsService } from './channels/channels.service';
+import { ChannelsResolver } from './channels/channels.resolver';
+import { ChannelsModule } from './channels/channels.module';
+import { PasswordService } from './password/password.service';
 
 @Module({
   imports: [
@@ -51,8 +55,9 @@ import { MatchModule } from './game/match/match.module';
     AuthModule,
     PassportModule,
     SocketModule,
+    ChannelsModule,
   ],
   controllers: [AppController, UsersController],
-  providers: [AppService],
+  providers: [AppService, PasswordService],
 })
 export class AppModule {}
