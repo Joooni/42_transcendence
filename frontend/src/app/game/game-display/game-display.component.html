@@ -2,10 +2,10 @@
 	
 	<div align="center">
 		<button class="buttonSearch" *ngIf="search==true"
-			(click)="startGame()" (click)="search = false">Search for opponent</button>
+			(click)="startGame()">Search for opponent</button>
 	
-		<button class="buttonStopGame" *ngIf="gameRunning==true"
-			(click)="stopGame()" (click)="search = true" (click)="gameRunning = false">Stop Searching</button>
+		<button class="buttonStopSearch" *ngIf="stopSearch == true"
+			(click)="stopSearching()">Stop Searching</button>
 	</div>
 	
 	<canvas #canvasEle
@@ -13,3 +13,5 @@
 	
 	
 </div>>
+
+<!-- (click)="search = false" (click)="stopSearch = true" -->

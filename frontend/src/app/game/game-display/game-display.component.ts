@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import { objPositions } from './objPositions';
+import { gameData } from './GameData';
 
 @Component({
   selector: 'app-game-display',
@@ -15,7 +15,7 @@ export class GameDisplayComponent implements AfterViewInit {
 	moveUp: boolean;
 	moveDown: boolean;
 	search: boolean;
-	gameRunning: boolean;
+	stopSearch: boolean;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
@@ -25,7 +25,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.search = true;
-		this.gameRunning = false;
+		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
 	}
 
@@ -40,33 +40,40 @@ export class GameDisplayComponent implements AfterViewInit {
 			this.context.canvas.style.height = '58%';
 		}
 		this.socketService.listen('getGameData').subscribe((data) => {
-			this.runGame(data as objPositions)
+			this.runGame(data as gameData)
 		})
 	}
 
 	startGame() {
-		this.gameRunning = true;
+		this.search = false;
+		this.stopSearch = true;
 		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
 	}
 
-	stopGame() {
-		this.gameDisplayService.gameReset = true;
-		this.socketService.emit('stopGame', undefined);
+	stopSearching() {
+		this.stopSearch = false;
+		this.search = true;
+		this.socketService.emit('stopSearching', undefined);
 	}
 
-	runGame(data: objPositions) {
+	runGame(data: gameData) {
+		if (this.stopSearch === true) {
+			this.stopSearch = false
+		}
 		this.racketMovement();
-		this.sendRacketPosition(data);
+		if (data.gameEnds === false) {
+			this.sendRacketPosition(data);
+		}
 		this.gameDisplayService.imageControl(data);
 		this.draw(data);
 	}
 
-	sendRacketPosition(data: objPositions) {
-		
+	sendRacketPosition(data: gameData) {
+		console.log("The roomNbr is :   ", data.roomNbr);
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
-			this.socketService.emit('sendRacketPositionLeft', this.gameDisplayService.racketPositionY);
+			this.socketService.emit2('sendRacketPositionLeft', this.gameDisplayService.racketPositionY, data.roomNbr);
 		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
-			this.socketService.emit('sendRacketPositionRight', this.gameDisplayService.racketPositionY);
+			this.socketService.emit2('sendRacketPositionRight', this.gameDisplayService.racketPositionY, data.roomNbr);
 		}
 	}
 
@@ -79,7 +86,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		}
 	}
 
-	draw(data: objPositions) {
+	draw(data: gameData) {
 		this.context.drawImage(this.gameDisplayService.background.img, 0, 0, this.gameDisplayService.background.width, this.gameDisplayService.background.height);
 
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {

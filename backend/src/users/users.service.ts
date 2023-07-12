@@ -128,8 +128,11 @@ export class UsersService {
   } */
 
   async seedDatabase() {
-    for (const user of mockUsers) {
-      await this.userRepository.insert(user);
-    }
+	try {
+		for (const user of mockUsers) {
+		await this.userRepository.insert(user);
+		}
+	} catch (error) {}
   }
 }
+

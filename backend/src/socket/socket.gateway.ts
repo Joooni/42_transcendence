@@ -6,13 +6,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'http';
+import { Server } from 'socket.io';
 import { Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
+import { gameData, gameDataBE } from 'src/game/match/GameData';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class SocketGateway
@@ -20,6 +21,8 @@ export class SocketGateway
 {
   intervalSearchOpp: any;
   intervalRunGame: any;
+  io: Server;
+
   private socketMap: Map<number, Socket> = new Map<number, Socket>();
 
   constructor(
@@ -29,7 +32,11 @@ export class SocketGateway
     //private socketModule: SocketModule
     // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
-  ) {}
+  ) {
+	const io = new Server;
+  }
+
+
 
   @WebSocketServer()
   server: Server;
@@ -94,39 +101,50 @@ export class SocketGateway
     }
   }
 
+
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {
-    if (this.matchService.gameData.leftUserID === 0) {
-      this.matchService.gameData.leftUserID = userID;
-    } else if (
-      this.matchService.gameData.rightUserID === 0 &&
-      userID !== this.matchService.gameData.leftUserID
-    ) {
-      this.matchService.gameData.rightUserID = userID;
-      this.intervalRunGame = setInterval(() => {
-        this.matchService.runGame();
-        this.server.emit('getGameData', this.matchService.gameData);
-      }, 1000 / 25);
-      if (this.matchService.gameEnds === true) {
-        clearInterval(this.intervalRunGame);
-      }
-    }
+	if (userID === this.gameService.playerWaitingID) {
+		return;
+	}
+ 	var roomNbr = this.gameService.checkForOpponent(userID, client);
+	console.log("User with ID:  ", userID, " is searching a game. The roomNbr is:  ", roomNbr);
+	if (roomNbr !== undefined) {
+		this.gameService.room = 0;
+		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
+		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
+		console.log("The game with id:  ", roomNbr, "   is running");
+		this.intervalRunGame = setInterval(() => {		
+			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
+			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
+			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
+				clearInterval(this.intervalRunGame);
+				this.gameService.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
+				this.gameService.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
+				console.log("The game with id:  ", roomNbr, "   is over. The users with id:  ", this.gameService.gameDataMap.get(roomNbr!)?.leftUserID, "  and  ", this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, "left." );
+				this.gameService.gameDataBEMap.delete(roomNbr!)
+				this.gameService.gameDataMap.delete(roomNbr!);
+			}			
+		}, 1000 / 25);
+	}
   }
 
-  @SubscribeMessage('stopGame')
-  stopGame(client: Socket) {
-    clearInterval(this.intervalRunGame);
-    this.matchService.resetGame();
-    this.server.emit('getGameData', this.matchService.gameData);
+  @SubscribeMessage('stopSearching')
+  stopSearching(client: Socket) {
+	console.log("User with ID:  ", this.gameService.playerWaitingID, " stoped searching a game.");
+    this.gameService.playerWaitingID = undefined;
+	this.gameService.gameDataBEMap.delete(this.gameService.room);
+	this.gameService.gameDataMap.delete(this.gameService.room);
+	this.gameService.room = 0;
   }
 
   @SubscribeMessage('sendRacketPositionLeft')
-  getRacketPositionLeft(client: Socket, position: number) {
-    this.matchService.gameData.racketLeftY = position;
+  getRacketPositionLeft(client: Socket, data: number[]) {
+	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
   }
-
+    
   @SubscribeMessage('sendRacketPositionRight')
-  getRacketPositionRight(client: Socket, position: number) {
-    this.matchService.gameData.racketRightY = position;
+  getRacketPositionRight(client: Socket, data: number[]) {
+	this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
   }
 }
