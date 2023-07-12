@@ -60,6 +60,10 @@ export class User {
   @Column({ default: 0 })
   xp: number;
 
+  @Field()
+  @Column({ default: 1 })
+  map: number;
+
   @Field(() => [Int])
   @Column({ type: 'integer', array: true, default: ['1'] })
   achievements: number[];

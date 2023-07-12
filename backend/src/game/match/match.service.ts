@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { gameData } from './GameData';
 
-
 @Injectable()
 export class MatchService {
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, Like, QueryFailedError, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Socket } from 'socket.io';
 import { HttpService } from '@nestjs/axios';

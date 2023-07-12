@@ -10,12 +10,8 @@ import { Server } from 'socket.io';
 import { Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
-import { Inject } from '@nestjs/common';
 import { MessagesService } from 'src/messages/messages.service';
-
-import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
-import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
 import { gameData, gameDataBE } from 'src/game/match/GameData';
 
@@ -32,9 +28,9 @@ export class SocketGateway
   constructor(
     private readonly usersService: UsersService,
     private matchService: MatchService,
-	private gameService: GameService,
+    private gameService: GameService,
     //private socketModule: SocketModule
-    @Inject(MessagesService)
+    // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
   ) {
 	const io = new Server;
@@ -62,7 +58,7 @@ export class SocketGateway
       this.removeSocket(user.id); // Remove Socket from SocketMap
 
       //Function does not exist yet:
-      //this.usersService.updateStatus(userid, 'online');
+      this.usersService.updateStatus(user.id, 'offline');
     } catch (error) {
       console.log('Error Socket: User not found');
     }
@@ -98,8 +94,7 @@ export class SocketGateway
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
 
-      //Function does not exist yet:
-      //this.usersService.updateStatus(userid, 'online');
+      this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');
       client.emit('identify');
@@ -143,16 +138,13 @@ export class SocketGateway
 	this.gameService.room = 0;
   }
 
-
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
 	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
   }
-
     
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
 	this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
   }
 }
-
