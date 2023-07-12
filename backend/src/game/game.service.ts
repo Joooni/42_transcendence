@@ -7,14 +7,14 @@ import { HttpService } from '@nestjs/axios';
 import { Match } from './match.entity';
 import { MatchService } from './match/match.service';
 import { createMatch } from './create-match.input';
-import { objPositions } from './match/ObjPositions';
+import { gameData, gameDataBE } from './match/GameData';
 
 @Injectable()
 export class GameService {
 
 	playerWaitingID: number | undefined;
-	playerWaitingSocket: Socket;
-	gameDataMap: Map<number, objPositions>;
+	gameDataMap: Map<number, gameData>;
+	gameDataBEMap: Map<number, gameDataBE>
 	room: number;
 
 	constructor(
@@ -26,12 +26,12 @@ export class GameService {
 			this.room = 0;
 			this.playerWaitingID = undefined;
 			this.gameDataMap = new Map;
+			this.gameDataBEMap = new Map;
 		}
 
 	checkForOpponent(userID: number, userSocket: Socket) : number | undefined {
 		if (this.playerWaitingID === undefined) {
-			this.playerWaitingID = userID;
-			this.playerWaitingSocket = userSocket;		
+			this.playerWaitingID = userID;		
 			while (this.gameDataMap.has(this.room)) {
 				this.room++;
 			}
@@ -51,16 +51,21 @@ export class GameService {
 				rightUserID: 0,
 				gameEnds: false
 			});
+			this.gameDataBEMap.set(this.room, {	
+				leftUserSocket: userSocket,
+				rightUserSocket: undefined,
+			});
 			return (undefined);
 		} else if (this.gameDataMap.get(this.room)!.leftUserID !== userID) {
 			this.playerWaitingID = undefined;
 			this.gameDataMap.get(this.room)!.rightUserID = userID;
+			this.gameDataBEMap.get(this.room)!.rightUserSocket = userSocket;
 			return (this.room);
 		}
 		return (undefined);
 	}
 
-	startMatch(gameData: objPositions) : objPositions {
+	startMatch(gameData: gameData) : gameData {
 		gameData = this.matchService.runGame(gameData);
 		return (gameData);
 	}

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { objPositions } from './ObjPositions';
+import { gameData } from './GameData';
 
 
 @Injectable()
@@ -23,8 +23,8 @@ export class MatchService {
 	constructor() {}
 	
 
-	runGame(gameData: objPositions) : objPositions {
-		// console.log("in runGame the leftUserID in GameData is:   ", gameData.leftUserID);
+
+	runGame(gameData: gameData) : gameData {
 		gameData = this.prepareAfterGoal(gameData);
 		gameData = this.ballMovement(gameData);
 		gameData = this.goalControl(gameData);
@@ -32,7 +32,7 @@ export class MatchService {
 	}
 
 
-	ballMovement(gameData: objPositions) : objPositions {
+	ballMovement(gameData: gameData) : gameData {
 		var ballPosY : number = gameData.ballY + 100 / 2;							/* 100 == ball.height */
 		var racketLeftPosY : number = gameData.racketLeftY + (160 / 2);			/* 160 == racketLeft.height*/
 		var racketRightPosY  = gameData.racketRightY + (160 / 2);					/* 160 == racketRight.height*/
@@ -108,7 +108,7 @@ export class MatchService {
 		return (degrees * Math.PI / 180);
 	}
 	
-	goalControl(gameData: objPositions) : objPositions {
+	goalControl(gameData: gameData) : gameData {
 		if (gameData.goalTriggerLeft == true || gameData.goalTriggerRight == true) {
 			gameData.ballMoveSpeed = 0;				
 			if (gameData.goalTriggerLeft == true) {
@@ -130,9 +130,9 @@ export class MatchService {
 		}
 		return (gameData);
 	}
-	
 
-	prepareAfterGoal(gameData: objPositions) : objPositions {
+
+	prepareAfterGoal(gameData: gameData) : gameData {
 		if (gameData.goalTriggerLeft == true || gameData.goalTriggerRight == true) {
 			gameData.ballX = this.ball.startX;
 			gameData.ballY = this.ball.startY;
@@ -142,7 +142,7 @@ export class MatchService {
 		return (gameData);
 	}
 
-	resetGame(gameData: objPositions) {
+	resetGame(gameData: gameData) {
 		gameData.ballX = 472,
 		gameData.ballY = 324,
 		gameData.racketLeftY = 298,

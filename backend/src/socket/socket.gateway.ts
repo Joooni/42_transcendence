@@ -17,7 +17,7 @@ import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
 import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
-import { objPositions } from 'src/game/match/ObjPositions';
+import { gameData, gameDataBE } from 'src/game/match/GameData';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class SocketGateway
@@ -106,6 +106,7 @@ export class SocketGateway
     }
   }
 
+
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {
 	if (userID === this.gameService.playerWaitingID) {
@@ -115,26 +116,29 @@ export class SocketGateway
 	console.log("User with ID:  ", userID, " is searching a game. The roomNbr is:  ", roomNbr);
 	if (roomNbr !== undefined) {
 		this.gameService.room = 0;
-		client.join(roomNbr.toString());
-		this.gameService.playerWaitingSocket.join(roomNbr.toString());
+		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
+		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
 		console.log("The game with id:  ", roomNbr, "   is running");
-		this.intervalRunGame = setInterval(() => {			
+		this.intervalRunGame = setInterval(() => {		
 			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
 			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
 			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
 				clearInterval(this.intervalRunGame);
+				this.gameService.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
+				this.gameService.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
+				console.log("The game with id:  ", roomNbr, "   is over. The users with id:  ", this.gameService.gameDataMap.get(roomNbr!)?.leftUserID, "  and  ", this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, "left." );
+				this.gameService.gameDataBEMap.delete(roomNbr!)
 				this.gameService.gameDataMap.delete(roomNbr!);
-				client.leave(roomNbr!.toString());
-				this.gameService.playerWaitingSocket.leave(roomNbr!.toString());
-			}
-			
+			}			
 		}, 1000 / 25);
 	}
   }
 
-  @SubscribeMessage('stopGame')
-  stopGame(client: Socket) {
+  @SubscribeMessage('stopSearching')
+  stopSearching(client: Socket) {
+	console.log("User with ID:  ", this.gameService.playerWaitingID, " stoped searching a game.");
     this.gameService.playerWaitingID = undefined;
+	this.gameService.gameDataBEMap.delete(this.gameService.room);
 	this.gameService.gameDataMap.delete(this.gameService.room);
 	this.gameService.room = 0;
   }
@@ -151,3 +155,4 @@ export class SocketGateway
 	this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
   }
 }
+

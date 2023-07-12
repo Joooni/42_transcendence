@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { objPositions } from '../../../game/game-display/ObjPositions'
+import { gameData } from '../../../game/game-display/GameData'
 
 import { User } from 'src/app/models/user';
 import { UserDataService } from '../../user-data/user-data.service';
@@ -99,7 +99,7 @@ export class GameDisplayService {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
-	imageControl(data: objPositions) {
+	imageControl(data: gameData) {
 		if (data.goalTriggerLeft == true || data.goalTriggerRight == true) {
 			this.goalTrigger = true;
 			this.explosion.y = data.ballY - 55;

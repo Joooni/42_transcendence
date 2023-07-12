@@ -1,4 +1,6 @@
-export interface objPositions {
+import { Socket } from "socket.io";
+
+export interface gameData {
   roomNbr: number;
   ballX: number;
   ballY: number;
@@ -14,3 +16,8 @@ export interface objPositions {
   rightUserID: number;
   gameEnds: boolean
 }
+
+export interface gameDataBE {
+	leftUserSocket: Socket,
+	rightUserSocket?: Socket,
+  }

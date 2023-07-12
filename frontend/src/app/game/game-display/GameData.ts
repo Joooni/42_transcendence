@@ -1,4 +1,4 @@
-export interface objPositions {
+export interface gameData {
 	roomNbr: number;
 	ballX: number;
 	ballY: number;
@@ -14,4 +14,6 @@ export interface objPositions {
 	rightUserID: number;
 	gameEnds: boolean
   }
+
+  
 

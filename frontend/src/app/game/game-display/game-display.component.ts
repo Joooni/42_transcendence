@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import { objPositions } from './ObjPositions';
+import { gameData } from './GameData';
 
 @Component({
   selector: 'app-game-display',
@@ -40,7 +40,7 @@ export class GameDisplayComponent implements AfterViewInit {
 			this.context.canvas.style.height = '58%';
 		}
 		this.socketService.listen('getGameData').subscribe((data) => {
-			this.runGame(data as objPositions)
+			this.runGame(data as gameData)
 		})
 	}
 
@@ -53,10 +53,10 @@ export class GameDisplayComponent implements AfterViewInit {
 	stopSearching() {
 		this.stopSearch = false;
 		this.search = true;
-		this.socketService.emit('stopGame', undefined);
+		this.socketService.emit('stopSearching', undefined);
 	}
 
-	runGame(data: objPositions) {
+	runGame(data: gameData) {
 		if (this.stopSearch === true) {
 			this.stopSearch = false
 		}
@@ -68,7 +68,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.draw(data);
 	}
 
-	sendRacketPosition(data: objPositions) {
+	sendRacketPosition(data: gameData) {
 		console.log("The roomNbr is :   ", data.roomNbr);
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
 			this.socketService.emit2('sendRacketPositionLeft', this.gameDisplayService.racketPositionY, data.roomNbr);
@@ -86,7 +86,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		}
 	}
 
-	draw(data: objPositions) {
+	draw(data: gameData) {
 		this.context.drawImage(this.gameDisplayService.background.img, 0, 0, this.gameDisplayService.background.width, this.gameDisplayService.background.height);
 
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
