@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { objPositions } from 'src/app/game/game-display/objPositions';
+import { objPositions } from 'src/app/game/game-display/ObjPositions';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +20,9 @@ export class SocketService {
 
   emit(eventName: string, data: any) {
     this.socket.emit(eventName, data);
+  }
+
+  emit2(eventName: string, data1: any, data2: any) {
+    this.socket.emit(eventName, data1, data2);
   }
 }

@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import { objPositions } from './objPositions';
+import { objPositions } from './ObjPositions';
 
 @Component({
   selector: 'app-game-display',
@@ -15,7 +15,7 @@ export class GameDisplayComponent implements AfterViewInit {
 	moveUp: boolean;
 	moveDown: boolean;
 	search: boolean;
-	gameRunning: boolean;
+	stopSearch: boolean;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
@@ -25,7 +25,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.search = true;
-		this.gameRunning = false;
+		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
 	}
 
@@ -45,28 +45,35 @@ export class GameDisplayComponent implements AfterViewInit {
 	}
 
 	startGame() {
-		this.gameRunning = true;
+		this.search = false;
+		this.stopSearch = true;
 		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
 	}
 
-	stopGame() {
-		this.gameDisplayService.gameReset = true;
+	stopSearching() {
+		this.stopSearch = false;
+		this.search = true;
 		this.socketService.emit('stopGame', undefined);
 	}
 
 	runGame(data: objPositions) {
+		if (this.stopSearch === true) {
+			this.stopSearch = false
+		}
 		this.racketMovement();
-		this.sendRacketPosition(data);
+		if (data.gameEnds === false) {
+			this.sendRacketPosition(data);
+		}
 		this.gameDisplayService.imageControl(data);
 		this.draw(data);
 	}
 
 	sendRacketPosition(data: objPositions) {
-		
+		console.log("The roomNbr is :   ", data.roomNbr);
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
-			this.socketService.emit('sendRacketPositionLeft', this.gameDisplayService.racketPositionY);
+			this.socketService.emit2('sendRacketPositionLeft', this.gameDisplayService.racketPositionY, data.roomNbr);
 		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
-			this.socketService.emit('sendRacketPositionRight', this.gameDisplayService.racketPositionY);
+			this.socketService.emit2('sendRacketPositionRight', this.gameDisplayService.racketPositionY, data.roomNbr);
 		}
 	}
 

@@ -1,6 +1,9 @@
 export interface objPositions {
+  roomNbr: number;
   ballX: number;
   ballY: number;
+  ballMoveSpeed: number;
+  ballMoveDegree: number;
   racketLeftY: number;
   racketRightY: number;
   goalTriggerLeft: boolean;
@@ -9,4 +12,5 @@ export interface objPositions {
   goalsLeft: number;
   leftUserID: number;
   rightUserID: number;
+  gameEnds: boolean
 }

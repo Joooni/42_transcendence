@@ -2,29 +2,69 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundError, Like, QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { Socket } from 'socket.io';
 import { HttpService } from '@nestjs/axios';
 import { Match } from './match.entity';
 import { MatchService } from './match/match.service';
 import { createMatch } from './create-match.input';
-
+import { objPositions } from './match/ObjPositions';
 
 @Injectable()
 export class GameService {
 
-	leftUserID: number;
+	playerWaitingID: number | undefined;
+	playerWaitingSocket: Socket;
+	gameDataMap: Map<number, objPositions>;
+	room: number;
 
 	constructor(
 		@InjectRepository(Match) private readonly matchRepository: Repository<Match>,
 		private readonly configService: ConfigService,
 		private readonly httpService: HttpService,
 		private matchService: MatchService)
-	{
-		this.leftUserID = 0;
+		{
+			this.room = 0;
+			this.playerWaitingID = undefined;
+			this.gameDataMap = new Map;
+		}
+
+	checkForOpponent(userID: number, userSocket: Socket) : number | undefined {
+		if (this.playerWaitingID === undefined) {
+			this.playerWaitingID = userID;
+			this.playerWaitingSocket = userSocket;		
+			while (this.gameDataMap.has(this.room)) {
+				this.room++;
+			}
+			this.gameDataMap.set(this.room, {
+				roomNbr: this.room,
+				ballX: 472,
+				ballY: 324,
+				ballMoveSpeed: 10,
+				ballMoveDegree: -90,
+				racketLeftY: 298, 
+				racketRightY: 298,
+				goalTriggerLeft: false,
+				goalTriggerRight: false,
+				goalsRight: 0,
+				goalsLeft: 0,
+				leftUserID: userID,
+				rightUserID: 0,
+				gameEnds: false
+			});
+			return (undefined);
+		} else if (this.gameDataMap.get(this.room)!.leftUserID !== userID) {
+			this.playerWaitingID = undefined;
+			this.gameDataMap.get(this.room)!.rightUserID = userID;
+			return (this.room);
+		}
+		return (undefined);
 	}
 
-	startMatch() {
-		this.matchService.runGame();
+	startMatch(gameData: objPositions) : objPositions {
+		gameData = this.matchService.runGame(gameData);
+		return (gameData);
 	}
+
 
 
 
