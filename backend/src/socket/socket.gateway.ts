@@ -12,7 +12,7 @@ import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
-import { gameData, gameDataBE } from 'src/game/match/GameData';
+import { ChannelsService } from 'src/channels/channels.service';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class SocketGateway
@@ -31,6 +31,7 @@ export class SocketGateway
     //private socketModule: SocketModule
     // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
+    private readonly channelsService: ChannelsService,
   ) {
     const io = new Server();
   }
@@ -80,6 +81,11 @@ export class SocketGateway
     if (socket) {
       socket.emit('message', message);
     }
+  }
+
+  @SubscribeMessage('createChannel')
+  createChannel(client: Socket, obj: any): void {
+    this.channelsService.createChannel(client, obj.channelname, obj.ownerid);
   }
 
   @SubscribeMessage('identify')

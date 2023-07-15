@@ -20,7 +20,7 @@ export class CreateChannelInput {
 	type: ChannelType
 
 	@Field(() => String)
-	password: string;
+	password?: string;
 
 	@Field(() => Date)
 	createdAt: Date;

@@ -1,5 +1,6 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
+import { Channel } from 'src/channels/entities/channel.entity';
+import { Entity, Column, PrimaryColumn, Index, ManyToMany, JoinTable, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -79,4 +80,31 @@ export class User {
   @Field(() => GraphQLTimestamp)
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastLoginTimestamp: Date;
+
+  @Field(() => Channel, { nullable: true })
+  @OneToMany(() => Channel, (channel) => channel.owner)
+  @JoinColumn()
+  ownedChannels?: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel)
+  @JoinTable()
+  channelList?: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel)
+  @JoinTable()
+  adminInChannel?: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel)
+  @JoinTable()
+  mutedInChannel?: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel)
+  @JoinTable()
+  invitedInChannel?: Channel[];
+
+  bannedInChannel?: Channel[];
 }

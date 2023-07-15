@@ -35,6 +35,7 @@ export class ChatComponent implements OnInit {
 	selectedUser?: User;
 
 	hasUnreadMessages: boolean = true;
+	createChannelName?: string;
 
 	constructor(
 		private userDataService: UserDataService,
@@ -56,6 +57,11 @@ export class ChatComponent implements OnInit {
 
 		this.userDataService.findAll().then(users => this.allUsers = users);
 
+		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
+		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
+		// this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
+		this.channelDataService.getChannels().then(channels => this.visibleChannels = channels);
+		this.channelDataService.getChannelsOf(parseInt(this.cookie.get("userid"))).subscribe(member => this.memberChannels = member);
 		this.socket.listen('identify').subscribe(() => {
 			this.socket.emit('identify', this.activeUser?.id);
 		});
@@ -102,5 +108,17 @@ export class ChatComponent implements OnInit {
 			this.selectedChannel = undefined;
 		this.selectedUser = user;
 		this.messageService.changeOfDM('change of DM');
+	}
+
+	createChannel() {
+		// const channelname = 'TestChannel';
+		if (!this.createChannelName)
+			return;
+		console.log('Button clicked, channelname: ', this.createChannelName);
+		this.socket.emit('createChannel', { 
+			channelname: this.createChannelName,
+			ownerid: this.activeUser?.id,
+		});
+		this.createChannelName = undefined;
 	}
 }

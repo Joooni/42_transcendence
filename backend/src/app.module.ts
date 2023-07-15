@@ -21,6 +21,7 @@ import { ChannelsService } from './channels/channels.service';
 import { ChannelsResolver } from './channels/channels.resolver';
 import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
+import { Channel } from './channels/entities/channel.entity';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { PasswordService } from './password/password.service';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Message, Match],
+        entities: [User, Message, Match, Channel],
         synchronize: true,
       }),
     }),

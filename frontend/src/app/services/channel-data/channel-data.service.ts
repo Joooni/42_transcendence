@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 
 import { Channel } from '../../models/channel';
 import { CHANNELS } from '../../mock-data/mock_channels';
+import graphQLService from '../graphQL/GraphQLService';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,35 @@ export class ChannelDataService {
 			channelsVisibleForUser.push(this.channels[i]);
 		}
 		return of(channelsVisibleForUser);
+	}
+
+	//Test Backend query
+	async getChannels(): Promise<Channel[]> {
+		const response = await graphQLService.query(
+			`
+				query {
+					channels {
+						id
+						name
+						createdAt
+						owner {
+							id
+							firstname
+						}
+						users {
+							id
+						}
+					}
+				}
+			`,
+			undefined,
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Empty channel data'));
+		}
+		const channels = response.channels;
+		console.log(channels);
+		return channels;
 	}
 }

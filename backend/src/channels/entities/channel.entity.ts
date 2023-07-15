@@ -1,8 +1,9 @@
 import { Inject } from "@nestjs/common";
 import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { InjectRepository } from "@nestjs/typeorm";
 import { PasswordService } from "src/password/password.service";
 import { User } from "src/users/entities/user.entity";
-import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterUpdate, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum ChannelType {
 	public,
@@ -17,13 +18,13 @@ registerEnumType(ChannelType, {
 @ObjectType()
 @Entity()
 export class Channel {
-	@Field(() => Int)
+	@Field(() => String)
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@ManyToOne(() => User)
+	@Field(() => User)
+	@ManyToOne(() => User, user => user.ownedChannels)
 	@JoinColumn()
-	@Field()
 	owner: User;
 
 	@Field()
@@ -34,41 +35,64 @@ export class Channel {
 	type: ChannelType;
 
 	@Field()
-	password: string;
+	password?: string;
 
 	constructor(@Inject(PasswordService) private readonly passwordService: PasswordService) {}
 
 	@BeforeInsert()
 	async hashPW() {
-		this.password = await this.passwordService.hashPassword(this.password);
+		if (typeof this.password === 'string')
+			this.password = await this.passwordService.hashPassword(this.password);
 	}
 
 	@Field()
 	@CreateDateColumn()
 	createdAt: Date;
 
-	@ManyToMany(() => User)
-	@JoinColumn()
-	@Field(() => [User])
-	users: User[];
+	@Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.channelList, {
+		// eager: true,
+		cascade: true,
+	})
+	@JoinTable()
+	users?: User[];
 
-	@ManyToMany(() => User)
-	@JoinColumn()
-	@Field(() => [User])
+	@Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.adminInChannel, {
+		// eager: true,
+		cascade: true,
+	})
+	@JoinTable()
 	admins: User[];
 
-	@ManyToMany(() => User)
-	@JoinColumn()
-	@Field(() => [User])
+	@Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.mutedInChannel, {
+		// eager: true,
+		cascade: true,
+	})
+	@JoinTable()
 	mutedUsers: User[];
 
-	@ManyToMany(() => User)
-	@JoinColumn()
-	@Field(() => [User])
+	@Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.invitedInChannel, {
+		// eager: true,
+		cascade: true,
+	})
+	@JoinTable()
 	invitedUsers: User[];
 
-	@ManyToMany(() => User)
-	@JoinColumn()
-	@Field(() => [User])
+	@Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.bannedInChannel, {
+		// eager: true,
+		cascade: true,
+	})
+	@JoinTable()
 	bannedUsers: User[];
+
+	// @AfterInsert()
+	// @AfterUpdate()
+	// async updateUserChannelList() {
+	// 	@InjectRepository(User) private userRepository: Repository<User>;
+	// 	const users = await 
+	// }
 }

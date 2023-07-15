@@ -86,6 +86,12 @@
 		</button>
 
 		<div *ngIf="showChannels" class="chat_contact_list">
+			
+			<input [(ngModel)]="createChannelName" name="channelName" type="text" placeholder="Channel Name">
+			<button type="button" (click)="createChannel()">
+				Create Channel
+			</button>
+
 			<div *ngFor="let channel of visibleChannels">
 				<div 
 					class="channel"
