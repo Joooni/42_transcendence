@@ -3,7 +3,8 @@ import { Component, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { AuthService } from '../services/auth.service';
-import { loginPageGuard } from '../guard/login-page.guard';
+// import { loginPageGuard } from '../guard/login-page.guard';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,9 @@ export class LoginComponent {
   twoFAString?: string;
 
   async ngOnInit() {
+    console.log("whyyyyyyy");
+    console.log(environment.API_DOMAIN);
+
     this.activeUser = await this.authService.isAuthenticated();
     this.twoFAEnabled = await this.authService.twoFAEnabled();
     this.activatedRoute.queryParamMap.subscribe((params) => {

@@ -15,6 +15,7 @@ services:
     container_name: frontend
     networks:
       - nw_app
+    # command: "ng serve --port 80"
     command: "ng serve --open --host 0.0.0.0 --port 80"
     # command: "ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
 
@@ -59,4 +60,3 @@ networks:
 
 volumes:
   postgres-data:
-  
