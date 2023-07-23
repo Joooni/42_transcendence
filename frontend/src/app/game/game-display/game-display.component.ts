@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import { objPositions } from './objPositions';
+import { gameData } from './GameData';
 
 @Component({
   selector: 'app-game-display',
@@ -14,8 +14,8 @@ export class GameDisplayComponent implements AfterViewInit {
 	
 	moveUp: boolean;
 	moveDown: boolean;
-	ready: boolean;
-	gameRunning: boolean;
+	search: boolean;
+	stopSearch: boolean;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
@@ -24,8 +24,8 @@ export class GameDisplayComponent implements AfterViewInit {
 	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService) {
 		this.moveUp = false;
 		this.moveDown = false;
-		this.ready = true;
-		this.gameRunning = false;
+		this.search = true;
+		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
 	}
 
@@ -39,35 +39,41 @@ export class GameDisplayComponent implements AfterViewInit {
 		} else {
 			this.context.canvas.style.height = '58%';
 		}
-		console.log(window.innerHeight);
-		console.log(window.innerWidth);
 		this.socketService.listen('getGameData').subscribe((data) => {
-			this.runGame(data as objPositions)
+			this.runGame(data as gameData)
 		})
 	}
 
 	startGame() {
-		this.gameRunning = true;
-		this.socketService.emit('startGame', undefined);
+		this.search = false;
+		this.stopSearch = true;
+		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
 	}
 
-	stopGame() {
-		this.gameDisplayService.gameReset = true;
-		this.socketService.emit('stopGame', undefined);
+	stopSearching() {
+		this.stopSearch = false;
+		this.search = true;
+		this.socketService.emit('stopSearching', undefined);
 	}
 
-	runGame(data: objPositions) {
+	runGame(data: gameData) {
+		if (this.stopSearch === true) {
+			this.stopSearch = false
+		}
 		this.racketMovement();
-		this.sendRacketPosition(data);
+		if (data.gameEnds === false) {
+			this.sendRacketPosition(data);
+		}
 		this.gameDisplayService.imageControl(data);
 		this.draw(data);
 	}
 
-	sendRacketPosition(data: objPositions) {
-		if (data.isPlayerLeft === true) {
-			this.socketService.emit('sendRacketPositionLeft', this.gameDisplayService.racketPositionY);
-		} else {
-			this.socketService.emit('sendRacketPositionRight', this.gameDisplayService.racketPositionY);
+	sendRacketPosition(data: gameData) {
+		console.log("The roomNbr is :   ", data.roomNbr);
+		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
+			this.socketService.emit2('sendRacketPositionLeft', this.gameDisplayService.racketPositionY, data.roomNbr);
+		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
+			this.socketService.emit2('sendRacketPositionRight', this.gameDisplayService.racketPositionY, data.roomNbr);
 		}
 	}
 
@@ -80,13 +86,13 @@ export class GameDisplayComponent implements AfterViewInit {
 		}
 	}
 
-	draw(data: objPositions) {
+	draw(data: gameData) {
 		this.context.drawImage(this.gameDisplayService.background.img, 0, 0, this.gameDisplayService.background.width, this.gameDisplayService.background.height);
 
-		if (data.isPlayerLeft === true) {
+		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
 			this.context.drawImage(this.gameDisplayService.racketLeft.img, this.gameDisplayService.racketLeft.racketLeftX, this.gameDisplayService.racketPositionY, this.gameDisplayService.racketLeft.width, this.gameDisplayService.racketLeft.height);
 			this.context.drawImage(this.gameDisplayService.racketRight.img, this.gameDisplayService.racketRight.racketRightX, data.racketRightY, this.gameDisplayService.racketRight.width, this.gameDisplayService.racketRight.height);
-		} else {
+		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {
 			this.context.drawImage(this.gameDisplayService.racketLeft.img, this.gameDisplayService.racketLeft.racketLeftX, data.racketLeftY, this.gameDisplayService.racketLeft.width, this.gameDisplayService.racketLeft.height);
 			this.context.drawImage(this.gameDisplayService.racketRight.img, this.gameDisplayService.racketRight.racketRightX, this.gameDisplayService.racketPositionY, this.gameDisplayService.racketRight.width, this.gameDisplayService.racketRight.height);
 		}

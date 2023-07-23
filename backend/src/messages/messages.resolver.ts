@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { Message } from './entities/message.entity';
 import { MessagesService } from './messages.service';
@@ -14,11 +14,12 @@ export class MessagesResolver {
     return this.messagesService.findAll();
   }
 
-  // @Mutation(() => Message)
-  // async addMessage(
-  // 	@CurrentJwtPayload() jwtPayload: JwtPayload,
-  // 	@Args() createMessage: CreateMessageInput,
-  // ) {
-  // 	await this.messagesService.create(createMessage);
-  // }
+  @Query(() => [Message], { name: 'messagesDM' })
+  async messagesDM(
+    @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
+    @Args('idReceiver', { type: () => Int, nullable: true })
+    idReceiver: number | undefined,
+  ): Promise<Message[]> {
+    return this.messagesService.findMessagesDM(id, idReceiver);
+  }
 }

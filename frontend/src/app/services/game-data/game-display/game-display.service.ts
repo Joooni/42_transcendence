@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-import { objPositions } from '../../../game/game-display/objPositions'
-import { interval } from 'rxjs';
+import { gameData } from '../../../game/game-display/GameData'
+
+import { User } from 'src/app/models/user';
+import { UserDataService } from '../../user-data/user-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class GameDisplayService {
+
+	activeUser?: User;
 
 	background = {
 		width: 1024,
@@ -77,7 +81,6 @@ export class GameDisplayService {
 
 	goalTrigger: boolean;
 	gameEnds : boolean;
-	gameReset: boolean;
 
 	result = {
 		x: 232,
@@ -88,19 +91,17 @@ export class GameDisplayService {
 		img: new Image
 	}
 
-	constructor() {
+	constructor(private userDataService: UserDataService) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
-		this.gameReset = false;
 		this.racketPositionStartY = 298;
 		this.racketPositionY = this.racketPositionStartY
+		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
-	imageControl(data: objPositions) {
-		if (data.goalTriggerLeft == true || data.goalTriggerRight == true || this.gameReset == true) {
-			if (this.gameReset == false) {
-				this.goalTrigger = true;
-			}
+	imageControl(data: gameData) {
+		if (data.goalTriggerLeft == true || data.goalTriggerRight == true) {
+			this.goalTrigger = true;
 			this.explosion.y = data.ballY - 55;
 			if (data.goalTriggerLeft == true) {
 				this.explosion.x = data.ballX - 80;
@@ -108,7 +109,7 @@ export class GameDisplayService {
 			else {
 				this.explosion.x = data.ballX - 35;
 			}	
-			if (data.goalTriggerLeft == true || this.gameReset == true) {
+			if (data.goalTriggerLeft == true) {
 				if (data.goalsRight == 1) {
 					this.goalsRight.width = 56;
 				}
@@ -117,7 +118,7 @@ export class GameDisplayService {
 				}
 				this.goalsRight.img.src = '../../../../assets/gameObjects/nbr' + data.goalsRight + '.png' ;
 			}
-			if (data.goalTriggerRight == true || this.gameReset == true) {
+			if (data.goalTriggerRight == true) {
 				if (data.goalsLeft == 1) {
 					this.goalsLeft.width = 56;
 				}
@@ -126,7 +127,6 @@ export class GameDisplayService {
 				}
 				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + data.goalsLeft + '.png' ;
 			}
-			this.gameReset = false;
 			setTimeout(() => {
 				this.racketPositionY = this.racketPositionStartY;
 				this.goalTrigger = false;
