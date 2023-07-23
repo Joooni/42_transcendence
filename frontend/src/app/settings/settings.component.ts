@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { USERS } from '../mock-data/mock_users';
-import { FormControl } from '@angular/forms';
 import { getStoreKeyName } from '@apollo/client/utilities';
 import { ErrorService } from '../services/error/error.service';
 
@@ -17,7 +14,7 @@ export class SettingsComponent {
 
 	activeUser?: User;
 	newUsername?: string;
-	selectedMap?: number;
+	selectedMap?: string;
 	twoFAEnabled: boolean = false;
 	twoFACode?: string;
 	qrCode?: string;
@@ -32,8 +29,7 @@ export class SettingsComponent {
 	async ngOnInit() {
 		await this.userService.findSelf().then(user => this.activeUser = user)
 		this.twoFAEnabled = this.activeUser!.twoFAEnabled;
-		this.selectedMap = this.activeUser!.selectedMap;
-		console.log(this.selectedMap);
+		this.selectedMap = this.activeUser!.selectedMap?.toString();
 	}
 
 	async toggle2FA() {
@@ -103,23 +99,30 @@ export class SettingsComponent {
 
 	async saveChanges() {
 		let hasError: boolean = false;
-		if (this.newUsername)
-			//check if username unique -> find user by name
-			await this.userService.updateUsername(this.newUsername)
+		if (this.newUsername && this.newUsername != this.activeUser?.username)
+			await this.userService.findUserByUsername(this.newUsername)
 			.then(() => {
-				this.userService.findSelf().then(user => this.activeUser = user);
-			})
-			.catch(() => {
-				this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
+				this.errorService.showErrorMessage("Username is already taken. Please choose another name.")
 				hasError = true;
 			})
+			.catch(() => {});
+			if (!hasError) {
+				this.userService.updateUsername(this.newUsername!)
+				.catch(() => {
+					this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
+					hasError = true;
+				})
+			}
 		if (this.selectedMap != this.activeUser?.selectedMap)
 			await this.userService.updateSelectedMap(Number(this.selectedMap!))
-			.catch(error => {
+			.catch(() => {
 				this.errorService.showErrorMessage("Couldn't save the selected Game Design. Please try again!");
 				hasError = true;
 			})
-		if (!hasError)
-			this.router.navigate(['/profile/' + this.activeUser?.username]);
+		this.userService.findSelf().then((user) => {
+			this.activeUser = user;
+			if (!hasError)
+				this.router.navigate(['/profile/' + this.activeUser?.username]);
+		});
 	}
 }

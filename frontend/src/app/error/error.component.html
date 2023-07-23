@@ -1,8 +1,7 @@
 <div class="popup" id="popup-general-error" [ngClass]="{'show-popup': errorService.showError}">
 	<div class="popup-content">
 		<h2>ERROR</h2>
-		<h4>Ooops, something went wrong. Please try again.</h4>
-		<!-- instead: variable containing the error message -->
+		<h4 class="error-message">{{errorService.errorMessage}}</h4>
 		<div class="popup-buttons">
 			<button class="button_medium" (click)="errorService.closeError()">OK</button>
 		</div>
