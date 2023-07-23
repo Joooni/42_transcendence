@@ -49,6 +49,7 @@ type Query {
 
 type Mutation {
   updateUsername(username: String!): User!
+  updateSelectedMap(selectedMap: Float!): User!
   updateStatus(status: String!): User!
   updateAchievements(id: Float!, newAchievement: Float!): User!
 }

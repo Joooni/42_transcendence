@@ -44,6 +44,8 @@ h6 {
 	font-family: press_start;
 	font-size: 1.5vmin;
 	color: orange;
+	margin-block-start: 1.2rem;
+  margin-block-end: 1.2rem;
 }
 
 a {
@@ -64,6 +66,7 @@ button {
 	border-radius: 15px;
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: orange;
+	cursor: pointer;
 }
 
 .button_reverse {
@@ -80,6 +83,17 @@ button {
 	border-radius: 15px;
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: #ffa500;
+}
+
+.button:disabled,
+.button_reverse:disabled,
+.button_medium:disabled,
+.button_small:disabled {
+	background-color: rgb(40, 39, 39);
+	color: grey;
+	border-color: grey;
+	-webkit-text-stroke-color: white;
+	cursor: auto;
 }
 
 .button_collapsible {
@@ -331,8 +345,14 @@ input:checked + .toggle:after {
 }
 
 .popup-buttons {
+	margin-top: 1rem;
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
 	align-content: space-between;
 	column-gap: 5rem;
+}
+
+.error-message {
+	color: red;
 }

@@ -1,11 +1,13 @@
 <div class="home_flex_columns">
 	<table>
 		<button class="home_login_button" (click)="onLogin()">LOGIN</button>
-		<!-- just for testing -->
-		<input [(ngModel)]="twoFAString" type="text" placeholder="OTP" (keyup.enter)="onEnter()">
 	</table>
 </div>
-<!-- todo: clear the field after onEnter() if Code is wrong -->
-<div *ngIf="activeUser && twoFAEnabled">
-	<input [(ngModel)]="twoFAString" type="text" placeholder="OTP" (keyup.enter)="onEnter()">
+<div class="popup" id="popup-2FA-login">
+	<div class="popup-content">
+		<h2>2-Factor-Authentication</h2>
+		<h4>Please enter a code from your authenticator app to authenticate</h4>
+		<input  class="pop-up-input" type="text" [(ngModel)]="twoFACode">
+		<button class="button_medium" [disabled]="!userDataService.twoFACodeIsValid(twoFACode)" (click)="popUpConfirm()">CONFIRM</button>
+	</div>
 </div>

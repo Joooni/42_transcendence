@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 export const LoginGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) => {

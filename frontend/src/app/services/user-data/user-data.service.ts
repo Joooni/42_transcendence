@@ -34,7 +34,7 @@ export class UserDataService {
     try {
       const { require2FAVerify } = await this.fetchJwt(code, bypassId);
       if (require2FAVerify) {
-        await this.verify2FA(code);
+				// await this.verify2FA(code);
         return;
       }
       const user: User = await this.findSelf();
@@ -47,26 +47,22 @@ export class UserDataService {
     }
   }
 
-  async generate2FA(): Promise<string> {
+	twoFACodeIsValid(code: string | undefined): boolean {
+		if (!code)
+			return false;
+		return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
+	}
+
+  async generate2FA(): Promise<any> {
     return axios.get('http://localhost:3000/2fa/generate', {
       withCredentials: true,
-    }).then((res) => {
-      return URL.createObjectURL(res.data);
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
   async verify2FA(code: string): Promise<void> {
-    return axios.get('http://localhost:3000/2fa/verify', {
+		return axios.get('http://localhost:3000/2fa/verify', {
       params: { code },
       withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
@@ -74,22 +70,13 @@ export class UserDataService {
     return axios.get('http://localhost:3000/2fa/enable', {
       params: { code },
       withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
-  async disable2FA(): Promise<void> {
+  async disable2FA(code: string): Promise<void> {
     return axios.get('http://localhost:3000/2fa/disable', {
-      withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
+			params: { code },  
+			withCredentials: true,
     });
   }
 
@@ -233,6 +220,22 @@ export class UserDataService {
     if (typeof updateUsername === 'undefined')
       throw new Error('Empty users data');
     return updateUsername;
+  }
+
+	async updateSelectedMap(selectedMap: number) {
+		const { updateSelectedMap } = await graphQLService.mutation(
+      `
+      mutation updateSelectedMap( $selectedMap: Float! ){
+        updateSelectedMap( selectedMap: $selectedMap ) {
+          selectedMap
+        }
+      }
+      `,
+      { selectedMap },
+    );
+    if (typeof updateSelectedMap === 'undefined')
+      throw new Error('Empty users data');
+    return updateSelectedMap;
   }
 
   async updateStatus(status: string) {

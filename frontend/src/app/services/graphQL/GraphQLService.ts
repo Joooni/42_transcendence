@@ -80,7 +80,7 @@ class GraphQLService {
         return data;
       })
       .catch((error) => {
-        if (
+				if (
           typeof error.graphQLErrors?.at(0)?.extensions?.response?.message !==
           'undefined'
         ) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { User } from '../models/user';
 import { SocketService } from '../services/socket/socket.service';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { UserDataService } from '../services/user-data/user-data.service';
 
 @Component({

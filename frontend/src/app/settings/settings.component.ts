@@ -5,6 +5,8 @@ import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { USERS } from '../mock-data/mock_users';
 import { FormControl } from '@angular/forms';
+import { getStoreKeyName } from '@apollo/client/utilities';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,61 +17,109 @@ export class SettingsComponent {
 
 	activeUser?: User;
 	newUsername?: string;
-	twoFAEnabled: boolean = false;
 	selectedMap?: number;
+	twoFAEnabled: boolean = false;
 	twoFACode?: string;
+	qrCode?: string;
+	invalidCode: boolean = false;
 
 	constructor(
-		private userService: UserDataService,
-		private router: Router
+		public userService: UserDataService,
+		private router: Router,
+		private errorService: ErrorService
 		) {}
 
 	async ngOnInit() {
 		await this.userService.findSelf().then(user => this.activeUser = user)
 		this.twoFAEnabled = this.activeUser!.twoFAEnabled;
-		// this.selectedMap = this.activeUser.map;
+		this.selectedMap = this.activeUser!.selectedMap;
+		console.log(this.selectedMap);
 	}
 
-	toggle2FA() {
+	async toggle2FA() {
 		if (this.twoFAEnabled) {
-			this.userService.disable2FA();
-		}
-		else {
 			const popup = document.getElementById("popup-2FA-code");
 			popup?.classList.toggle('show-popup');
-			// if has secret: enable() & get code
-			// if failure: error message & don't set toggle true/ maybe call generate
-			// else: generate
-			// if failure: error message & don't set toggle true
 		}
-		console.log(this.twoFAEnabled);
+		else if (this.activeUser?.hasTwoFASecret) {
+			const popup = document.getElementById("popup-2FA-code");
+			popup?.classList.toggle('show-popup');
+		}
+		else {
+			await this.userService.generate2FA()
+			.then((value) => {
+				this.qrCode = value.data;
+				const popup = document.getElementById("popup-2FA-qr");
+				popup?.classList.toggle('show-popup');
+			})
+			.catch(() => {
+				this.errorService.showErrorMessage();
+			});
+		}
 	}
 
-	popUpConfirm() {
-		if (this.twoFACode)
-			this.userService.enable2FA(this.twoFACode)
+	async popUpCodeConfirm(popUpId: string) {
+		if (this.twoFAEnabled) {
+			await this.userService.enable2FA(this.twoFACode!)
+			.then(() => {
+				this.userService.findSelf().then(user => this.activeUser = user);
+				const popup = document.getElementById(popUpId);
+				popup?.classList.toggle('show-popup');
+				this.twoFACode = undefined;
+				this.invalidCode = false;
+			})
+			.catch((error) => {
+				this.invalidCode = true;
+				this.twoFAEnabled = false;
+			});
+		}
+		else {
+			await this.userService.disable2FA(this.twoFACode!)
+			.then(() => {
+				this.userService.findSelf().then(user => this.activeUser = user);	
+				const popup = document.getElementById(popUpId);
+				popup?.classList.toggle('show-popup');
+				this.twoFACode = undefined;
+				this.invalidCode = false;
+			})
+			.catch((error) => {
+				this.invalidCode = true;
+				this.twoFAEnabled = true;
+			});
+		}
 	}
 
 	popUpCancel(popUpId: string) {
 		const popup = document.getElementById(popUpId);
 		popup?.classList.toggle('show-popup');
-		this.twoFAEnabled = false;
+		this.twoFACode = undefined;
+		getStoreKeyName
+		this.invalidCode = false;
+		if (this.twoFAEnabled)
+			this.twoFAEnabled = false;
+		else
+			this.twoFAEnabled = true;
 	}
 
-	saveChanges() {
-		console.log(this.newUsername);
-// 	this.router.navigate(['/profile/' + this.changedUserData?.username]);
+	async saveChanges() {
+		let hasError: boolean = false;
+		if (this.newUsername)
+			//check if username unique -> find user by name
+			await this.userService.updateUsername(this.newUsername)
+			.then(() => {
+				this.userService.findSelf().then(user => this.activeUser = user);
+			})
+			.catch(() => {
+				this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
+				hasError = true;
+			})
+		if (this.selectedMap != this.activeUser?.selectedMap)
+			await this.userService.updateSelectedMap(Number(this.selectedMap!))
+			.catch(error => {
+				this.errorService.showErrorMessage("Couldn't save the selected Game Design. Please try again!");
+				hasError = true;
+			})
+		if (!hasError)
+			this.router.navigate(['/profile/' + this.activeUser?.username]);
 	}
-
-	// saveChanges() {
-	// 	console.log('saveChanges called');
-	// 	if (this.selectedGameDesign && this.changedUserData)
-	// 	{
-	// 		// this.changedUserData.map = parseInt(this.selectedGameDesign);
-	// 		// see if this works
-	// 		console.log("new username: ", this.changedUserData.username);
-	// 		this.userService.updateUsername(this.changedUserData.username);
-	// 	}
-	// 	this.router.navigate(['/profile/' + this.changedUserData?.username]);
-	// }
 }
