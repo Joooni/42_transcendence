@@ -25,8 +25,7 @@ export class LoginComponent {
   twoFAString?: string;
 
   async ngOnInit() {
-    console.log("whyyyyyyy");
-    console.log(environment.API_DOMAIN);
+    console.log(`http://${environment.DOMAIN}/auth/login`);
 
     this.activeUser = await this.authService.isAuthenticated();
     this.twoFAEnabled = await this.authService.twoFAEnabled();
@@ -56,7 +55,8 @@ export class LoginComponent {
   }
 
   onLogin() {
-    window.location.href = 'http://localhost:3000/auth/login';
+
+    window.location.href = `http://${environment.DOMAIN}:3000/auth/login`;
   };
 
 }

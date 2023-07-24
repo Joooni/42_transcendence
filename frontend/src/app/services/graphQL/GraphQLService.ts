@@ -8,12 +8,13 @@ import {
 import type { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 import type { OperationVariables } from '@apollo/client/core/types';
 import { gql } from 'graphql-tag';
+import { environment } from 'src/environments/environment';
 
 const cache = new InMemoryCache();
 
 const apolloClient = new ApolloClient({
   link: createHttpLink({
-    uri: 'http://localhost:3000/graphql',
+    uri: `http://${environment.DOMAIN}:3000/graphql`,
     credentials: 'include',
   }),
   cache,

@@ -15,7 +15,7 @@ import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
 import { gameData, gameDataBE } from 'src/game/match/GameData';
 
-@WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
+@WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -114,7 +114,7 @@ export class SocketGateway
 		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
 		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
 		console.log("The game with id:  ", roomNbr, "   is running");
-		this.intervalRunGame = setInterval(() => {		
+		this.intervalRunGame = setInterval(() => {
 			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
 			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
 			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
@@ -124,7 +124,7 @@ export class SocketGateway
 				console.log("The game with id:  ", roomNbr, "   is over. The users with id:  ", this.gameService.gameDataMap.get(roomNbr!)?.leftUserID, "  and  ", this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, "left." );
 				this.gameService.gameDataBEMap.delete(roomNbr!)
 				this.gameService.gameDataMap.delete(roomNbr!);
-			}			
+			}
 		}, 1000 / 25);
 	}
   }
@@ -142,7 +142,7 @@ export class SocketGateway
   getRacketPositionLeft(client: Socket, data: number[]) {
 	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
   }
-    
+
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
 	this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];

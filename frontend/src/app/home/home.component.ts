@@ -36,10 +36,12 @@ export class HomeComponent {
 		this.cookie.set("userid", "1");//has to be set to the active user after authentication
 		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
 	}
-	onLogintra() {
+
+/* 	onLogintra() {
 		console.log('logintra pressed');
 		window.location.href = 'http://localhost:3000/auth/login';
-	}
+	} */
+	
 	deleteAllCookies() {
 		this.cookie.deleteAll();
 		this.activeUser = undefined;

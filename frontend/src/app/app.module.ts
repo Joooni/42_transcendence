@@ -21,8 +21,9 @@ import { LoginComponent } from './login/login.component';
 import { GameComponent } from './game/game.component';
 import { GameDisplayComponent } from './game/game-display/game-display.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, options: {} };
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ApolloModule,
     JwtModule.forRoot({
       config: {
-        allowedDomains: ['localhost:3000']
+        allowedDomains: [`${environment.DOMAIN}:3000`]
       }
     }),
     SocketIoModule.forRoot(config),
@@ -61,7 +62,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: 'http://localhost:3000/graphql',
+            uri: `http://${environment.DOMAIN}:3000/graphql`,
           }),
         };
       },

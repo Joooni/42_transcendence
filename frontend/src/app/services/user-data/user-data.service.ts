@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 // for FE-testing - to be deleted when BE provides test data
 import { USERS } from '../../mock-data/mock_users';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class UserDataService {
   constructor(private router: Router) {}
 
   async fetchJwt(code: string, bypassId?: string) {
-    return axios.get('http://localhost:3000/auth/callback', { params: { code, id: bypassId }, withCredentials: true })
+    return axios.get(`http://${environment.DOMAIN}:3000/auth/callback`, { params: { code, id: bypassId }, withCredentials: true })
     .then((res) => {
       if (typeof res.data.isAuthenticated === 'undefined')
         throw new Error('Empty user authentication');
@@ -48,7 +49,7 @@ export class UserDataService {
   }
 
   async generate2FA(): Promise<string> {
-    return axios.get('http://localhost:3000/2fa/generate', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/generate`, {
       withCredentials: true,
     }).then((res) => {
       return URL.createObjectURL(res.data);
@@ -60,7 +61,7 @@ export class UserDataService {
 
   async verify2FA(code: string): Promise<void> {
     console.log('UserDataService verify2FA with code: ', code);
-    return axios.get('http://localhost:3000/2fa/verify', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/verify`, {
       params: { code },
       withCredentials: true,
     }).then(() => {
@@ -72,7 +73,7 @@ export class UserDataService {
   }
 
   async enable2FA(code: string): Promise<void> {
-    return axios.get('http://localhost:3000/2fa/enable', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/enable`, {
       params: { code },
       withCredentials: true,
     }).then(() => {
@@ -84,7 +85,7 @@ export class UserDataService {
   }
 
   async disable2FA(): Promise<void> {
-    return axios.get('http://localhost:3000/2fa/disable', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/disable`, {
       withCredentials: true,
     }).then(() => {
       return ;
@@ -97,7 +98,7 @@ export class UserDataService {
   async logout(): Promise<void> {
     const user: User = await this.findSelf();
     if (user.status !== "offline" || user.id > 0) {
-      await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
+      await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
         this.updateStatus('offline');
         return;
       }).catch((error) => {
