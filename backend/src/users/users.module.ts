@@ -22,6 +22,6 @@ export class UsersModule implements OnModuleInit {
 
   async onModuleInit() {
     // console.log('Seeding database with Kongs');
-    // await this.usersService.seedDatabase();
+    await this.usersService.seedDatabase();
   }
 }
