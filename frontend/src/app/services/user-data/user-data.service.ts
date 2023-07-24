@@ -34,7 +34,7 @@ export class UserDataService {
     try {
       const { require2FAVerify } = await this.fetchJwt(code, bypassId);
       if (require2FAVerify) {
-        await this.verify2FA(code);
+				// await this.verify2FA(code);
         return;
       }
       const user: User = await this.findSelf();
@@ -47,27 +47,22 @@ export class UserDataService {
     }
   }
 
-  async generate2FA(): Promise<string> {
+	twoFACodeIsValid(code: string | undefined): boolean {
+		if (!code)
+			return false;
+		return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
+	}
+
+  async generate2FA(): Promise<any> {
     return axios.get('http://localhost:3000/2fa/generate', {
       withCredentials: true,
-    }).then((res) => {
-      return URL.createObjectURL(res.data);
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
   async verify2FA(code: string): Promise<void> {
-    console.log('UserDataService verify2FA with code: ', code);
-    return axios.get('http://localhost:3000/2fa/verify', {
+		return axios.get('http://localhost:3000/2fa/verify', {
       params: { code },
       withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
@@ -75,22 +70,13 @@ export class UserDataService {
     return axios.get('http://localhost:3000/2fa/enable', {
       params: { code },
       withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
     });
   }
 
-  async disable2FA(): Promise<void> {
+  async disable2FA(code: string): Promise<void> {
     return axios.get('http://localhost:3000/2fa/disable', {
-      withCredentials: true,
-    }).then(() => {
-      return ;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
+			params: { code },  
+			withCredentials: true,
     });
   }
 
@@ -108,10 +94,10 @@ export class UserDataService {
   }
 
   async findSelf(): Promise<User> {
-    const { user } = await graphQLService.query(
+    const { userById } = await graphQLService.query(
       `
       query {
-        user {
+        userById {
           id
           intra
           firstname
@@ -120,9 +106,12 @@ export class UserDataService {
           email
           picture
           twoFAEnabled
+					hasTwoFASecret
+					status
           wins
           losses
           xp
+					selectedMap
           achievements
         }
       }
@@ -130,15 +119,15 @@ export class UserDataService {
       undefined,
       { fetchPolicy: 'network-only' },
     );
-      if (typeof user === 'undefined') throw new Error('Empty user data');
-      return user;
+      if (typeof userById === 'undefined') throw new Error('Empty user data');
+      return userById;
   }
 
   async findAll(): Promise<User[]> {
     const response = await graphQLService.query(
       `
       query {
-        users {
+        allUsers {
           id
           intra
           firstname
@@ -162,15 +151,14 @@ export class UserDataService {
       return Promise.reject(new Error('Empty user data'));
     }
     const users = response.users;
-    console.log(users);
     return users;
   }
 
   async findUserById(id: number): Promise<User> {
-    const user = await graphQLService.query(
+    const { userById } = await graphQLService.query(
       `
-      query User($id: Int!) {
-        user(id: $id) {
+      query findUserById($id: Int!) {
+        userById(id: $id) {
           id
           intra
           firstname
@@ -188,12 +176,37 @@ export class UserDataService {
       `,
       { id },
     );
-      if (typeof user === 'undefined') throw new Error('Empty user data');
-      return user;
+		if (typeof userById === 'undefined') throw new Error('Empty user data');
+		return userById;
+  }
+
+	async findUserByUsername(username: string): Promise<User> {
+    const { userByName } = await graphQLService.query(
+      `
+      query findUserByUsername($username: String!) {
+        userByName(username: $username) {
+          id
+          intra
+          firstname
+          lastname
+          username
+          email
+          picture
+          twoFAEnabled
+          wins
+          losses
+          xp
+          achievements
+        }
+      }
+      `,
+      { username },
+    );
+    if (typeof userByName === 'undefined') throw new Error('Empty user data');
+    return userByName;
   }
 
   async updateUsername(username: string) {
-    console.log('inside UserDataService.updateUsername');
     const { updateUsername } = await graphQLService.mutation(
       `
       mutation updateUsername( $username: String! ){
@@ -207,6 +220,22 @@ export class UserDataService {
     if (typeof updateUsername === 'undefined')
       throw new Error('Empty users data');
     return updateUsername;
+  }
+
+	async updateSelectedMap(selectedMap: number) {
+		const { updateSelectedMap } = await graphQLService.mutation(
+      `
+      mutation updateSelectedMap( $selectedMap: Float! ){
+        updateSelectedMap( selectedMap: $selectedMap ) {
+          selectedMap
+        }
+      }
+      `,
+      { selectedMap },
+    );
+    if (typeof updateSelectedMap === 'undefined')
+      throw new Error('Empty users data');
+    return updateSelectedMap;
   }
 
   async updateStatus(status: string) {
@@ -227,7 +256,7 @@ export class UserDataService {
 
   async updateAchievements(user: User, newAchievement: number) {
     const id = user.id;
-    const { updateStatus } = await graphQLService.mutation(
+    const { updateAchievements } = await graphQLService.mutation(
       `
       mutation updateAchievements($id: Float!, $newAchievement: Float!) {
         updateAchievements(id: $id, newAchievement: $newAchievement) {
@@ -237,21 +266,9 @@ export class UserDataService {
       `,
       { id, newAchievement },
     );
-    if (typeof updateStatus === 'undefined')
+    if (typeof updateAchievements === 'undefined')
       throw new Error('Empty user data');
-    return updateStatus;
-  }
-
-  // for FE-testing - to be deleted when BE provides test data
-  getUserByID(id: number): Observable<User> {
-    const User = this.users.find(elem => elem.id === id)!;
-    return of(User);
-  }
-
-  // for FE-testing - to be deleted when BE provides test data
-  getUserByUsername(name: string): Observable<User> {
-    const User = this.users.find(elem => elem.username === name)!;
-    return of(User);
+    return updateAchievements;
   }
 
   // for FE-testing - to be deleted when BE provides test data

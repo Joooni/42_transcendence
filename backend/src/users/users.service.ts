@@ -41,11 +41,9 @@ export class UsersService {
 
   findOne(identifier: number | string): Promise<User> {
     if (typeof identifier === 'number')
-      return this.userRepository.findOneOrFail({ where: { id: identifier } });
+      return this.userRepository.findOneByOrFail({ id: identifier });
     else if (typeof identifier === 'string')
-      return this.userRepository.findOneOrFail({
-        where: { username: identifier },
-      });
+      return this.userRepository.findOneByOrFail({ username: identifier });
     throw new EntityNotFoundError(User, {});
   }
 
@@ -63,13 +61,21 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
+	async updateSelectedMap(id: number, selectedMap: number): Promise<void> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      selectedMap: selectedMap,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
   remove(id: number) {
     console.log('This action removes a user with %d id', id);
   }
 
   async updateTwoFASecret(secret: string, id: number): Promise<any> {
     const result: UpdateResult = await this.userRepository.update(id, {
-      twoFAsecret: secret,
+      twoFAsecret: secret, hasTwoFASecret: true
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });

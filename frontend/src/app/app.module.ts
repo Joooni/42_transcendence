@@ -21,6 +21,7 @@ import { LoginComponent } from './login/login.component';
 import { GameComponent } from './game/game.component';
 import { GameDisplayComponent } from './game/game-display/game-display.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ErrorComponent } from './error/error.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -38,6 +39,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ChatChannelComponent,
     GameComponent,
     GameDisplayComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,

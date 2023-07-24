@@ -14,24 +14,22 @@ import { GameDataService } from '../services/game-data/game-data.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent {
-  
+
   selectedUser?: User;
   activeUser?: User;
   gameHistory?: Array<GameHistory>;
-  
+
   constructor(
     private userService: UserDataService,
     private route: ActivatedRoute,
-    private location: Location,
-    private cookie: CookieService,
     private gameservice: GameDataService
     ) {}
 
-  ngOnInit(): void {
-    this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
+  async ngOnInit(): Promise<void> {
+    await this.userService.findSelf().then(user => this.activeUser = user)
     const username = String(this.route.snapshot.paramMap.get('username'));
-    this.userService.getUserByUsername(username).subscribe(user => this.selectedUser = user);
-    this.gameHistory = this.gameservice.getMatchesOfUser(this.activeUser?.id);
+    await this.userService.findUserByUsername(username).then(user => this.selectedUser = user);
+    this.gameHistory = this.gameservice.getMatchesOfUser(this.selectedUser?.id);
   }
 
   isProfileOfActiveUser() {

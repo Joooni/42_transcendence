@@ -26,8 +26,8 @@ export class TwoFAService {
     if (!user.twoFAsecret)
       throw new Error('Fatal: 2FA is enabled, but empty 2FA Secret');
 
-    if (!authenticator.verify({ token: code, secret: user.twoFAsecret }))
-      throw new Error('2FA Code invald');
+		if (!authenticator.verify({ token: code, secret: user.twoFAsecret }))
+      throw new Error('2FA Code invalid');
   }
 
   async enable2FA(user: User, code: string) {
@@ -39,8 +39,11 @@ export class TwoFAService {
     await this.userService.update2FAEnable(user.id, true);
   }
 
-  async disable2FA(user: User) {
+  async disable2FA(user: User, code: string) {
     if (!user.twoFAEnabled) throw new Error('2FA is already disabled');
+		if (!user.twoFAsecret) throw new Error('Pending 2FA with empty 2FA Secret');
+		if (!authenticator.verify({ token: code, secret: user.twoFAsecret }))
+      throw new Error('2FA Code invalid');
 
     await this.userService.update2FAEnable(user.id, false);
   }

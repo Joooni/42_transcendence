@@ -15,12 +15,16 @@ import { SocketService } from '../services/socket/socket.service';
 })
 export class HomeComponent {
 
-	activeUser?: User;
 	games = GAMES;
 	activeMatches?: Array<Game>;
+	activeUser?: User;
 
-	constructor(private cookie: CookieService, private userService: UserDataService,
-		private gameservice: GameDataService, private socket: SocketService, private router: Router) {	}
+	constructor(
+		private gameservice: GameDataService,
+		private socket: SocketService,
+		private router: Router,
+		private userService: UserDataService
+	) {	}
 
 	ngOnInit() {
 		this.userService.findSelf().then(user => {
@@ -32,16 +36,7 @@ export class HomeComponent {
 		});
 	}
 
-	onLogin() {
-		this.cookie.set("userid", "1");//has to be set to the active user after authentication
-		this.userService.getUserByID(parseInt(this.cookie.get("userid"))).subscribe(user => this.activeUser = user);
-	}
-	onLogintra() {
-		console.log('logintra pressed');
-		window.location.href = 'http://localhost:3000/auth/login';
-	}
-	deleteAllCookies() {
-		this.cookie.deleteAll();
-		this.activeUser = undefined;
+	sendMessage(eventName: string, data: string) {
+		this.socket.emit(eventName, data);
 	}
 }
