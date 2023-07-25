@@ -48,15 +48,16 @@ export class UserDataService {
     }
   }
 
-  async generate2FA(): Promise<string> {
+  async generate2FA(): Promise<any> {
     return axios.get(`http://${environment.DOMAIN}:3000/2fa/generate`, {
-	twoFACodeIsValid(code: string | undefined): boolean {
-		if (!code)
-			return false;
-		return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
-	}
       withCredentials: true,
     });
+  }
+
+  twoFACodeIsValid(code: string | undefined): boolean {
+    if (!code)
+      return false;
+    return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
   }
 
   async verify2FA(code: string): Promise<void> {
@@ -74,7 +75,7 @@ export class UserDataService {
     });
   }
 
-  async disable2FA(): Promise<void> {
+  async disable2FA(code: string): Promise<void> {
     return axios.get(`http://${environment.DOMAIN}:3000/2fa/disable`, {
       params: { code },
       withCredentials: true,

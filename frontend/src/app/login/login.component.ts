@@ -2,7 +2,7 @@
 import { Component, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 // import { loginPageGuard } from '../guard/login-page.guard';
 import { environment } from 'src/environments/environment';
 @Component({
