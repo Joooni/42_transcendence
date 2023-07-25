@@ -22,6 +22,7 @@ import { GameComponent } from './game/game.component';
 import { GameDisplayComponent } from './game/game-display/game-display.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { ErrorComponent } from './error/error.component';
 
 const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, options: {} };
 
@@ -39,6 +40,7 @@ const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, optio
     ChatChannelComponent,
     GameComponent,
     GameDisplayComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,

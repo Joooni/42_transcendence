@@ -56,8 +56,6 @@ export class SocketGateway
       const user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
       this.removeSocket(user.id); // Remove Socket from SocketMap
-
-      //Function does not exist yet:
       this.usersService.updateStatus(user.id, 'offline');
     } catch (error) {
       console.log('Error Socket: User not found');
@@ -93,14 +91,12 @@ export class SocketGateway
       console.log('SocketId will be updated in database', userid);
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
-
       this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');
       client.emit('identify');
     }
   }
-
 
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {

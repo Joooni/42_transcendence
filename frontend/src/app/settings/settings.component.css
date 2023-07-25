@@ -51,3 +51,19 @@ button {
 	margin: 3vmin 3vmin;
 	column-gap: 15vmin;
 }
+
+.popup-2FA-code-input {
+	width: 10rem;
+}
+
+.popup-content-qr {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1.5rem;
+	align-items: center;
+}
+
+.image-qr-code {
+	height: 10rem;
+	width: 10rem;
+}

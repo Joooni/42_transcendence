@@ -11,6 +11,7 @@ type User {
   email: String!
   picture: String!
   twoFAEnabled: Boolean!
+  hasTwoFASecret: Boolean!
   status: String!
   wins: Float!
   losses: Float!
@@ -18,6 +19,7 @@ type User {
   xp: Float!
   map: Float!
   achievements: [Int!]!
+  selectedMap: Float!
   lastLoginTimestamp: Timestamp!
 }
 
@@ -49,8 +51,8 @@ type Message {
 }
 
 type Query {
-  users: [User!]!
-  user(id: Int): User!
+  allUsers: [User!]!
+  userById(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
@@ -60,6 +62,7 @@ type Query {
 
 type Mutation {
   updateUsername(username: String!): User!
+  updateSelectedMap(selectedMap: Float!): User!
   updateStatus(status: String!): User!
   updateAchievements(id: Float!, newAchievement: Float!): User!
 }

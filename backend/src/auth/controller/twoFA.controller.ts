@@ -14,6 +14,7 @@ import { UsersService } from '../../users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { JwtPayload } from '../strategy/jwt.strategy';
 import { TwoFAGuard } from '../guard/twoFA.guard';
+import { Response } from 'express';
 
 @Controller('2fa')
 export class TwoFAController {
@@ -45,24 +46,26 @@ export class TwoFAController {
   @UseGuards(JwtAuthGuard)
   async verify(
     @Req() req: any,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Query('code') code: string | null,
-  ) {
+  ): Promise<void> {
     if (req.user.isAuthenticated)
       throw new BadRequestException('User is already authenticated');
     if (!code) throw new BadRequestException('2FA code missing');
     try {
       const user: User = await this.usersService.findOne(req.user.id);
-      return await this.twoFAService.verify2FA(user, code).then(() => {
+      await this.twoFAService.verify2FA(user, code).then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const jwt_token = this.jwtService.sign({
           id: req.user.id,
           email: req.user.email,
           isAuthenticated: true,
-        } as JwtPayload);
-      });
+        } as JwtPayload);//does this even get used?? only gets declared
+				res.cookie('jwt', jwt_token, { httpOnly: true });
+				return { isAuthenticated: true };
+      });//should we even return?
     } catch (error) {
-      throw new BadRequestException(error.message);
+			throw new BadRequestException(error.message);
     }
   }
 
@@ -83,10 +86,14 @@ export class TwoFAController {
 
   @Get('disable')
   @UseGuards(JwtAuthGuard, TwoFAGuard)
-  async disableTwoFA(@Req() req: any): Promise<void> {
-    try {
+  async disableTwoFA(
+		@Req() req: any,
+    @Query('code') code: string | null,
+	): Promise<void> {
+    if (!code) throw new BadRequestException('2FA code missing');
+		try {
       const user: User = await this.usersService.findOne(req.user.id);
-      await this.twoFAService.disable2FA(user);
+      await this.twoFAService.disable2FA(user, code);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

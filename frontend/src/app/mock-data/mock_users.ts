@@ -13,7 +13,9 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 12,
 		losses: 23,
-		map: 2,
+		xp: 434,
+		// map: 2,
+		achievements: [1, 2, 3]
 	},
 	{
 		id: 2,
@@ -27,7 +29,9 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 1,
 		losses: 12,
-		map: 1,
+		xp: 4322,
+		// map: 1,
+		achievements: [4, 5, 6]
 	},
 	{
 		id: 3,
@@ -41,7 +45,9 @@ export const USERS: User[] = [
 		status: "gaming",
 		wins: 600,
 		losses: 120,
-		map: 3,
+		xp: 894,
+		// map: 3,
+		achievements: [2, 4, 6]
 	},
 	{
 		id: 4,
@@ -55,7 +61,9 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 1,
 		losses: 120,
-		map: 3,
+		xp: 5433,
+		// map: 3,
+		achievements: [1, 3, 5]
 	},
 	{
 		id: 5,
@@ -69,7 +77,9 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 15,
 		losses: 12,
-		map: 1,
+		xp: 5672,
+		// map: 1,
+		achievements: [1, 2, 5]
 	},
 	{
 		id: 6,
@@ -83,7 +93,9 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 12,
 		losses: 15,
-		map: 1,
+		xp: 7832,
+		// map: 1,
+		achievements: [2, 3, 6]
 	},
 	{
 		id: 7,
@@ -97,7 +109,9 @@ export const USERS: User[] = [
 		status: "gaming",
 		wins: 15,
 		losses: 12,
-		map: 3,
+		xp: 129,
+		// map: 3,
+		achievements: [1, 4, 5]
 	},
 	{
 		id: 8,
@@ -111,7 +125,9 @@ export const USERS: User[] = [
 		status: "online",
 		wins: 15,
 		losses: 12,
-		map: 2,
+		xp: 327,
+		// map: 2,
+		achievements: [4, 6]
 	},
 	{
 		id: 98468,
@@ -125,7 +141,9 @@ export const USERS: User[] = [
 		status: "offline",
 		wins: 15,
 		losses: 12,
-		map: 2,
+		xp: 4214,
+		// map: 2,
+		achievements: [4, 5]
 	},
 	// this is an empty user that can be used to see if findUser functions work
 	// {
