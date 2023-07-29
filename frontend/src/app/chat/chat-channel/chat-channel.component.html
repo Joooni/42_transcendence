@@ -1,1 +1,17 @@
-<p>chat-channel works!</p>
+<div class="chat-channel">
+	<div class="chat-box channel-name">
+		<h4>{{chatComponent.selectedChannel?.name}}</h4>
+	</div>
+	<div class="chat-box message-display" id="chatHistory">
+			<div class="message" *ngFor="let message of messages">
+				<div class="sender">{{ message.sender.username }}:</div>
+				<div>{{ message.content }}</div>
+			</div>
+			<div id="anchor"></div>
+	</div>
+
+	<div class="chat-box message-input">
+		<input type="text" class="chat_input" (keyup.enter)="sendInput()" [formControl]="messageInput">
+		<button class="button_small" (click)="sendInput()">SEND</button>
+	</div>
+</div>

@@ -60,12 +60,12 @@ export class TwoFAController {
           id: req.user.id,
           email: req.user.email,
           isAuthenticated: true,
-        } as JwtPayload);//does this even get used?? only gets declared
-				res.cookie('jwt', jwt_token, { httpOnly: true });
-				return { isAuthenticated: true };
-      });//should we even return?
+        } as JwtPayload); //does this even get used?? only gets declared
+        res.cookie('jwt', jwt_token, { httpOnly: true });
+        return { isAuthenticated: true };
+      }); //should we even return?
     } catch (error) {
-			throw new BadRequestException(error.message);
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -87,11 +87,11 @@ export class TwoFAController {
   @Get('disable')
   @UseGuards(JwtAuthGuard, TwoFAGuard)
   async disableTwoFA(
-		@Req() req: any,
+    @Req() req: any,
     @Query('code') code: string | null,
-	): Promise<void> {
+  ): Promise<void> {
     if (!code) throw new BadRequestException('2FA code missing');
-		try {
+    try {
       const user: User = await this.usersService.findOne(req.user.id);
       await this.twoFAService.disable2FA(user, code);
     } catch (error) {

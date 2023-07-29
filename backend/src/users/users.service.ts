@@ -61,7 +61,7 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
-	async updateSelectedMap(id: number, selectedMap: number): Promise<void> {
+  async updateSelectedMap(id: number, selectedMap: number): Promise<void> {
     const result: UpdateResult = await this.userRepository.update(id, {
       selectedMap: selectedMap,
     });
@@ -75,7 +75,8 @@ export class UsersService {
 
   async updateTwoFASecret(secret: string, id: number): Promise<any> {
     const result: UpdateResult = await this.userRepository.update(id, {
-      twoFAsecret: secret, hasTwoFASecret: true
+      twoFAsecret: secret,
+      hasTwoFASecret: true,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
@@ -134,11 +135,10 @@ export class UsersService {
   } */
 
   async seedDatabase() {
-	try {
-		for (const user of mockUsers) {
-		await this.userRepository.insert(user);
-		}
-	} catch (error) {}
+    try {
+      for (const user of mockUsers) {
+        await this.userRepository.insert(user);
+      }
+    } catch (error) {}
   }
 }
-

@@ -40,9 +40,9 @@ export class User {
   @Column({ type: String, nullable: true })
   twoFAsecret!: string | null;
 
-	@Field()
-	@Column({ default: false})
-	hasTwoFASecret: boolean;
+  @Field()
+  @Column({ default: false })
+  hasTwoFASecret: boolean;
 
   @Field()
   @Column({ default: 'offline' })
@@ -72,9 +72,9 @@ export class User {
   @Column({ type: 'integer', array: true, default: ['1'] })
   achievements: number[];
 
-	@Field()
-	@Column({ default: 1 })
-	selectedMap: number;
+  @Field()
+  @Column({ default: 1 })
+  selectedMap: number;
 
   @Field(() => GraphQLTimestamp)
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

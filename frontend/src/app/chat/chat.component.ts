@@ -40,23 +40,22 @@ export class ChatComponent implements OnInit {
 		private userDataService: UserDataService,
 		private userRelationService: UserRelationService,
 		private channelDataService: ChannelDataService,
-		private cookie: CookieService,
 		private messageService: MessageService,
 		private socket: SocketService,
 	) {}
 
-	ngOnInit(): void {
-		this.userDataService.findSelf().then(user => this.activeUser = user);
-		// for FE-testing - to be deleted when BE provides test data
-		// this.userDataService.getAllUsers().subscribe(users => this.allUsers = users);
+	async ngOnInit(): Promise<void> {
+		await this.userDataService.findSelf().then(user => {
+			this.activeUser = user;
+			//to be updated when Channel and Relations are fully implemented? Maybe even define services differently...
+			this.userRelationService.getFriendsOf(this.activeUser.id).subscribe(friends => this.friends = friends);
+			this.userRelationService.getBlockedOf(this.activeUser.id).subscribe(blocked => this.blocked = blocked);
+			this.channelDataService.getAllChannelsVisibleFor(this.activeUser.id).subscribe(visible => this.visibleChannels = visible);
+			this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
+		});
 
-		// real function to user
 		this.userDataService.findAll().then(users => this.allUsers = users);
 
-		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
-		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
-		this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
-		this.channelDataService.getChannelsOf(parseInt(this.cookie.get("userid"))).subscribe(member => this.memberChannels = member);
 		this.socket.listen('identify').subscribe(() => {
 			this.socket.emit('identify', this.activeUser?.id);
 		});
