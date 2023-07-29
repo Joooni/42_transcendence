@@ -150,7 +150,7 @@ export class UserDataService {
     if (typeof response === 'undefined') {
       return Promise.reject(new Error('Empty user data'));
     }
-    const users = response.users;
+    const users = response.allUsers;
     return users;
   }
 

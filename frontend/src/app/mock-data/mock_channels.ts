@@ -6,7 +6,7 @@ export const CHANNELS: Channel[] = [
 		name: "Public-Member",
 		ownerid: 3,
 		type: "PUBLIC",
-		users: [1, 3, 5, 7, 9],
+		users: [1, 3, 5, 7, 9, 93774],
 		admins: [3, 5],
 		muted: [],
 		invited: [],
