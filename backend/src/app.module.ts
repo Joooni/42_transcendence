@@ -17,8 +17,6 @@ import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
 import { GameModule } from './game/game.module';
 import { MatchModule } from './game/match/match.module';
-import { ChannelsService } from './channels/channels.service';
-import { ChannelsResolver } from './channels/channels.resolver';
 import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';

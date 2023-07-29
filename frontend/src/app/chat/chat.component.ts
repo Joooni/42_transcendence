@@ -22,8 +22,8 @@ export class ChatComponent implements OnInit {
 	blocked?: number[];
 	allUsers?: User[];
 
-	memberChannels?: string[];
-	visibleChannels?: Channel[];
+	memberChannels?: Channel[];
+	otherVisibleChannels?: Channel[];
 
 	showFriends: boolean = true;
 	showOtherUsers: boolean = false;
@@ -50,18 +50,18 @@ export class ChatComponent implements OnInit {
 			//to be updated when Channel and Relations are fully implemented? Maybe even define services differently...
 			this.userRelationService.getFriendsOf(this.activeUser.id).subscribe(friends => this.friends = friends);
 			this.userRelationService.getBlockedOf(this.activeUser.id).subscribe(blocked => this.blocked = blocked);
-			this.channelDataService.getAllChannelsVisibleFor(this.activeUser.id).subscribe(visible => this.visibleChannels = visible);
-			this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
+			
+			
+			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
+			
+			//This should work now:
+			this.memberChannels = this.activeUser.channelList;
+			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
+			console.log('memberChannels: ', this.memberChannels);
 		});
 
-		// real function to user
 		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
 
-		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
-		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);
-		// this.channelDataService.getAllChannelsVisibleFor(parseInt(this.cookie.get("userid"))).subscribe(visible => this.visibleChannels = visible);
-		this.channelDataService.getChannels().then(channels => this.visibleChannels = channels);
-		this.channelDataService.getChannelsOf(parseInt(this.cookie.get("userid"))).subscribe(member => this.memberChannels = member);
 		this.socket.listen('identify').subscribe(() => {
 			this.socket.emit('identify', this.activeUser?.id);
 		});
@@ -96,8 +96,9 @@ export class ChatComponent implements OnInit {
 	}
 
 	selectChannel(channel: Channel) {
-		if (!this.memberChannels?.includes(channel.name))
-			return;
+		// If it is a memberchannel, the user is allowed to select it
+		// if (!this.memberChannels?.includes(channel.name))
+		// 	return;
 		if (this.selectedUser)
 			this.selectedUser = undefined;
 		this.selectedChannel = channel;
@@ -130,17 +131,18 @@ export class ChatComponent implements OnInit {
 		});
 	}
 
-	leaveChannel(channel: Channel) {
+	async leaveChannel(channel: Channel) {
 		console.log('Leaving channel: ', channel.name);
 
-		this.channelDataService.getChannel(channel.id)
-		.then(channel => {
-			if (channel.owner.id === this.activeUser?.id) {
-				console.log("You can't leave, because you are the owner");
-				return;
-			}
-		});
-
+		const dbChannel = await this.channelDataService.getChannel(channel.id);
+		if (!dbChannel) {
+			console.log('Channel does not exist anymore');
+			return;
+		}
+		if (dbChannel.owner.id === this.activeUser?.id) {
+			console.log("You can't leave, because you are the owner");
+			return;
+		}
 		this.socket.emit('leaveChannel', {
 			channelid: channel.id,
 			userid: this.activeUser?.id,

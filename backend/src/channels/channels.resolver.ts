@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { ChannelsService } from './channels.service';
 import { Channel } from './entities/channel.entity';
@@ -16,8 +16,15 @@ export class ChannelsResolver {
 
   @Query(() => Channel, { name: 'channel' })
   async findOne(
-    @Args('id', { type: () => String, nullable: false }) id: string,
+    @Args('id', { type: () => String, nullable: true }) id: string,
   ) {
     return this.channelsService.getChannelById(id);
+  }
+
+  @Query(() => [Channel], { name: 'visibleChannelsWithoutUser' })
+  async findVisibleChannelsWithoutUser(
+    @Args('id', { type: () => Int, nullable: true }) id: number,
+  ) {
+    return this.channelsService.findVisibleChannelsWithoutUser(id);
   }
 }

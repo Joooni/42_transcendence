@@ -41,29 +41,41 @@ export class ChannelDataService {
 		return response.channel;
 	}
 
-	//update - BE call instead
-	getChannelsOf(id: number): Observable<string[]> {
-		const channelsOfUser: string[] = [];
-		for (let i = 0; i < this.channels.length; i++) {
-			const tmpChannel = this.channels[i].users.find(elem => elem === id);
-			if (tmpChannel)
-				channelsOfUser.push(this.channels[i].name);
-		}
-		return of(channelsOfUser);
-	}
+	//update - BE call instead; user is member from the channel
+	// getChannelsOf(id: number): Observable<string[]> {
+	// 	const channelsOfUser: string[] = [];
+	// 	for (let i = 0; i < this.channels.length; i++) {
+	// 		const tmpChannel = this.channels[i].users.find(elem => elem === id);
+	// 		if (tmpChannel)
+	// 			channelsOfUser.push(this.channels[i].name);
+	// 	}
+	// 	return of(channelsOfUser);
+	// }
 
-	//update - BE call instead
-	getAllChannelsVisibleFor(id: number): Observable<Channel[]> {
-		const channelsVisibleForUser: Channel[] = [];
-		for (let i = 0; i < this.channels.length; i++) {
-			if (this.channels[i].users.find(elem => elem === id))
-				channelsVisibleForUser.push(this.channels[i]);
-			else if (this.channels[i].type !== 'PRIVATE' && !this.channels[i].banned.find(elem => elem === id))
-				channelsVisibleForUser.push(this.channels[i]);
-			else if (this.channels[i].type === 'PRIVATE' && this.channels[i].invited.find(elem => elem === id))
-			channelsVisibleForUser.push(this.channels[i]);
+	//update - BE call instead; user can see the channel
+	async getOtherVisibleChannels(id: number): Promise<Channel[]> {		
+		const response = await graphQLService.query(
+			`
+				query getOtherVisibleChannels($id: Int!) {
+					visibleChannelsWithoutUser(id: $id) {
+						id
+						name
+						createdAt
+						users {
+							id
+							intra
+						}
+					}
+				}
+			`,
+			{ id },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
 		}
-		return of(channelsVisibleForUser);
+		console.log('getOtherVisibleChannels:', response.visibleChannelsWithoutUser);
+		return response.visibleChannelsWithoutUser;
 	}
 
 	//Test Backend query

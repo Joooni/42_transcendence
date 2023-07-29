@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { EntityNotFoundError, Repository } from 'typeorm';
-import { CreateChannelInput } from './dto/create-channel.input';
+import { Repository } from 'typeorm';
 import { Channel } from './entities/channel.entity';
 import { ChannelType } from './entities/channel.entity';
 
@@ -70,6 +69,30 @@ export class ChannelsService {
       } else {
         return channel;
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async findVisibleChannelsWithoutUser(
+    id: number,
+  ): Promise<Channel[] | undefined> {
+    try {
+      const subQuery = this.channelRepository
+        .createQueryBuilder('channel')
+        .leftJoin('channel.users', 'user')
+        .where('user.id = :id', { id })
+        .select('channel.id');
+
+      return await this.channelRepository
+        .createQueryBuilder('channel')
+        .leftJoinAndSelect('channel.users', 'users')
+        .where(`channel.id NOT IN (${subQuery.getQuery()})`)
+        .andWhere('channel.type IN (:...types)', {
+          types: [ChannelType.public, ChannelType.protected],
+        })
+        .setParameters(subQuery.getParameters())
+        .getMany();
     } catch (error) {
       console.log(error);
     }

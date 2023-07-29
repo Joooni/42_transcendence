@@ -40,7 +40,8 @@ export class Channel {
   @Column('text')
   name: string;
 
-  @Field((type) => ChannelType)
+  @Field(() => ChannelType)
+  @Column({ type: 'enum', enum: ChannelType, default: ChannelType.public })
   type: ChannelType;
 
   @Field()

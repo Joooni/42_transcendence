@@ -1,3 +1,5 @@
+import { Channel } from "./channel";
+
 export interface User {
 	id: number;
 	intra: string;
@@ -12,6 +14,16 @@ export interface User {
 	wins: number;
 	losses: number;
 	xp: number;
+	map: number;
 	selectedMap?: number;
 	achievements: number[];
+	ownedChannels: Channel[];
+	channelList: Channel[];
+	adminInChannel: Channel[];
+	mutedInChannel: Channel[];
+	invitedInChannel: Channel[];
+	bannedInChannel: Channel[];
+	friends: User[];
+	sendFriendRequests: User[];
+	incomingFriendRequests: User[];
 }
