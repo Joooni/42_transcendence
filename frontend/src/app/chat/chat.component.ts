@@ -16,7 +16,6 @@ import { SocketService } from '../services/socket/socket.service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-
 	activeUser?: User;
 
 	friends?: number[];
@@ -114,11 +113,36 @@ export class ChatComponent implements OnInit {
 		// const channelname = 'TestChannel';
 		if (!this.createChannelName)
 			return;
-		console.log('Button clicked, channelname: ', this.createChannelName);
+		//console.log('Button clicked, channelname: ', this.createChannelName);
 		this.socket.emit('createChannel', { 
 			channelname: this.createChannelName,
 			ownerid: this.activeUser?.id,
 		});
 		this.createChannelName = undefined;
+	}
+
+	joinChannel(channel: Channel) {
+		console.log('Joining channel: ', channel.name);
+		this.socket.emit('joinChannel', {
+			channelid: channel.id,
+			userid: this.activeUser?.id,
+		});
+	}
+
+	leaveChannel(channel: Channel) {
+		console.log('Leaving channel: ', channel.name);
+
+		this.channelDataService.getChannel(channel.id)
+		.then(channel => {
+			if (channel.owner.id === this.activeUser?.id) {
+				console.log("You can't leave, because you are the owner");
+				return;
+			}
+		});
+
+		this.socket.emit('leaveChannel', {
+			channelid: channel.id,
+			userid: this.activeUser?.id,
+		});
 	}
 }

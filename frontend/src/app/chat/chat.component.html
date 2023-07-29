@@ -103,8 +103,16 @@
 						<button 
 							*ngIf="!memberChannels?.includes(channel.name)"
 							class="button_reverse button_small"
+							(click)="joinChannel(channel)"
 						>
 							JOIN
+						</button>
+						<button 
+							*ngIf="!memberChannels?.includes(channel.name)"
+							class="button_reverse button_small"
+							(click)="leaveChannel(channel)"
+						>
+							Leave
 						</button>
 						<img 
 							*ngIf="hasUnreadMessages" 

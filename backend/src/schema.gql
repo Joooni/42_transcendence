@@ -51,6 +51,10 @@ type User {
   adminInChannel: [Channel!]
   mutedInChannel: [Channel!]
   invitedInChannel: [Channel!]
+  bannedInChannel: [Channel!]
+  friends: [User!]
+  sendFriendRequests: [User!]
+  incomingFriendRequests: [User!]
 }
 
 """

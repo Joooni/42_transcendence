@@ -3,7 +3,7 @@ import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PasswordService } from "src/password/password.service";
 import { User } from "src/users/entities/user.entity";
-import { AfterInsert, AfterUpdate, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterRemove, AfterUpdate, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum ChannelType {
 	public,
@@ -51,48 +51,47 @@ export class Channel {
 
 	@Field(() => [User], { nullable: true })
 	@ManyToMany(() => User, user => user.channelList, {
-		// eager: true,
-		cascade: true,
+		eager: true,
+		cascade: ['insert', 'update', 'remove'],
+		onDelete: 'CASCADE',
 	})
 	@JoinTable()
-	users?: User[];
+	users: User[];
 
 	@Field(() => [User], { nullable: true })
 	@ManyToMany(() => User, user => user.adminInChannel, {
-		// eager: true,
-		cascade: true,
+		eager: true,
+		cascade: ['insert', 'update', 'remove'],
+		onDelete: 'CASCADE',
 	})
 	@JoinTable()
 	admins: User[];
 
 	@Field(() => [User], { nullable: true })
 	@ManyToMany(() => User, user => user.mutedInChannel, {
-		// eager: true,
-		cascade: true,
+		eager: true,
+		cascade: ['insert', 'update', 'remove'],
+		onDelete: 'CASCADE',
 	})
 	@JoinTable()
 	mutedUsers: User[];
 
 	@Field(() => [User], { nullable: true })
 	@ManyToMany(() => User, user => user.invitedInChannel, {
-		// eager: true,
-		cascade: true,
+		eager: true,
+		cascade: ['insert', 'update', 'remove'],
+		onDelete: 'CASCADE',
 	})
 	@JoinTable()
 	invitedUsers: User[];
 
 	@Field(() => [User], { nullable: true })
 	@ManyToMany(() => User, user => user.bannedInChannel, {
-		// eager: true,
-		cascade: true,
+		eager: true,
+		cascade: ['insert', 'update', 'remove'],
+		onDelete: 'CASCADE',
 	})
 	@JoinTable()
 	bannedUsers: User[];
 
-	// @AfterInsert()
-	// @AfterUpdate()
-	// async updateUserChannelList() {
-	// 	@InjectRepository(User) private userRepository: Repository<User>;
-	// 	const users = await 
-	// }
 }

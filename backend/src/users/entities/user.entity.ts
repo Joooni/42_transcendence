@@ -84,27 +84,40 @@ export class User {
   @Field(() => Channel, { nullable: true })
   @OneToMany(() => Channel, (channel) => channel.owner)
   @JoinColumn()
-  ownedChannels?: Channel[];
+  ownedChannels: Channel[];
 
   @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel)
-  @JoinTable()
-  channelList?: Channel[];
+  @ManyToMany(() => Channel, (channel) => channel.users)
+  channelList: Channel[];
 
   @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel)
-  @JoinTable()
-  adminInChannel?: Channel[];
+  @ManyToMany(() => Channel, (channel) => channel.admins)
+  adminInChannel: Channel[];
 
   @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel)
-  @JoinTable()
-  mutedInChannel?: Channel[];
+  @ManyToMany(() => Channel, (channel) => channel.mutedUsers)
+  mutedInChannel: Channel[];
 
   @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel)
-  @JoinTable()
-  invitedInChannel?: Channel[];
+  @ManyToMany(() => Channel, (channel) => channel.invitedUsers)
+  invitedInChannel: Channel[];
 
-  bannedInChannel?: Channel[];
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.bannedUsers)
+  bannedInChannel: Channel[];
+
+  @Field(() => [User], { nullable: true })
+	@ManyToMany(() => User, user => user.friends)
+  @JoinTable()
+  friends: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.incomingFriendRequests)
+  @JoinTable() //?
+  sendFriendRequests: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.sendFriendRequests)
+  incomingFriendRequests: User[];
+
 }

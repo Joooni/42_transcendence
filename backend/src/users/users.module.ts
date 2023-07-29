@@ -7,10 +7,11 @@ import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { Channel } from 'src/channels/entities/channel.entity';
 
 @Module({
   providers: [UsersResolver, UsersService],
-  imports: [TypeOrmModule.forFeature([User]), ConfigModule, HttpModule],
+  imports: [TypeOrmModule.forFeature([User, Channel]), ConfigModule, HttpModule],
   exports: [UsersService],
   controllers: [UsersController],
 })

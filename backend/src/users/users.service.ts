@@ -12,10 +12,13 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { mockUsers } from './entities/user.entity.mock';
+import { Channel } from 'src/channels/entities/channel.entity';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {}
@@ -36,14 +39,45 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    const users = await this.userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+    .leftJoinAndSelect('user.channelList', 'channelList')
+    .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+    .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+    .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+    .getMany();
+    return users;
   }
 
-  findOne(identifier: number | string): Promise<User> {
-    if (typeof identifier === 'number')
-      return this.userRepository.findOneByOrFail({ id: identifier });
-    else if (typeof identifier === 'string')
-      return this.userRepository.findOneByOrFail({ username: identifier });
+  async findOne(identifier: number | string): Promise<User> {
+    if (typeof identifier === 'number') {
+      return await this.userRepository
+      .createQueryBuilder('user')
+      .where({ id: identifier })
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getOneOrFail();
+
+      //old
+      //return this.userRepository.findOneByOrFail({ id: identifier });
+    }
+    else if (typeof identifier === 'string') {
+      return await this.userRepository
+      .createQueryBuilder('user')
+      .where({ username: identifier })
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getOneOrFail();
+      // old
+      // return this.userRepository.findOneByOrFail({ username: identifier });
+    }
     throw new EntityNotFoundError(User, {});
   }
 
@@ -122,6 +156,22 @@ export class UsersService {
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async addToOwnedChannel(userid: number, channelId: string) {
+    const user = await this.findOne(userid);
+    const channel = await this.channelRepository.findOneByOrFail({ id: channelId });
+    
+    console.log('User:', user);
+    console.log('Channel:', channel);
+
+    if (!channel || !user) {
+      console.log('User or Channel not found');
+      return;
+    }
+    user.ownedChannels = user.ownedChannels || []; // if user.ownedChannels is undefined, set it to an empty array
+    user.ownedChannels.push(channel);
+    await this.userRepository.save(user);
   }
 
   /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {

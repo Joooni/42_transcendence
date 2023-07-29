@@ -88,6 +88,16 @@ export class SocketGateway
     this.channelsService.createChannel(client, obj.channelname, obj.ownerid);
   }
 
+  @SubscribeMessage('joinChannel')
+  joinChannel(client: Socket, obj: any): void {
+    this.channelsService.addUserToChannel(client, obj.channelid, obj.userid);
+  }
+
+  @SubscribeMessage('leaveChannel')
+  leaveChannel(client: Socket, obj: any): void {
+    this.channelsService.removeUserFromChannel(client, obj.channelid, obj.userid);
+  }
+
   @SubscribeMessage('identify')
   identifyUser(client: Socket, userid: number | undefined): void {
     if (typeof userid !== 'undefined' && userid !== null) {

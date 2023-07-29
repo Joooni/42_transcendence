@@ -1,7 +1,9 @@
+import { User } from "./user";
+
 export interface Channel {
-	id: number;
+	id: string;
 	name: string;
-	ownerid: number;
+	owner: User;
 	type: string; //ENUM: PUBLIC,PRIVATE,PASSWORD,DM
 	users: number[];
 	admins: number[];

@@ -14,6 +14,33 @@ export class ChannelDataService {
 
 	constructor() { }
 
+	async getChannel(channelid: string): Promise<Channel> {
+		const response = await graphQLService.query(
+			`
+				query getChannel($channelid: String!){
+					channel(id: $channelid) {
+						id
+						name
+						createdAt
+						owner {
+							id
+							firstname
+						}
+						users {
+							id
+						}
+					}
+				}
+			`,
+			{ channelid },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
+		}
+		return response.channel;
+	}
+
 	//update - BE call instead
 	getChannelsOf(id: number): Observable<string[]> {
 		const channelsOfUser: string[] = [];
