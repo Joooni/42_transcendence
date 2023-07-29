@@ -18,7 +18,8 @@ import { Channel } from 'src/channels/entities/channel.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>,
+    @InjectRepository(Channel)
+    private readonly channelRepository: Repository<Channel>,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {}
@@ -39,42 +40,54 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    const users = await this.userRepository
-    .createQueryBuilder('user')
-    .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
-    .leftJoinAndSelect('user.channelList', 'channelList')
-    .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
-    .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
-    .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
-    .getMany();
-    return users;
+    //
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getMany();
+  }
+
+  async findAllExceptMyself(excludedUserId: number): Promise<User[]> {
+    //
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id != :excludedUserId', { excludedUserId })
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getMany();
   }
 
   async findOne(identifier: number | string): Promise<User> {
     if (typeof identifier === 'number') {
       return await this.userRepository
-      .createQueryBuilder('user')
-      .where({ id: identifier })
-      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
-      .leftJoinAndSelect('user.channelList', 'channelList')
-      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
-      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
-      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
-      .getOneOrFail();
+        .createQueryBuilder('user')
+        .where({ id: identifier })
+        .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+        .leftJoinAndSelect('user.channelList', 'channelList')
+        .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+        .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+        .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .getOneOrFail();
 
       //old
       //return this.userRepository.findOneByOrFail({ id: identifier });
-    }
-    else if (typeof identifier === 'string') {
+    } else if (typeof identifier === 'string') {
       return await this.userRepository
-      .createQueryBuilder('user')
-      .where({ username: identifier })
-      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
-      .leftJoinAndSelect('user.channelList', 'channelList')
-      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
-      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
-      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
-      .getOneOrFail();
+        .createQueryBuilder('user')
+        .where({ username: identifier })
+        .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+        .leftJoinAndSelect('user.channelList', 'channelList')
+        .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+        .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+        .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .getOneOrFail();
       // old
       // return this.userRepository.findOneByOrFail({ username: identifier });
     }
@@ -160,8 +173,10 @@ export class UsersService {
 
   async addToOwnedChannel(userid: number, channelId: string) {
     const user = await this.findOne(userid);
-    const channel = await this.channelRepository.findOneByOrFail({ id: channelId });
-    
+    const channel = await this.channelRepository.findOneByOrFail({
+      id: channelId,
+    });
+
     console.log('User:', user);
     console.log('Channel:', channel);
 
@@ -187,7 +202,7 @@ export class UsersService {
   async seedDatabase() {
     try {
       for (const user of mockUsers) {
-      await this.userRepository.insert(user);
+        await this.userRepository.insert(user);
       }
     } catch (error) {
       console.log(error);

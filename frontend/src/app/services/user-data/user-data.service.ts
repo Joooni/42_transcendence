@@ -126,23 +126,23 @@ export class UserDataService {
   async findAll(): Promise<User[]> {
     const response = await graphQLService.query(
       `
-      query {
-        allUsers {
-          id
-          intra
-          firstname
-          lastname
-          username
-          email
-          picture
-          twoFAEnabled
-          status
-          wins
-          losses
-          xp
-          achievements
+        query {
+          allUsers {
+            id
+            intra
+            firstname
+            lastname
+            username
+            email
+            picture
+            twoFAEnabled
+            status
+            wins
+            losses
+            xp
+            achievements
+          }
         }
-      }
       `,
       undefined,
       { fetchPolicy: 'network-only' },
@@ -150,8 +150,39 @@ export class UserDataService {
     if (typeof response === 'undefined') {
       return Promise.reject(new Error('Empty user data'));
     }
-    const users = response.allUsers;
-    return users;
+    return response.allUsers;
+  }
+
+  async findAllExceptMyself(): Promise<User[]> {
+    console.log('findAllExceptMyself called');
+    const response = await graphQLService.query(
+      `
+        query {
+          allUsersExceptMyself {
+            id
+            intra
+            firstname
+            lastname
+            username
+            email
+            picture
+            twoFAEnabled
+            status
+            wins
+            losses
+            xp
+            achievements
+          }
+        }
+      `,
+      undefined,
+      { fetchPolicy: 'network-only' },
+    );
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    console.log('result:', response.allUsersExceptMyself);
+    return response.allUsersExceptMyself;
   }
 
   async findUserById(id: number): Promise<User> {

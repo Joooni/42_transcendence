@@ -11,20 +11,20 @@ import { ChannelsService } from './channels.service';
 import { Channel } from './entities/channel.entity';
 
 @Module({
-	providers: [
-		ChannelsService,
-		ChannelsResolver,
-		UsersService,
-		UsersResolver,
-		PasswordService,
-	],
-	imports: [
-		TypeOrmModule.forFeature([Channel, User]),
-		ConfigModule,
-		HttpModule,
-	],
-	exports: [ChannelsService],
+  providers: [
+    ChannelsService,
+    ChannelsResolver,
+    UsersService,
+    UsersResolver,
+    PasswordService,
+  ],
+  imports: [
+    TypeOrmModule.forFeature([Channel, User]),
+    ConfigModule,
+    HttpModule,
+  ],
+  exports: [ChannelsService],
 })
 export class ChannelsModule {
-	constructor(private channelsService: ChannelsService) {}
+  constructor(private channelsService: ChannelsService) {}
 }

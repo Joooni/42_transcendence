@@ -20,7 +20,13 @@ import { Channel } from 'src/channels/entities/channel.entity';
     MatchModule,
     GameModule,
   ],
-  providers: [SocketGateway, UsersService, MatchService, MessagesService, ChannelsService],
+  providers: [
+    SocketGateway,
+    UsersService,
+    MatchService,
+    MessagesService,
+    ChannelsService,
+  ],
   exports: [SocketGateway],
 })
 export class SocketModule {

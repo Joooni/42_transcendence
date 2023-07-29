@@ -33,7 +33,7 @@ export class SocketGateway
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
   ) {
-    const io = new Server();
+    //const io = new Server();
   }
 
   @WebSocketServer()
@@ -95,7 +95,11 @@ export class SocketGateway
 
   @SubscribeMessage('leaveChannel')
   leaveChannel(client: Socket, obj: any): void {
-    this.channelsService.removeUserFromChannel(client, obj.channelid, obj.userid);
+    this.channelsService.removeUserFromChannel(
+      client,
+      obj.channelid,
+      obj.userid,
+    );
   }
 
   @SubscribeMessage('identify')
@@ -103,7 +107,7 @@ export class SocketGateway
     if (typeof userid !== 'undefined' && userid !== null) {
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
-      
+
       this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');

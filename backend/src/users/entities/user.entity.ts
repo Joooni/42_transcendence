@@ -1,6 +1,15 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
 import { Channel } from 'src/channels/entities/channel.entity';
-import { Entity, Column, PrimaryColumn, Index, ManyToMany, JoinTable, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  Index,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -107,7 +116,7 @@ export class User {
   bannedInChannel: Channel[];
 
   @Field(() => [User], { nullable: true })
-	@ManyToMany(() => User, user => user.friends)
+  @ManyToMany(() => User, (user) => user.friends)
   @JoinTable()
   friends: User[];
 
@@ -119,5 +128,4 @@ export class User {
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.sendFriendRequests)
   incomingFriendRequests: User[];
-
 }

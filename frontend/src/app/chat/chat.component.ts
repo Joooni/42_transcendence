@@ -54,7 +54,8 @@ export class ChatComponent implements OnInit {
 			this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
 		});
 
-		this.userDataService.findAll().then(users => this.allUsers = users);
+		// real function to user
+		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
 
 		this.userRelationService.getFriendsOf(parseInt(this.cookie.get("userid"))).subscribe(friends => this.friends = friends);
 		this.userRelationService.getBlockedOf(parseInt(this.cookie.get("userid"))).subscribe(blocked => this.blocked = blocked);

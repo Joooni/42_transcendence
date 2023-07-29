@@ -81,6 +81,7 @@ type Message {
 
 type Query {
   allUsers: [User!]!
+  allUsersExceptMyself: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!

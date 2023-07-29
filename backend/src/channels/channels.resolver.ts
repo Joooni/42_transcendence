@@ -7,17 +7,17 @@ import { Channel } from './entities/channel.entity';
 @Resolver('Channel')
 @UseGuards(JwtAuthGuard)
 export class ChannelsResolver {
-	constructor(private readonly channelsService: ChannelsService) {}
+  constructor(private readonly channelsService: ChannelsService) {}
 
-	@Query(() => [Channel], { name: 'channels' })
-	async findAll(): Promise<Channel[]> {
-		return this.channelsService.findAll();
-	}
+  @Query(() => [Channel], { name: 'channels' })
+  async findAll(): Promise<Channel[]> {
+    return this.channelsService.findAll();
+  }
 
-	@Query(() => Channel, { name: 'channel' })
-	async findOne(
-		@Args('id', { type: () => String, nullable: false }) id: string,
-		) {
-		return this.channelsService.getChannelById(id);
-	}
+  @Query(() => Channel, { name: 'channel' })
+  async findOne(
+    @Args('id', { type: () => String, nullable: false }) id: string,
+  ) {
+    return this.channelsService.getChannelById(id);
+  }
 }

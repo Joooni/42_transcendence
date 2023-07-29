@@ -11,7 +11,11 @@ import { Channel } from 'src/channels/entities/channel.entity';
 
 @Module({
   providers: [UsersResolver, UsersService],
-  imports: [TypeOrmModule.forFeature([User, Channel]), ConfigModule, HttpModule],
+  imports: [
+    TypeOrmModule.forFeature([User, Channel]),
+    ConfigModule,
+    HttpModule,
+  ],
   exports: [UsersService],
   controllers: [UsersController],
 })
