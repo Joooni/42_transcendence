@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
 
 export interface gameData {
   roomNbr: number;
@@ -14,10 +14,10 @@ export interface gameData {
   goalsLeft: number;
   leftUserID: number;
   rightUserID: number;
-  gameEnds: boolean
+  gameEnds: boolean;
 }
 
 export interface gameDataBE {
-	leftUserSocket: Socket,
-	rightUserSocket?: Socket,
-  }
+  leftUserSocket: Socket;
+  rightUserSocket?: Socket;
+}

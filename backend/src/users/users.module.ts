@@ -15,7 +15,10 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [UsersController],
 })
 export class UsersModule implements OnModuleInit {
-  constructor(private dataSource: DataSource, private readonly usersService: UsersService) {}
+  constructor(
+    private dataSource: DataSource,
+    private readonly usersService: UsersService,
+  ) {}
 
   async onModuleInit() {
     console.log('Seeding database with Kongs');

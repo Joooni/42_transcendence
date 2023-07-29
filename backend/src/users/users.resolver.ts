@@ -51,15 +51,12 @@ export class UsersResolver {
     return this.usersService.findOne(jwtPayload.id);
   }
 
-	@Mutation(() => User)
+  @Mutation(() => User)
   async updateSelectedMap(
     @CurrentJwtPayload() jwtPayload: JwtPayload,
     @Args('selectedMap', { type: () => Number }) selectedMap: number,
   ) {
-		await this.usersService.updateSelectedMap(
-      jwtPayload.id,
-      selectedMap
-    );
+    await this.usersService.updateSelectedMap(jwtPayload.id, selectedMap);
     return this.usersService.findOne(jwtPayload.id);
   }
 
