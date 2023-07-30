@@ -6,7 +6,6 @@ import { Socket } from 'socket.io';
 import { HttpService } from '@nestjs/axios';
 import { Match } from './match.entity';
 import { MatchService } from './match/match.service';
-import { createMatch } from './create-match.input';
 import { gameData, gameDataBE } from './match/GameData';
 
 @Injectable()

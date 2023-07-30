@@ -18,7 +18,7 @@ export class MatchService {
     startY: 298,
   };
 
-  constructor() {}
+  //constructor() {}
 
   runGame(gameData: gameData): gameData {
     gameData = this.prepareAfterGoal(gameData);

@@ -1,5 +1,15 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
+import { Channel } from 'src/channels/entities/channel.entity';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  Index,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -79,4 +89,43 @@ export class User {
   @Field(() => GraphQLTimestamp)
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastLoginTimestamp: Date;
+
+  @Field(() => Channel, { nullable: true })
+  @OneToMany(() => Channel, (channel) => channel.owner)
+  @JoinColumn()
+  ownedChannels: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.users)
+  channelList: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.admins)
+  adminInChannel: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.mutedUsers)
+  mutedInChannel: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.invitedUsers)
+  invitedInChannel: Channel[];
+
+  @Field(() => [Channel], { nullable: true })
+  @ManyToMany(() => Channel, (channel) => channel.bannedUsers)
+  bannedInChannel: Channel[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.friends)
+  @JoinTable()
+  friends: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.incomingFriendRequests)
+  @JoinTable() //?
+  sendFriendRequests: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.sendFriendRequests)
+  incomingFriendRequests: User[];
 }

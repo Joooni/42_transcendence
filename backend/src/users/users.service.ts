@@ -12,10 +12,14 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { mockUsers } from './entities/user.entity.mock';
+import { Channel } from 'src/channels/entities/channel.entity';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Channel)
+    private readonly channelRepository: Repository<Channel>,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {}
@@ -36,14 +40,57 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    //
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getMany();
   }
 
-  findOne(identifier: number | string): Promise<User> {
-    if (typeof identifier === 'number')
-      return this.userRepository.findOneByOrFail({ id: identifier });
-    else if (typeof identifier === 'string')
-      return this.userRepository.findOneByOrFail({ username: identifier });
+  async findAllExceptMyself(excludedUserId: number): Promise<User[]> {
+    //
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id != :excludedUserId', { excludedUserId })
+      .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+      .leftJoinAndSelect('user.channelList', 'channelList')
+      .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+      .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+      .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+      .getMany();
+  }
+
+  async findOne(identifier: number | string): Promise<User> {
+    if (typeof identifier === 'number') {
+      return await this.userRepository
+        .createQueryBuilder('user')
+        .where({ id: identifier })
+        .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+        .leftJoinAndSelect('user.channelList', 'channelList')
+        .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+        .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+        .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .getOneOrFail();
+
+      //old
+      //return this.userRepository.findOneByOrFail({ id: identifier });
+    } else if (typeof identifier === 'string') {
+      return await this.userRepository
+        .createQueryBuilder('user')
+        .where({ username: identifier })
+        .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
+        .leftJoinAndSelect('user.channelList', 'channelList')
+        .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
+        .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
+        .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .getOneOrFail();
+      // old
+      // return this.userRepository.findOneByOrFail({ username: identifier });
+    }
     throw new EntityNotFoundError(User, {});
   }
 
@@ -124,6 +171,24 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
+  async addToOwnedChannel(userid: number, channelId: string) {
+    const user = await this.findOne(userid);
+    const channel = await this.channelRepository.findOneByOrFail({
+      id: channelId,
+    });
+
+    console.log('User:', user);
+    console.log('Channel:', channel);
+
+    if (!channel || !user) {
+      console.log('User or Channel not found');
+      return;
+    }
+    user.ownedChannels = user.ownedChannels || []; // if user.ownedChannels is undefined, set it to an empty array
+    user.ownedChannels.push(channel);
+    await this.userRepository.save(user);
+  }
+
   /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
     const result: UpdateResult = await this.userRepository.createQueryBuilder()
     .update(User)
@@ -139,6 +204,8 @@ export class UsersService {
       for (const user of mockUsers) {
         await this.userRepository.insert(user);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

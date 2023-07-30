@@ -8,11 +8,12 @@ import { MessagesResolver } from './messages.resolver';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UsersResolver } from 'src/users/users.resolver';
+import { Channel } from 'src/channels/entities/channel.entity';
 
 @Module({
   providers: [MessagesService, MessagesResolver, UsersService, UsersResolver],
   imports: [
-    TypeOrmModule.forFeature([Message, User]),
+    TypeOrmModule.forFeature([Message, User, Channel]),
     ConfigModule,
     HttpModule,
   ],

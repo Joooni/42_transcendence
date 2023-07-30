@@ -17,6 +17,9 @@ import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
 import { GameModule } from './game/game.module';
 import { MatchModule } from './game/match/match.module';
+import { ChannelsModule } from './channels/channels.module';
+import { PasswordService } from './password/password.service';
+import { Channel } from './channels/entities/channel.entity';
 
 @Module({
   imports: [
@@ -35,7 +38,7 @@ import { MatchModule } from './game/match/match.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Message, Match],
+        entities: [User, Message, Match, Channel],
         synchronize: true,
       }),
     }),
@@ -51,8 +54,9 @@ import { MatchModule } from './game/match/match.module';
     AuthModule,
     PassportModule,
     SocketModule,
+    ChannelsModule,
   ],
   controllers: [AppController, UsersController],
-  providers: [AppService],
+  providers: [AppService, PasswordService],
 })
 export class AppModule {}

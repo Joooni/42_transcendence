@@ -2,6 +2,31 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Channel {
+  id: String!
+  owner: User!
+  name: String!
+  type: ChannelType!
+  password: String!
+  createdAt: DateTime!
+  users: [User!]
+  admins: [User!]
+  mutedUsers: [User!]
+  invitedUsers: [User!]
+  bannedUsers: [User!]
+}
+
+enum ChannelType {
+  public
+  private
+  protected
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: Int!
   intra: String!
@@ -21,6 +46,15 @@ type User {
   achievements: [Int!]!
   selectedMap: Float!
   lastLoginTimestamp: Timestamp!
+  ownedChannels: Channel
+  channelList: [Channel!]
+  adminInChannel: [Channel!]
+  mutedInChannel: [Channel!]
+  invitedInChannel: [Channel!]
+  bannedInChannel: [Channel!]
+  friends: [User!]
+  sendFriendRequests: [User!]
+  incomingFriendRequests: [User!]
 }
 
 """
@@ -37,11 +71,6 @@ type Match {
   date: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Message {
   id: Int!
   sender: User!
@@ -52,12 +81,16 @@ type Message {
 
 type Query {
   allUsers: [User!]!
+  allUsersExceptMyself: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   matches: [Match!]!
   match(id: Int): Match!
+  channels: [Channel!]!
+  channel(id: String): Channel!
+  visibleChannelsWithoutUser(id: Int): [Channel!]!
 }
 
 type Mutation {

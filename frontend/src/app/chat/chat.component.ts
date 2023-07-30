@@ -16,15 +16,14 @@ import { SocketService } from '../services/socket/socket.service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-
 	activeUser?: User;
 
 	friends?: number[];
 	blocked?: number[];
 	allUsers?: User[];
 
-	memberChannels?: string[];
-	visibleChannels?: Channel[];
+	memberChannels?: Channel[];
+	otherVisibleChannels?: Channel[];
 
 	showFriends: boolean = true;
 	showOtherUsers: boolean = false;
@@ -35,6 +34,7 @@ export class ChatComponent implements OnInit {
 	selectedUser?: User;
 
 	hasUnreadMessages: boolean = true;
+	createChannelName?: string;
 
 	constructor(
 		private userDataService: UserDataService,
@@ -50,11 +50,17 @@ export class ChatComponent implements OnInit {
 			//to be updated when Channel and Relations are fully implemented? Maybe even define services differently...
 			this.userRelationService.getFriendsOf(this.activeUser.id).subscribe(friends => this.friends = friends);
 			this.userRelationService.getBlockedOf(this.activeUser.id).subscribe(blocked => this.blocked = blocked);
-			this.channelDataService.getAllChannelsVisibleFor(this.activeUser.id).subscribe(visible => this.visibleChannels = visible);
-			this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
+			
+			
+			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
+			
+			//This should work now:
+			this.memberChannels = this.activeUser.channelList;
+			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
+			console.log('memberChannels: ', this.memberChannels);
 		});
 
-		this.userDataService.findAll().then(users => this.allUsers = users);
+		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
 
 		this.socket.listen('identify').subscribe(() => {
 			this.socket.emit('identify', this.activeUser?.id);
@@ -90,8 +96,9 @@ export class ChatComponent implements OnInit {
 	}
 
 	selectChannel(channel: Channel) {
-		if (!this.memberChannels?.includes(channel.name))
-			return;
+		// If it is a memberchannel, the user is allowed to select it
+		// if (!this.memberChannels?.includes(channel.name))
+		// 	return;
 		if (this.selectedUser)
 			this.selectedUser = undefined;
 		this.selectedChannel = channel;
@@ -102,5 +109,43 @@ export class ChatComponent implements OnInit {
 			this.selectedChannel = undefined;
 		this.selectedUser = user;
 		this.messageService.changeOfDM('change of DM');
+	}
+
+	createChannel() {
+		// const channelname = 'TestChannel';
+		if (!this.createChannelName)
+			return;
+		//console.log('Button clicked, channelname: ', this.createChannelName);
+		this.socket.emit('createChannel', { 
+			channelname: this.createChannelName,
+			ownerid: this.activeUser?.id,
+		});
+		this.createChannelName = undefined;
+	}
+
+	joinChannel(channel: Channel) {
+		console.log('Joining channel: ', channel.name);
+		this.socket.emit('joinChannel', {
+			channelid: channel.id,
+			userid: this.activeUser?.id,
+		});
+	}
+
+	async leaveChannel(channel: Channel) {
+		console.log('Leaving channel: ', channel.name);
+
+		const dbChannel = await this.channelDataService.getChannel(channel.id);
+		if (!dbChannel) {
+			console.log('Channel does not exist anymore');
+			return;
+		}
+		if (dbChannel.owner.id === this.activeUser?.id) {
+			console.log("You can't leave, because you are the owner");
+			return;
+		}
+		this.socket.emit('leaveChannel', {
+			channelid: channel.id,
+			userid: this.activeUser?.id,
+		});
 	}
 }

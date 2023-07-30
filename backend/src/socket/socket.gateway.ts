@@ -6,14 +6,13 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
-import { gameData, gameDataBE } from 'src/game/match/GameData';
+import { ChannelsService } from 'src/channels/channels.service';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class SocketGateway
@@ -32,8 +31,9 @@ export class SocketGateway
     //private socketModule: SocketModule
     // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
+    private readonly channelsService: ChannelsService,
   ) {
-    const io = new Server();
+    //const io = new Server();
   }
 
   @WebSocketServer()
@@ -83,12 +83,31 @@ export class SocketGateway
     }
   }
 
+  @SubscribeMessage('createChannel')
+  createChannel(client: Socket, obj: any): void {
+    this.channelsService.createChannel(client, obj.channelname, obj.ownerid);
+  }
+
+  @SubscribeMessage('joinChannel')
+  joinChannel(client: Socket, obj: any): void {
+    this.channelsService.addUserToChannel(client, obj.channelid, obj.userid);
+  }
+
+  @SubscribeMessage('leaveChannel')
+  leaveChannel(client: Socket, obj: any): void {
+    this.channelsService.removeUserFromChannel(
+      client,
+      obj.channelid,
+      obj.userid,
+    );
+  }
+
   @SubscribeMessage('identify')
   identifyUser(client: Socket, userid: number | undefined): void {
     if (typeof userid !== 'undefined' && userid !== null) {
-      console.log('SocketId will be updated in database', userid);
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
+
       this.usersService.updateStatus(userid, 'online');
     } else {
       console.log('Error Socket: User not identified');

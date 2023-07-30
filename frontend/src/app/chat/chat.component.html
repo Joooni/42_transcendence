@@ -86,17 +86,42 @@
 		</button>
 
 		<div *ngIf="showChannels" class="chat_contact_list">
-			<div *ngFor="let channel of visibleChannels">
+			
+			<input [(ngModel)]="createChannelName" name="channelName" type="text" placeholder="Channel Name">
+			<button type="button" (click)="createChannel()">
+				Create Channel
+			</button>
+
+			<div *ngFor="let mem of memberChannels">
 				<div 
-					class="channel"
-					[ngClass]="[memberChannels?.includes(channel.name) ? 'member' : 'other', selectedChannel?.id === channel.id ? 'selected' : '']"
-					(click)="selectChannel(channel)"
+					class="channel member"
+					(click)="selectChannel(mem)"
 				>
-					<h4>{{channel.name}}</h4>
+					<h4>{{mem.name}}</h4>
 					<div class="icons">
-						<button 
-							*ngIf="!memberChannels?.includes(channel.name)"
+						<button
 							class="button_reverse button_small"
+							(click)="leaveChannel(mem)"
+						>
+							Leave
+						</button>
+						<img 
+							*ngIf="hasUnreadMessages" 
+							class="icon" 
+							src="../../assets/unread_message_icon_yellow.png"
+						>
+					</div>
+				</div>
+			</div>
+			<div *ngFor="let other of otherVisibleChannels">
+				<div 
+					class="channel other"
+				>
+					<h4>{{other.name}}</h4>
+					<div class="icons">
+						<button
+							class="button_reverse button_small"
+							(click)="joinChannel(other)"
 						>
 							JOIN
 						</button>

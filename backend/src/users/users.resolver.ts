@@ -24,6 +24,11 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
+  @Query(() => [User], { name: 'allUsersExceptMyself' })
+  findAllExceptMyself(@CurrentJwtPayload() jwtPayload: JwtPayload) {
+    return this.usersService.findAllExceptMyself(jwtPayload.id);
+  }
+
   @Query(() => User, { name: 'userById' })
   findOneById(
     @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
