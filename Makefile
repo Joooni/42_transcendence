@@ -1,19 +1,25 @@
 
 FOLDER_NAME := $(shell basename $(realpath .))
+PROD		:= ./docker-compose.prod.yaml
+DEV			:= ./docker-compose.yaml
+
 
 all: up
 
-up:
-	docker-compose -f docker-compose.yaml up --remove-orphans -d
-	docker compose -f docker-compose.yaml logs --tail 100 -f
+prod: $(PROD)
+	docker compose -f $(PROD) up --build --remove-orphans -d
 
-dev:
+dev: $(DEV)
 	cp actual.env .env
-	docker compose -f docker-compose.yaml up --build --remove-orphans -d
-	docker compose -f docker-compose.yaml logs --tail 100 -f
+	docker compose -f $(DEV) up --build --remove-orphans -d
+	docker compose -f $(DEV) logs --tail 100 -f
+
+up:
+	docker-compose -f $(DEV) up --remove-orphans -d
+	docker compose -f $(DEV) logs --tail 100 -f
 
 logs:
-	docker compose -f docker-compose.yaml logs --tail 100 -f
+	docker compose -f $(DEV) logs --tail 100 -f
 
 database:
 	docker exec -it postgresql_database bash -c "psql -h localhost -U user postgres_db"

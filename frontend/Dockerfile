@@ -9,7 +9,6 @@ RUN npm install
 RUN npm install -g @angular/cli
 
 ENV DOMAIN: ${DOMAIN}
-ENV TEST_DF 'works, yo from dockerfile'
 #copy everthing from CWD to /app
 COPY . /app
 
