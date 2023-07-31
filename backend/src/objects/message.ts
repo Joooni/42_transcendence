@@ -1,10 +1,12 @@
+import { Channel } from 'src/channels/entities/channel.entity';
 import { User } from './user';
-import { Channel } from './channel';
+
 
 export interface MessageObj {
   id?: number;
   sender: User;
-  receiver: User | Channel;
+  receiverUser?: User;
+  receiverChannel?: Channel;
   timestamp: Date;
   content: string;
 }

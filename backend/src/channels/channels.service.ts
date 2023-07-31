@@ -136,6 +136,23 @@ export class ChannelsService {
     client.join(chanEntity.id); //Is the id set here?
   }
 
+  async joinChannelRoom(client: Socket, channelid: string, userid: number) {
+    const channel = await this.channelRepository
+        .createQueryBuilder('channel')
+        .where('channel.id = :id', { id: channelid })
+        .leftJoinAndSelect('channel.users', 'users')
+        .getOne();
+    if (!channel) {
+      console.log('channel does not exist');
+    }
+    channel?.users.forEach((user) => {
+      if (user.id === userid) {
+        client.join(channelid);
+        return;
+      }
+    });
+  }
+
   async addUserToChannel(client: Socket, channelId: string, userid: number) {
     try {
       const channel = await this.channelRepository.findOneByOrFail({

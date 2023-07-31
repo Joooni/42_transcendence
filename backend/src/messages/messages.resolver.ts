@@ -22,4 +22,11 @@ export class MessagesResolver {
   ): Promise<Message[]> {
     return this.messagesService.findMessagesDM(id, idReceiver);
   }
+
+  @Query(() => [Message], { name: 'messagesChannel' })
+  async messagesChannel(
+    @Args('id', { type: () => String, nullable: true }) id: string,
+  ): Promise<Message[]> {
+    return this.messagesService.findMessagesChannel(id);
+  }
 }

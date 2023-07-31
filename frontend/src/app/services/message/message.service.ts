@@ -64,7 +64,7 @@ export class MessageService implements OnInit {
 						losses
 						map
 					}
-					receiver {
+					receiverUser {
 						id
 						intra
 						firstname
@@ -101,18 +101,53 @@ export class MessageService implements OnInit {
 		return(dms);
 	}
 
-	getChannelMessages(channel: Channel): Observable<Message[]> {
-		//FE implementation for testing
-		let channelMessages: Message[] = [];
+	async getChannelMessages(channel: Channel): Promise<Message[]> {
+		let mes: Message[] = [];
+		
+		const response: any = await graphQLService.query(
+			`
+			query{
+				messagesChannel(id: "${channel.id}"){
+					id
+					sender {
+						id
+						intra
+						firstname
+						lastname
+						username
+						email
+						picture
+						twoFAEnabled
+						status
+						wins
+						losses
+						map
+					}
+					receiverChannel {
+						id
+						name
+					}
+					timestamp
+					content
+				}
+			}
+			`,
+			undefined,
+			{ fetchPolicy: 'network-only' },
+		);
 
-		// for (let message of this.messages) {
-		// 	if (message.receiver ===  channel)
-		// 		channelMessages.push(message);
-		// }
-		channelMessages.sort((objA, objB) => objA.timestamp.getTime() - objB.timestamp.getTime());
-		return of(channelMessages);
+		if (response.messagesChannel === undefined) {
+			console.log('No messages from the DB');
+		}
 
-		//BE implementation as soon as available
+		response.messagesChannel.forEach((message: Message) => {
+			let tmp: Message = {...message, timestamp: new Date(message.timestamp)};
+			mes.push(tmp);
+		});
+
+		mes.sort((objA, objB) => objA.timestamp.getTime() - objB.timestamp.getTime());
+		console.log('Aktuelle dms:', mes);
+		return(mes);
 	}
 
 	changeOfDM(event: any) {

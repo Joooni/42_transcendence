@@ -74,7 +74,8 @@ type Match {
 type Message {
   id: Int!
   sender: User!
-  receiver: User!
+  receiverUser: User!
+  receiverChannel: Channel!
   timestamp: DateTime!
   content: String!
 }
@@ -86,12 +87,13 @@ type Query {
   userByName(username: String!): User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
-  matches: [Match!]!
-  match(id: Int): Match!
+  messagesChannel(id: String): [Message!]!
   channels: [Channel!]!
   channel(id: String): Channel!
   channelByName(name: String): Channel!
   visibleChannelsWithoutUser(id: Int): [Channel!]!
+  matches: [Match!]!
+  match(id: Int): Match!
 }
 
 type Mutation {

@@ -33,7 +33,7 @@ export class SocketGateway
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
   ) {
-    //const io = new Server();
+    // const io = new Server();
   }
 
   @WebSocketServer()
@@ -76,16 +76,31 @@ export class SocketGateway
   handleMessage(client: Socket, message: MessageObj): void {
     console.log('Message received');
     this.messagesService.receiveMessage(client, message);
-    const socket = this.getSocket(message.receiver.id);
-    // client.emit('message', message); // Zurück an den Absender
-    if (socket) {
-      socket.emit('message', message);
+    
+    if (message.receiverUser !== undefined) {
+      //DM
+      const socket = this.getSocket(message.receiverUser.id);
+      if (socket) {
+        socket.emit('message', message);
+      }
+    } 
+    else if (message.receiverChannel !== undefined){
+      //Channel message
+      this.server.to(message.receiverChannel.id).emit('message', message);
+    }
+    else {
+      console.log('Error: Receiver is neither a user nor a channel');
     }
   }
-
+  
   @SubscribeMessage('createChannel')
   createChannel(client: Socket, obj: any): void {
     this.channelsService.createChannel(client, obj.channelname, obj.ownerid);
+  }
+  
+  @SubscribeMessage('joinChannelRoom')
+  joinChannelRoom(client: Socket, obj: any): void {
+    this.channelsService.joinChannelRoom(client, obj.channelid, obj.userid);
   }
 
   @SubscribeMessage('joinChannel')
