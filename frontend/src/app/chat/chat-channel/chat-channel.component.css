@@ -1,8 +1,29 @@
+h2 {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+
 h4 {
 	margin: 0.7vh;
 }
 
 .chat-channel {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+
+	column-gap: 1.5%;
+	height: 100%;
+	width: 98%
+}
+
+.channel-member-section {
+	width: 31.5%;
+	height: 100%;
+}
+
+.chat-box-section {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -10,7 +31,7 @@ h4 {
 
 	row-gap: 1.5%;
 	height: 100%;
-	width: 98%
+	width: 65%
 }
 
 .chat-box {
@@ -34,6 +55,20 @@ h4 {
 	height: 5%;
 }
 
+.channel-buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	column-gap: 10px;
+}
+
+.settings-icon {
+	padding-top: 2px;
+	height: 2.2rem;
+	width: 2.2rem;
+}
+
 .message-display {
 	font-family: press_start;
 	font-size: 1vmin;
@@ -42,6 +77,15 @@ h4 {
 	padding-bottom: 10px;
 
 	overflow: auto;
+}
+
+.channel-member-display {
+	height: 99%;
+	overflow: auto;
+	padding: 0 10px;
+
+	display: flex;
+	flex-direction: column;
 }
 
 .chat_input {

@@ -59,7 +59,8 @@ h4 {
 	color: orange;
 }
 
-.offline{
+.offline, 
+.blocked {
 	background-color: rgb(65, 65, 65);
 	color: rgb(165, 165, 165);
 	filter: grayscale(100%)
@@ -117,4 +118,28 @@ h4 {
 	border-color: magenta;
 
 	height: 75vh;
+}
+
+.chat_contact_list {
+	display: flex;
+	flex-direction: column;
+}
+
+.new_channel {
+	width: 70%;
+	align-self: center;
+}
+
+.popup-new-channel-input {
+	width: 85%;
+}
+
+.pop-up-new-channel-selector {
+	display: grid;
+	grid-template-columns: 1.5fr 2fr;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 2rem;
+	margin: 1rem 0;
+	width: 90%;
 }

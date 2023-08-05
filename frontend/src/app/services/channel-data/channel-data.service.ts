@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 import { Channel } from '../../models/channel';
 import { CHANNELS } from '../../mock-data/mock_channels';
 import graphQLService from '../graphQL/GraphQLService';
+import { User } from 'src/app/models/user';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class ChannelDataService {
 
 	channels = CHANNELS;
 
-	constructor() { }
+	constructor(private socket: SocketService) { }
 
 	async getChannel(channelid: string): Promise<Channel> {
 		const response = await graphQLService.query(
@@ -22,6 +24,7 @@ export class ChannelDataService {
 						id
 						name
 						createdAt
+						type
 						owner {
 							id
 							firstname
@@ -41,18 +44,35 @@ export class ChannelDataService {
 		return response.channel;
 	}
 
-	//update - BE call instead; user is member from the channel
-	// getChannelsOf(id: number): Observable<string[]> {
-	// 	const channelsOfUser: string[] = [];
-	// 	for (let i = 0; i < this.channels.length; i++) {
-	// 		const tmpChannel = this.channels[i].users.find(elem => elem === id);
-	// 		if (tmpChannel)
-	// 			channelsOfUser.push(this.channels[i].name);
-	// 	}
-	// 	return of(channelsOfUser);
-	// }
+	async getChannelByName(name: string) {
+		const response = await graphQLService.query(
+			`
+				query getChannelByName($name: String!){
+					channelByName(name: $name) {
+						id
+						name
+						createdAt
+						type
+						owner {
+							id
+							firstname
+						}
+						users {
+							id
+						}
+					}
+				}
+			`,
+			{ name },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
+		}
+		return response.channel;
+	}
 
-	//update - BE call instead; user can see the channel
+	//lieber inkl. der MemberChannel
 	async getOtherVisibleChannels(id: number): Promise<Channel[]> {		
 		const response = await graphQLService.query(
 			`
@@ -87,6 +107,7 @@ export class ChannelDataService {
 						id
 						name
 						createdAt
+						type
 						owner {
 							id
 							firstname
@@ -106,5 +127,13 @@ export class ChannelDataService {
 		const channels = response.channels;
 		console.log(channels);
 		return channels;
+	}
+
+	joinChannel(channel: Channel, user: User) {
+		console.log('Joining channel: ', channel.name);
+		this.socket.emit('joinChannel', {
+			channelid: channel.id,
+			userid: user.id,
+		});
 	}
 }

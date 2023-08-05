@@ -90,6 +90,7 @@ type Query {
   match(id: Int): Match!
   channels: [Channel!]!
   channel(id: String): Channel!
+  channelByName(name: String): Channel!
   visibleChannelsWithoutUser(id: Int): [Channel!]!
 }
 
