@@ -46,6 +46,8 @@ export class ChatComponent implements OnInit {
 	enterChannelPassword?: string;
 	channelPasswordInvalid: boolean = false;
 
+	channelToJoin?: Channel;
+
 	constructor(
 		private userDataService: UserDataService,
 		private userRelationService: UserRelationService,
@@ -163,12 +165,14 @@ export class ChatComponent implements OnInit {
 	closeChannelPasswordPopUp() {
 		this.enterChannelPassword = undefined;
 		this.channelPasswordInvalid = false;
+		this.channelToJoin = undefined;
 		const popup = document.getElementById('popup-channel-password');
 		popup?.classList.toggle('show-popup');
 	}
 
 	joinChannel(channel: Channel) {
-		if (/* channel is protected*/ false) {
+		if (channel.type == ChannelType.protected) {
+			this.channelToJoin = channel;
 			const popup = document.getElementById('popup-channel-password');
 			popup?.classList.toggle('show-popup');
 		}
@@ -181,7 +185,10 @@ export class ChatComponent implements OnInit {
 	}
 
 	joinChannelWithPassword()  {
+		//this.channelToJoin ist der betroffene channel
 		//check if password is valid
+		//if no: this.channelPasswordInvalid = true & return
+		//if yes:
 		//socket.emit('joinChannel') incl password?
 		console.log("joinChannelWithPassword() called");
 		this.closeChannelPasswordPopUp;

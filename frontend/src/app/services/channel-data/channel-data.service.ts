@@ -16,31 +16,6 @@ export class ChannelDataService {
 
 	constructor(private socket: SocketService) { }
 
-	//update - BE call instead - tbd if it belongs here or in user data service?
-	// getChannelsOf(id: number): Observable<string[]> {
-	// 	const channelsOfUser: string[] = [];
-	// 	for (let i = 0; i < this.channels.length; i++) {
-	// 		const tmpChannel = this.channels[i].users.find(elem => elem === id);
-	// 		if (tmpChannel)
-	// 			channelsOfUser.push(this.channels[i].name);
-	// 	}
-	// 	return of(channelsOfUser);
-	// }
-
-	//update - BE call instead - tbd if it belongs here or in user data service?
-	// getAllChannelsVisibleFor(id: number): Observable<Channel[]> {
-	// 	const channelsVisibleForUser: Channel[] = [];
-	// 	for (let i = 0; i < this.channels.length; i++) {
-	// 		if (this.channels[i].users.find(elem => elem === id))
-	// 			channelsVisibleForUser.push(this.channels[i]);
-	// 		else if (this.channels[i].type !== 'PRIVATE' && !this.channels[i].banned.find(elem => elem === id))
-	// 			channelsVisibleForUser.push(this.channels[i]);
-	// 		else if (this.channels[i].type === 'PRIVATE' && this.channels[i].invited.find(elem => elem === id))
-	// 		channelsVisibleForUser.push(this.channels[i]);
-	// 	}
-	// 	return of(channelsVisibleForUser);
-	// }
-
 	async getChannel(channelid: string): Promise<Channel> {
 		const response = await graphQLService.query(
 			`
@@ -49,6 +24,7 @@ export class ChannelDataService {
 						id
 						name
 						createdAt
+						type
 						owner {
 							id
 							firstname
@@ -76,6 +52,7 @@ export class ChannelDataService {
 						id
 						name
 						createdAt
+						type
 						owner {
 							id
 							firstname
@@ -95,18 +72,7 @@ export class ChannelDataService {
 		return response.channel;
 	}
 
-	//update - BE call instead; user is member from the channel
-	// getChannelsOf(id: number): Observable<string[]> {
-	// 	const channelsOfUser: string[] = [];
-	// 	for (let i = 0; i < this.channels.length; i++) {
-	// 		const tmpChannel = this.channels[i].users.find(elem => elem === id);
-	// 		if (tmpChannel)
-	// 			channelsOfUser.push(this.channels[i].name);
-	// 	}
-	// 	return of(channelsOfUser);
-	// }
-
-	//update - BE call instead; user can see the channel
+	//lieber inkl. der MemberChannel
 	async getOtherVisibleChannels(id: number): Promise<Channel[]> {		
 		const response = await graphQLService.query(
 			`
@@ -141,6 +107,7 @@ export class ChannelDataService {
 						id
 						name
 						createdAt
+						type
 						owner {
 							id
 							firstname
