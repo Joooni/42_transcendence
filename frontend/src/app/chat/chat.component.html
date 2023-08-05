@@ -1,10 +1,6 @@
 <div class="chat_flex_row">
 	<div class="chat_contacts">
-		<button 
-			type="button"
-			class="button_collapsible"
-			(click)="changeShowFriends()"
-		>
+		<button type="button" class="button_collapsible" (click)="changeShowFriends()">
 			<img
 				class="expansion_icon"
 				[ngClass]="showFriends ? 'rotate_icon' : ''"
@@ -37,11 +33,7 @@
 			</div>
 		</div>
 
-		<button 
-			type="button"
-			class="button_collapsible"
-			(click)="changeShowOtherUsers()"
-		>
+		<button type="button" class="button_collapsible" (click)="changeShowOtherUsers()">
 			<img 
 				class="expansion_icon"
 				[ngClass]="showOtherUsers ? 'rotate_icon' : ''"
@@ -72,11 +64,7 @@
 			</div>
 		</div>
 
-		<button
-			type="button"
-			class="button_collapsible"
-			(click)="changeShowChannels()"
-		>
+		<button type="button" class="button_collapsible" (click)="changeShowChannels()">
 			<img 
 				class="expansion_icon"
 				[ngClass]="showChannels ? 'rotate_icon' : ''"
@@ -86,25 +74,12 @@
 		</button>
 
 		<div *ngIf="showChannels" class="chat_contact_list">
-			
-			<input [(ngModel)]="createChannelName" name="channelName" type="text" placeholder="Channel Name">
-			<button type="button" (click)="createChannel()">
-				Create Channel
-			</button>
-
-			<div *ngFor="let mem of memberChannels">
-				<div 
-					class="channel member"
-					(click)="selectChannel(mem)"
-				>
-					<h4>{{mem.name}}</h4>
+			<button class="button_medium new_channel" (click)="popUpNewChannel()">NEW CHANNEL</button>
+			<div *ngFor="let channel of memberChannels">
+				<div class="channel member" (click)="selectChannel(channel)"
+					[ngClass]="selectedChannel?.id == channel.id ? 'selected' : ''">
+					<h4>{{channel.name}}</h4>
 					<div class="icons">
-						<button
-							class="button_reverse button_small"
-							(click)="leaveChannel(mem)"
-						>
-							Leave
-						</button>
 						<img 
 							*ngIf="hasUnreadMessages" 
 							class="icon" 
@@ -113,33 +88,19 @@
 					</div>
 				</div>
 			</div>
-			<div *ngFor="let other of otherVisibleChannels">
-				<div 
-					class="channel other"
-				>
-					<h4>{{other.name}}</h4>
+			<div *ngFor="let channel of otherVisibleChannels">
+				<div class="channel other">
+					<h4>{{channel.name}}</h4>
 					<div class="icons">
-						<button
-							class="button_reverse button_small"
-							(click)="joinChannel(other)"
-						>
+						<button class="button_reverse button_small" (click)="joinChannel(channel)">
 							JOIN
 						</button>
-						<img 
-							*ngIf="hasUnreadMessages" 
-							class="icon" 
-							src="../../assets/unread_message_icon_yellow.png"
-						>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<button
-			type="button"
-			class="button_collapsible"
-			(click)="changeShowBlocked()"
-		>
+		<button type="button" class="button_collapsible" (click)="changeShowBlocked()">
 			<img
 				class="expansion_icon"
 				[ngClass]="showBlocked ? 'rotate_icon' : ''"
@@ -150,11 +111,7 @@
 		
 		<div *ngIf="showBlocked" class="chat_contact_list">
 			<div *ngFor="let user of allUsers">
-				<div 
-					*ngIf="blocked?.includes(user.id)"
-					class="contact"
-					[ngClass]="user.status"
-				>
+				<div *ngIf="blocked?.includes(user.id)" class="contact blocked">
 					<div class="user">
 						<img class="profile_picture" src="{{'../' + user.picture}}">
 						<h4>{{user.username}}</h4>
@@ -166,10 +123,53 @@
 			</div>
 		</div>
 	</div>
+
 	<div *ngIf="selectedChannel" class="chat_window">
 		<app-chat-channel></app-chat-channel>
 	</div>
 	<div *ngIf="selectedUser" class="chat_window">
 		<app-chat-direct-message></app-chat-direct-message>
+	</div>
+</div>
+
+<div class="popup" id="popup-new-channel">
+	<div class="popup-content">
+		<h2>NEW CHANNEL</h2>
+		<h4>Please enter a name for your new channel and choose the channel type:</h4>
+		<div class="pop-up-new-channel-selector">
+			<h4>Name:</h4>
+			<input class="popup-new-channel-input" type="text" [(ngModel)]="newChannelName">
+		</div>
+		<h6 class="error-message" *ngIf="newChannelNameInvalid">Channel name invalid or already taken. Please try another one.</h6>
+		<div class="pop-up-new-channel-selector">
+			<h4>Type:</h4>
+			<select [(ngModel)]="selectedChannelType">
+				<option [value]="0">Public</option>
+				<option [value]="1">Private</option>
+				<option [value]="2">Protected</option>
+			</select>
+		</div>
+		<div class="pop-up-new-channel-selector" *ngIf="selectedChannelType == 2">
+			<h4>Password:</h4>
+			<input class="popup-new-channel-input" type="password" [(ngModel)]="setChannelPassword">
+		</div>
+		
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="createChannel()" [disabled]="disableCreateChannelButton()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closeNewChannelPopUp()">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-channel-password">
+	<div class="popup-content">
+		<h2>PROTECTED CHANNEL</h2>
+		<h4>Please enter the password for this channel:</h4>
+		<input class="popup-channel-password-input" type="password" [(ngModel)]="enterChannelPassword">
+		<h6 class="error-message" *ngIf="channelPasswordInvalid">Wrong password. Please try again.</h6>
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="joinChannelWithPassword()" [disabled]="!enterChannelPassword">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closeChannelPasswordPopUp()">CANCEL</button>
+		</div>
 	</div>
 </div>

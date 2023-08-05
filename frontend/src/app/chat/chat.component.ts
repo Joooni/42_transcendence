@@ -9,6 +9,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { ChatDirectMessageComponent } from './chat-direct-message/chat-direct-message.component';
 import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
+import { delay } from 'rxjs';
+import { ChannelType } from '../models/channel-type.enum';
 
 @Component({
   selector: 'app-chat',
@@ -34,7 +36,15 @@ export class ChatComponent implements OnInit {
 	selectedUser?: User;
 
 	hasUnreadMessages: boolean = true;
-	createChannelName?: string;
+
+	newChannelName?: string;
+	newChannelNameInvalid: boolean = false;
+
+	selectedChannelType: ChannelType = ChannelType.public;
+
+	setChannelPassword?: string;
+	enterChannelPassword?: string;
+	channelPasswordInvalid: boolean = false;
 
 	constructor(
 		private userDataService: UserDataService,
@@ -57,7 +67,6 @@ export class ChatComponent implements OnInit {
 			//This should work now:
 			this.memberChannels = this.activeUser.channelList;
 			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
-			console.log('memberChannels: ', this.memberChannels);
 		});
 
 		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
@@ -96,9 +105,9 @@ export class ChatComponent implements OnInit {
 	}
 
 	selectChannel(channel: Channel) {
-		// If it is a memberchannel, the user is allowed to select it
-		// if (!this.memberChannels?.includes(channel.name))
-		// 	return;
+		const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
+		if (!findChannel)
+			return;
 		if (this.selectedUser)
 			this.selectedUser = undefined;
 		this.selectedChannel = channel;
@@ -111,24 +120,71 @@ export class ChatComponent implements OnInit {
 		this.messageService.changeOfDM('change of DM');
 	}
 
-	createChannel() {
-		// const channelname = 'TestChannel';
-		if (!this.createChannelName)
+	popUpNewChannel() {
+		const popup = document.getElementById('popup-new-channel');
+		popup?.classList.toggle('show-popup');
+	}
+
+	async createChannel() {
+		if (!this.newChannelName) {
+			this.newChannelNameInvalid = true;
 			return;
-		//console.log('Button clicked, channelname: ', this.createChannelName);
-		this.socket.emit('createChannel', { 
-			channelname: this.createChannelName,
-			ownerid: this.activeUser?.id,
-		});
-		this.createChannelName = undefined;
+		}
+		try {
+			await this.channelDataService.getChannelByName(this.newChannelName);
+			this.newChannelNameInvalid = true;
+			return;
+		} catch (e) {
+			this.socket.emit('createChannel', {
+				channelname: this.newChannelName,	
+				ownerid: this.activeUser?.id,
+				type: this.selectedChannelType,
+				password: this.setChannelPassword ? this.setChannelPassword : undefined
+			});
+			await new Promise(r => setTimeout(r, 250));
+			//TO-DO: update list of all visible channels
+			await this.userDataService.findSelf().then(user => {
+				this.activeUser = user;
+				this.memberChannels = this.activeUser.channelList;
+			});
+			this.closeNewChannelPopUp();
+		}
+	}
+
+	closeNewChannelPopUp() {
+		this.newChannelName = undefined;
+		this.newChannelNameInvalid = false;
+		this.setChannelPassword = undefined;
+		this.selectedChannelType = ChannelType.public;
+		const popup = document.getElementById('popup-new-channel');
+		popup?.classList.toggle('show-popup');
+	}
+
+	closeChannelPasswordPopUp() {
+		this.enterChannelPassword = undefined;
+		this.channelPasswordInvalid = false;
+		const popup = document.getElementById('popup-channel-password');
+		popup?.classList.toggle('show-popup');
 	}
 
 	joinChannel(channel: Channel) {
-		console.log('Joining channel: ', channel.name);
-		this.socket.emit('joinChannel', {
-			channelid: channel.id,
-			userid: this.activeUser?.id,
-		});
+		if (/* channel is protected*/ false) {
+			const popup = document.getElementById('popup-channel-password');
+			popup?.classList.toggle('show-popup');
+		}
+		else {
+			this.socket.emit('joinChannel', {
+				channelid: channel.id,
+				userid: this.activeUser?.id,
+			});
+		}
+	}
+
+	joinChannelWithPassword()  {
+		//check if password is valid
+		//socket.emit('joinChannel') incl password?
+		console.log("joinChannelWithPassword() called");
+		this.closeChannelPasswordPopUp;
 	}
 
 	async leaveChannel(channel: Channel) {
@@ -147,5 +203,14 @@ export class ChatComponent implements OnInit {
 			channelid: channel.id,
 			userid: this.activeUser?.id,
 		});
+	}
+
+	disableCreateChannelButton(): boolean {
+		if (!this.newChannelName)
+			return true;
+		if (this.selectedChannelType == ChannelType.protected && !this.setChannelPassword) {
+			return true;
+		}	
+		return false;
 	}
 }

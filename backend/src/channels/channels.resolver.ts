@@ -21,6 +21,13 @@ export class ChannelsResolver {
     return this.channelsService.getChannelById(id);
   }
 
+  @Query(() => Channel, { name: 'channelByName' })
+  async findOneByName(
+    @Args('name', { type: () => String, nullable: true }) name: string,
+  ) {
+    return this.channelsService.getChannelByName(name);
+  }
+
   @Query(() => [Channel], { name: 'visibleChannelsWithoutUser' })
   async findVisibleChannelsWithoutUser(
     @Args('id', { type: () => Int, nullable: true }) id: number,

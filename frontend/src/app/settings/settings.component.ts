@@ -89,7 +89,6 @@ export class SettingsComponent {
 		const popup = document.getElementById(popUpId);
 		popup?.classList.toggle('show-popup');
 		this.twoFACode = undefined;
-		getStoreKeyName
 		this.invalidCode = false;
 		if (this.twoFAEnabled)
 			this.twoFAEnabled = false;
