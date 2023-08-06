@@ -27,10 +27,27 @@ export class ChannelDataService {
 						type
 						owner {
 							id
-							firstname
+							username
+							status
 						}
 						users {
 							id
+							username
+							status
+						}
+						admins {
+							id
+							username
+							status
+						}
+						mutedUsers {
+							id
+							username
+							status
+						}
+						bannedUsers {
+							id
+							username
 						}
 					}
 				}
@@ -55,10 +72,23 @@ export class ChannelDataService {
 						type
 						owner {
 							id
-							firstname
+							username
 						}
 						users {
 							id
+							username
+						}
+						admins {
+							id
+							username
+						}
+						mutedUsers {
+							id
+							username
+						}
+						bannedUsers {
+							id
+							username
 						}
 					}
 				}
