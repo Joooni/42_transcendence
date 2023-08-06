@@ -146,4 +146,8 @@ export class ChatChannelComponent {
 		//TO-DO: add function to actually send an invite to someone
 		this.closePopUp('popup-invite-channel');
 	}
+
+	isMuted(user: User): boolean {
+		return this.chatComponent.selectedChannel!.mutedUsers.some((elem) => elem.id === user.id);
+	}
 }

@@ -156,3 +156,37 @@ h4 {
 .select-invited-user {
 	margin-top: 1rem;
 }
+
+.icons {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 5px;
+
+}
+
+.icon {
+	height: 25px;
+	width: 25px;
+	margin: 0px 5px;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: rgba(2, 88, 2, 0.797);
+	min-width: 300px;
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	height: 10rem;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
