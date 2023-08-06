@@ -8,6 +8,7 @@ import { User } from 'src/app/models/user';
 import { ChannelDataService } from 'src/app/services/channel-data/channel-data.service';
 import { ErrorService } from 'src/app/services/error/error.service';
 import { Socket } from 'ngx-socket-io';
+import { UserDataService } from 'src/app/services/user-data/user-data.service';
 
 @Component({
   selector: 'app-chat-channel',
@@ -21,6 +22,8 @@ export class ChatChannelComponent {
 	messages?: Message[];
 
 	activeUser!: User;
+	invitedUser: User | null = null;
+	invitableUsers: User[] = [];
 
 	constructor(
 		public chatComponent: ChatComponent,
@@ -28,7 +31,8 @@ export class ChatChannelComponent {
 		private socketService: SocketService,
 		private channelDataService: ChannelDataService,
 		private errorService: ErrorService,
-		private socket: SocketService
+		private socket: SocketService,
+		private userService: UserDataService
 	) {}
 
 	ngOnInit(): void {
@@ -44,7 +48,7 @@ export class ChatChannelComponent {
 			console.log('received a message from the server');
 
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
-			//das funktioniert glaube ich nicht @Florian - wie bekomme ich hier die Messages für den Channel
+			//TO-DO: das funktioniert glaube ich nicht @Florian - wie bekomme ich hier die Messages für den Channel
 			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
 				this.messages?.push(tmpMes);
 			}
@@ -86,6 +90,12 @@ export class ChatChannelComponent {
 		popup?.classList.toggle('show-popup');
 	}
 
+	openInviteUserPopUp() {
+		this.setInvitableUsers();
+		const popup = document.getElementById('popup-invite-channel');
+		popup?.classList.toggle('show-popup');
+	}
+
 	closePopUp(popupName: string) {
 		const popup = document.getElementById(popupName);
 		popup?.classList.toggle('show-popup');
@@ -94,7 +104,7 @@ export class ChatChannelComponent {
 	async leaveChannel() {
 		try {
 			const dbChannel = await this.channelDataService.getChannel(this.chatComponent.selectedChannel!.id);
-			//tbd, i would find it better if he could leave and the channel would be deleted
+			//TBD: i would find it better if he could leave and the channel would be deleted
 			// if (dbChannel.owner.id === this.activeUser?.id) {
 			// 	console.log("You can't leave, because you are the owner");
 			// 	return;
@@ -111,5 +121,29 @@ export class ChatChannelComponent {
 			this.chatComponent.selectedChannel = undefined;
 		}
 		await this.chatComponent.updateChannelList();
+	}
+
+	async setInvitableUsers() {
+		this.invitedUser = null;
+		const invitableUsers: User[] = [];
+		let allUsers: User[];
+		await this.userService.findAllExceptMyself().then(users => allUsers = users);
+		for (let user of allUsers!) {
+			if (this.chatComponent.selectedChannel?.users.some((elem) => elem.id === user.id))
+				continue;
+			// TO-DO:
+			// if (/* i blocked the user / he blocked me*/)
+			// 	continue;
+			//tbd if we only allow inviting friends?
+			invitableUsers.push(user);
+		}
+		this.invitableUsers = invitableUsers;
+	}
+
+	inviteUser() {
+		console.log('inviteUser has been called for:');
+		console.log(this.invitedUser);
+		//TO-DO: add function to actually send an invite to someone
+		this.closePopUp('popup-invite-channel');
 	}
 }

@@ -81,7 +81,7 @@ h4 {
 }
 
 .channel-member-display {
-	height: 99%;
+	height: 99.5%;
 	overflow: auto;
 	padding: 0 10px;
 
@@ -151,4 +151,8 @@ h4 {
 	background-color: rgb(65, 65, 65);
 	color: rgb(165, 165, 165);
 	filter: grayscale(100%)
+}
+
+.select-invited-user {
+	margin-top: 1rem;
 }

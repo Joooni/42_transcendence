@@ -3,10 +3,7 @@
 		<div class="chat-box channel-name">
 			<h4>{{chatComponent.selectedChannel?.name}}</h4>
 			<div class="channel-buttons">
-				<a>
-					<img class="settings-icon" src="../../../assets/settings.png">
-				</a>
-				<button class="button_small">INVITE</button>
+				<button class="button_small" (click)="openInviteUserPopUp()">INVITE</button>
 				<button class="button_small button_reverse" (click)="openLeaveChannelPopUp()">LEAVE</button>
 			</div>
 		</div>
@@ -61,6 +58,23 @@
 		<div class="popup-buttons">
 			<button class="button_medium" (click)="leaveChannel()">CONFIRM</button>
 			<button class="button_medium button_reverse" (click)="closePopUp('popup-leave-channel')">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-invite-channel">
+	<div class="popup-content">
+		<h2>INVITE TO CHANNEL</h2>
+		<h4>Who do you want to invite to this channel?</h4>
+		<select class="select-invited-user"[(ngModel)]="invitedUser">
+			<option [value]="null">Please select a User</option>
+			<ng-container *ngFor="let user of invitableUsers">
+				<option [value]="user">{{user.username}}</option>
+			</ng-container>
+		</select>
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="inviteUser()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-invite-channel')">CANCEL</button>
 		</div>
 	</div>
 </div>
