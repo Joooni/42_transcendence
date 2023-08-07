@@ -106,13 +106,14 @@ export class ChatComponent implements OnInit {
 			this.showBlocked = true;
 	}
 
-	selectChannel(channel: Channel) {
+	async selectChannel(channel: Channel) {
 		const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
 		if (!findChannel)
 			return;
 		if (this.selectedUser)
 			this.selectedUser = undefined;
-		this.selectedChannel = channel;
+		await this.channelDataService.getChannel(channel.id)
+			.then(rtrnChannel => this.selectedChannel = rtrnChannel)
 	}
 
 	selectUser(user: User) {
@@ -143,12 +144,7 @@ export class ChatComponent implements OnInit {
 				type: this.selectedChannelType,
 				password: this.setChannelPassword ? this.setChannelPassword : undefined
 			});
-			await new Promise(r => setTimeout(r, 250));
-			//TO-DO: update list of all visible channels
-			await this.userDataService.findSelf().then(user => {
-				this.activeUser = user;
-				this.memberChannels = this.activeUser.channelList;
-			});
+			await this.updateChannelList();
 			this.closeNewChannelPopUp();
 		}
 	}
@@ -170,7 +166,7 @@ export class ChatComponent implements OnInit {
 		popup?.classList.toggle('show-popup');
 	}
 
-	joinChannel(channel: Channel) {
+	async joinChannel(channel: Channel) {
 		if (channel.type == ChannelType.protected) {
 			this.channelToJoin = channel;
 			const popup = document.getElementById('popup-channel-password');
@@ -181,6 +177,7 @@ export class ChatComponent implements OnInit {
 				channelid: channel.id,
 				userid: this.activeUser?.id,
 			});
+			await this.updateChannelList();
 		}
 	}
 
@@ -194,24 +191,6 @@ export class ChatComponent implements OnInit {
 		this.closeChannelPasswordPopUp;
 	}
 
-	async leaveChannel(channel: Channel) {
-		console.log('Leaving channel: ', channel.name);
-
-		const dbChannel = await this.channelDataService.getChannel(channel.id);
-		if (!dbChannel) {
-			console.log('Channel does not exist anymore');
-			return;
-		}
-		if (dbChannel.owner.id === this.activeUser?.id) {
-			console.log("You can't leave, because you are the owner");
-			return;
-		}
-		this.socket.emit('leaveChannel', {
-			channelid: channel.id,
-			userid: this.activeUser?.id,
-		});
-	}
-
 	disableCreateChannelButton(): boolean {
 		if (!this.newChannelName)
 			return true;
@@ -219,5 +198,14 @@ export class ChatComponent implements OnInit {
 			return true;
 		}	
 		return false;
+	}
+
+	async updateChannelList() {
+		await new Promise(r => setTimeout(r, 250));
+		//TO-DO: update list of all visible channels
+		await this.userDataService.findSelf().then(user => {
+			this.activeUser = user;
+			this.memberChannels = this.activeUser.channelList;
+		});
 	}
 }

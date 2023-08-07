@@ -149,8 +149,8 @@ select {
 	font-family: press_start;
 	font-size: 2vmin;
 	color: orange;
-	padding-left: 2vmin;
-	padding-right: 2vmin;
+	padding-left: 3%;
+	padding-right: 7%;
 	background: url('./assets/arrow-down-icon.png') no-repeat, green;
 	background-position-x: 95%;
 	background-position-y: 50%;
