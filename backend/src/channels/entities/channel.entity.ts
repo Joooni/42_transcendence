@@ -44,7 +44,7 @@ export class Channel {
   @Column({ type: 'enum', enum: ChannelType, default: ChannelType.public })
   type: ChannelType;
 
-  @Field()
+  @Field({ nullable: true })
   password?: string;
 
   constructor(
@@ -55,6 +55,16 @@ export class Channel {
   async hashPW() {
     if (typeof this.password === 'string')
       this.password = await this.passwordService.hashPassword(this.password);
+  }
+
+  async comparePassword(password: string): Promise<boolean> {
+    if (typeof this.password !== undefined) {
+      console.log('no password set for the channel:', this.name);
+      return false;
+    }
+    if (await this.passwordService.comparePassword(password, this.password!))
+      return true;
+    else return false;
   }
 
   @Field()

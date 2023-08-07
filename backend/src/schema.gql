@@ -7,7 +7,7 @@ type Channel {
   owner: User!
   name: String!
   type: ChannelType!
-  password: String!
+  password: String
   createdAt: DateTime!
   users: [User!]
   admins: [User!]
