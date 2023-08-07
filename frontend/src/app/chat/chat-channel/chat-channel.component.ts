@@ -39,7 +39,7 @@ export class ChatChannelComponent {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.activeUser = this.chatComponent.activeUser;
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
-			.subscribe(messages => this.messages = messages);
+			.then(messages => this.messages = messages);
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
 		
@@ -48,8 +48,7 @@ export class ChatChannelComponent {
 			console.log('received a message from the server');
 
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
-			//TO-DO: das funktioniert glaube ich nicht @Florian - wie bekomme ich hier die Messages für den Channel
-			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
+			if (tmpMes.receiverChannel?.id === this.chatComponent.selectedChannel?.id) {
 				this.messages?.push(tmpMes);
 			}
 		});
@@ -59,20 +58,20 @@ export class ChatChannelComponent {
 		if (this.activeUser && this.chatComponent.selectedChannel && this.messageInput.value) {
 			const message: Message = {
 				sender: this.activeUser,
-				receiver: this.chatComponent.selectedChannel,
+				receiverChannel: this.chatComponent.selectedChannel,
 				timestamp: new Date,
 				content: this.messageInput.value
 			}
 			this.messageService.sendMessage(message);
-			this.messages?.push(message);
 		}
 		this.messageInput.setValue('');
 	}
 
-	private updateMessages() {
-		if (this.activeUser && this.chatComponent.selectedChannel) {
+	updateMessages() {
+		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
-			.subscribe(messages => this.messages = messages);
+			.then(messages => this.messages = messages);
+			console.log('updateMessages was called');
 		}
 	}
 

@@ -136,7 +136,24 @@ export class ChannelsService {
     client.join(chanEntity.id); //Is the id set here?
   }
 
-  async addUserToChannel(client: Socket, channelId: string, userid: number) {
+  async joinChannelRoom(client: Socket, channelid: string, userid: number) {
+    const channel = await this.channelRepository
+        .createQueryBuilder('channel')
+        .where('channel.id = :id', { id: channelid })
+        .leftJoinAndSelect('channel.users', 'users')
+        .getOne();
+    if (!channel) {
+      console.log('channel does not exist');
+    }
+    channel?.users.forEach((user) => {
+      if (user.id === userid) {
+        client.join(channelid);
+        return;
+      }
+    });
+  }
+
+  async addUserToChannel(client: Socket, channelId: string, userid: number, password?: string) {
     try {
       const channel = await this.channelRepository.findOneByOrFail({
         id: channelId,
@@ -145,10 +162,27 @@ export class ChannelsService {
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
+      
+      if (channel.type === ChannelType.private) {
+        if (channel.invitedUsers.includes(user)) {
+          // Remove user from invitedUsers and go on...
+          channel.invitedUsers = channel.invitedUsers.filter((user) => user.id !== userid);
+        } else {
+          throw new Error('User not invited');
+        }
+      }
+
+      else if (channel.type === ChannelType.protected) {
+        if (!password) {
+          throw new Error('Channel is protected, but no password was provided');
+        }
+        if (await channel.comparePassword(password) == false) {
+          throw new Error('Wrong password');
+        }
+      }
+
       channel.users.push(user);
       await this.channelRepository.save(channel);
-      // user.channelList.push(channel);
-      // await this.userRepository.save(user);
       client.join(channelId);
       return;
     } catch (error) {

@@ -1,5 +1,5 @@
 export interface Channel {
-  id: number;
+  id: string;
   name: string;
   ownerid: number;
   type: string; //ENUM: PUBLIC,PRIVATE,PASSWORD,DM
