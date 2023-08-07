@@ -58,7 +58,7 @@ export class ChatChannelComponent {
 		if (this.activeUser && this.chatComponent.selectedChannel && this.messageInput.value) {
 			const message: Message = {
 				sender: this.activeUser,
-				receiver: this.chatComponent.selectedChannel,
+				receiverChannel: this.chatComponent.selectedChannel,
 				timestamp: new Date,
 				content: this.messageInput.value
 			}

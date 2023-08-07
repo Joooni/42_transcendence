@@ -114,6 +114,8 @@ export class ChatComponent implements OnInit {
 			this.selectedUser = undefined;
 		await this.channelDataService.getChannel(channel.id)
 			.then(rtrnChannel => this.selectedChannel = rtrnChannel)
+		this.messageService.changeOfDM('change of channel');
+		this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
 	}
 
 	selectUser(user: User) {
