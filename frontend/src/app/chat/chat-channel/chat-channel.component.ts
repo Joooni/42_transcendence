@@ -140,13 +140,13 @@ export class ChatChannelComponent {
 	}
 
 	async inviteUser() {
-		console.log('inviteUser has been called for:');
-		console.log(this.invitedUserId);
-		let invitedUser: User;
-		await this.userService.findUserById(this.invitedUserId!).then(user => invitedUser = user);
-		
+		console.log('inviteUser has been called for:', this.invitedUserId);
 		//TO-DO: add function to actually send an invite to someone
-		
+		this.socket.emit('inviteUser', {
+			channelid: this.chatComponent.selectedChannel!.id,
+			activeUserid: this.activeUser?.id,
+			invitedUserid: this.invitedUserId,
+		});
 		this.closePopUp('popup-invite-channel');
 	}
 

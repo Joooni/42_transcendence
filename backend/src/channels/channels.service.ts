@@ -213,4 +213,28 @@ export class ChannelsService {
       console.log(error);
     }
   }
+
+  async inviteUserToChannel(
+    client: Socket,
+    channelid: string,
+    activeUser: number,
+    invitedUserId: number,
+  ) {
+    console.log('user invited to channel', invitedUserId);
+    try {
+      const channel = await this.channelRepository.findOneByOrFail({
+        id: channelid,
+      });
+      const invitedUser = await this.userService.findOne(invitedUserId);
+      if (!channel || !invitedUser) {
+        throw new NotFoundException('Channel or User not found');
+      }
+
+      channel.invitedUsers.push(invitedUser);
+      await this.channelRepository.save(channel);
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

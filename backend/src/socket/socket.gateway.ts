@@ -117,6 +117,16 @@ export class SocketGateway
     );
   }
 
+  @SubscribeMessage('inviteUser')
+  inviteUser(client: Socket, obj: any): void {
+    this.channelsService.inviteUserToChannel(
+      client,
+      obj.channelid,
+      obj.activeUserid,
+      obj.invitedUserid,
+    );
+  }
+
   @SubscribeMessage('identify')
   identifyUser(client: Socket, userid: number | undefined): void {
     if (typeof userid !== 'undefined' && userid !== null) {
