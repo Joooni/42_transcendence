@@ -54,7 +54,14 @@ export class SocketGateway
       const user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
       this.removeSocket(user.id); // Remove Socket from SocketMap
-      this.usersService.updateStatus(user.id, 'offline');
+      this.usersService.updateStatus(user.id, 'offline').then(() => {
+        this.server.emit('updateUser', {
+          id: user.id,
+          status: 'offline',
+        });
+      });
+      
+
     } catch (error) {
       console.log('Error Socket: User not found');
     }
@@ -104,17 +111,19 @@ export class SocketGateway
   }
 
   @SubscribeMessage('joinChannel')
-  joinChannel(client: Socket, obj: any): void {
-    this.channelsService.addUserToChannel(client, obj.channelid, obj.userid);
+  async joinChannel(client: Socket, obj: any) {
+    await this.channelsService.addUserToChannel(client, obj.channelid, obj.userid);
+    this.server.to(obj.channelid).emit('updateChannel', {});
   }
 
   @SubscribeMessage('leaveChannel')
-  leaveChannel(client: Socket, obj: any): void {
-    this.channelsService.removeUserFromChannel(
+  async leaveChannel(client: Socket, obj: any) {
+    await this.channelsService.removeUserFromChannel(
       client,
       obj.channelid,
       obj.userid,
     );
+    this.server.to(obj.channelid).emit('updateChannel', {});
   }
 
   @SubscribeMessage('inviteUser')
@@ -128,12 +137,16 @@ export class SocketGateway
   }
 
   @SubscribeMessage('identify')
-  identifyUser(client: Socket, userid: number | undefined): void {
+  async identifyUser(client: Socket, userid: number | undefined) {
     if (typeof userid !== 'undefined' && userid !== null) {
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
 
-      this.usersService.updateStatus(userid, 'online');
+      await this.usersService.updateStatus(userid, 'online');
+      this.server.emit('updateUser', {
+        id: userid,
+        status: 'online',
+      });
     } else {
       console.log('Error Socket: User not identified');
       client.emit('identify');

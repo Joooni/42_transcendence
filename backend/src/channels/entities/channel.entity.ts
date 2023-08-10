@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Message } from 'src/messages/entities/message.entity';
 import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -11,6 +12,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -70,6 +72,13 @@ export class Channel {
   @Field()
   @CreateDateColumn()
   createdAt: Date;
+
+  @Field(() => [Message], { nullable: true })
+  @OneToMany(() => Message, (message) => message.receiverChannel, {
+    cascade: true,
+  })
+  @JoinColumn()
+  messages: Message[];
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.channelList, {

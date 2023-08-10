@@ -20,6 +20,7 @@ export class ChannelsService {
     console.log('This action returns all channels');
     const channels = await this.channelRepository
       .createQueryBuilder('channel')
+      .leftJoinAndSelect('channel.messages', 'messages')
       .leftJoinAndSelect('channel.owner', 'owner')
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admins', 'admins')
@@ -35,6 +36,7 @@ export class ChannelsService {
       const channel = await this.channelRepository
         .createQueryBuilder('channel')
         .where('channel.id = :id', { id: id })
+        .leftJoinAndSelect('channel.messages', 'messages')
         .leftJoinAndSelect('channel.owner', 'owner')
         .leftJoinAndSelect('channel.users', 'users')
         .leftJoinAndSelect('channel.admins', 'admins')
@@ -57,6 +59,7 @@ export class ChannelsService {
       const channel = await this.channelRepository
         .createQueryBuilder('channel')
         .where('channel.name = :name', { name: name })
+        .leftJoinAndSelect('channel.messages', 'messages')
         .leftJoinAndSelect('channel.owner', 'owner')
         .leftJoinAndSelect('channel.users', 'users')
         .leftJoinAndSelect('channel.admins', 'admins')
@@ -196,19 +199,24 @@ export class ChannelsService {
     userid: number,
   ) {
     try {
-      const channel = await this.channelRepository.findOneByOrFail({
-        id: channelId,
-      });
+      const channel = await this.getChannelById(channelId);
       const user = await this.userService.findOne(userid);
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
-      channel.users = channel.users.filter((user) => user.id !== userid);
-      this.channelRepository.save(channel);
-      user.channelList = user.channelList.filter(
-        (channel) => channel.id !== channelId,
-      );
-      this.userRepository.save(user);
+      if (channel.owner.id === user.id) {
+        //Delete channel
+        this.channelRepository.delete(channel.id);
+      }
+      else {
+        //Remove user from channel
+        channel.users = channel.users.filter((user) => user.id !== userid);
+        this.channelRepository.save(channel);
+        user.channelList = user.channelList.filter(
+          (channel) => channel.id !== channelId,
+        );
+        this.userRepository.save(user);
+      }
     } catch (error) {
       console.log(error);
     }
