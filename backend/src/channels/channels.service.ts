@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Socket } from 'socket.io';
+import { WebSocketServer } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
@@ -101,7 +102,7 @@ export class ChannelsService {
     }
   }
 
-  async createChannel(client: Socket, channelname: string, owner: number) {
+  async createChannel(client: Socket, channelname: string, owner: number, type: ChannelType, password?: string) {
     console.log('got channel', channelname);
     const user = await this.userService.findOne(owner);
     if (!user) {
@@ -117,7 +118,8 @@ export class ChannelsService {
     const chanEntity = this.channelRepository.create({
       name: channelname,
       owner: user,
-      type: ChannelType.public,
+      type: type,
+      password: password,
       users: [user],
       admins: [user],
       mutedUsers: [],
@@ -194,6 +196,7 @@ export class ChannelsService {
   }
 
   async removeUserFromChannel(
+    server: Server,
     client: Socket,
     channelId: string,
     userid: number,
@@ -204,18 +207,17 @@ export class ChannelsService {
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
+      
       if (channel.owner.id === user.id) {
         //Delete channel
-        this.channelRepository.delete(channel.id);
+        await this.channelRepository.delete(channel.id);
+        server.emit('updateChannelList', {});
       }
       else {
         //Remove user from channel
         channel.users = channel.users.filter((user) => user.id !== userid);
-        this.channelRepository.save(channel);
-        user.channelList = user.channelList.filter(
-          (channel) => channel.id !== channelId,
-        );
-        this.userRepository.save(user);
+        await this.channelRepository.save(channel);
+        server.to(channelId).emit('updateChannel', {});
       }
     } catch (error) {
       console.log(error);

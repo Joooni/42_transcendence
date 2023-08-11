@@ -100,26 +100,9 @@ export class ChatComponent implements OnInit {
 					});
 				}
 			}
-			
-			
-			// Userid approach
-			// if (!userid || typeof(userid) !== 'number' || !this.allUsers)
-			// 	return;
-			// console.log('updateUser is called');
-			// this.userDataService.findUserById(userid).then(user => {
-			// 	const userIndex = this.allUsers?.findIndex(elem => elem.id === user.id);
-			// 	if (userIndex !== undefined) {
-			// 		if (userIndex !== -1) {
-			// 			this.allUsers![userIndex].username = user.username;
-			// 			this.allUsers![userIndex].status = user.status;
-			// 			this.allUsers![userIndex].picture = user.picture;
-			// 		}
-			// 		else {
-			// 			console.log('user will be added');
-			// 			this.allUsers!.push(user);
-			// 		}
-			// 	}
-			// });
+		});
+		this.socket.listen('updateChannelList').subscribe(() => {
+			this.updateChannelList();
 		});
 	}
 
@@ -265,7 +248,12 @@ export class ChatComponent implements OnInit {
 			this.memberChannels = this.activeUser.channelList;
 			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
 				other => this.otherVisibleChannels = other
-				);
+			);
+			if (this.selectedChannel) {
+				const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
+				if (!findChannel)
+					this.selectedChannel = undefined;
+			}
 		});
 	}
 }

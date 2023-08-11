@@ -101,8 +101,15 @@ export class SocketGateway
   }
   
   @SubscribeMessage('createChannel')
-  createChannel(client: Socket, obj: any): void {
-    this.channelsService.createChannel(client, obj.channelname, obj.ownerid);
+  async createChannel(client: Socket, obj: any) {
+    await this.channelsService.createChannel(
+      client,
+      obj.channelname,
+      obj.ownerid,
+      obj.type,
+      obj.password,
+      );
+    this.server.emit('updateChannelList', {});
   }
   
   @SubscribeMessage('joinChannelRoom')
@@ -119,11 +126,11 @@ export class SocketGateway
   @SubscribeMessage('leaveChannel')
   async leaveChannel(client: Socket, obj: any) {
     await this.channelsService.removeUserFromChannel(
+      this.server,
       client,
       obj.channelid,
       obj.userid,
     );
-    this.server.to(obj.channelid).emit('updateChannel', {});
   }
 
   @SubscribeMessage('inviteUser')
