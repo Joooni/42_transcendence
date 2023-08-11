@@ -88,10 +88,10 @@
 	<div class="popup-content">
 		<h2>INVITE TO CHANNEL</h2>
 		<h4>Who do you want to invite to this channel?</h4>
-		<select class="select-invited-user"[(ngModel)]="invitedUser">
+		<select class="select-invited-user"[(ngModel)]="invitedUserId">
 			<option [value]="null">Please select a User</option>
 			<ng-container *ngFor="let user of invitableUsers">
-				<option [value]="user">{{user.username}}</option>
+				<option [value]="user.id">{{user.username}}</option>
 			</ng-container>
 		</select>
 		<div class="popup-buttons">
