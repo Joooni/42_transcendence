@@ -25,14 +25,11 @@
 			<h2>OWNER</h2>
 			<div class="user" [ngClass]="chatComponent.selectedChannel?.owner?.status">
 				<h4>{{chatComponent.selectedChannel?.owner?.username}}</h4>
-				<div class="icons">
-					<a class="dropdown">
-						<img class="icon" src="../../../assets/dots_icon_yellow.png">
-						<!-- <div class="dropdown-content">
-							TEST
-						</div> -->
-					</a>
-				</div>
+				<app-chat-channel-dropdown
+				*ngIf="chatComponent.selectedChannel?.owner?.id !== activeUser.id"
+				[channel]="chatComponent.selectedChannel!"
+				[selectedUser]="chatComponent.selectedChannel!.owner"
+				></app-chat-channel-dropdown>
 			</div>
 
 			<h2>ADMINS</h2>
@@ -89,13 +86,13 @@
 		<h2>INVITE TO CHANNEL</h2>
 		<h4>Who do you want to invite to this channel?</h4>
 		<select class="select-invited-user"[(ngModel)]="invitedUserId">
-			<option [value]="null">Please select a User</option>
+			<option [value]="''">Please select a User</option>
 			<ng-container *ngFor="let user of invitableUsers">
 				<option [value]="user.id">{{user.username}}</option>
 			</ng-container>
 		</select>
 		<div class="popup-buttons">
-			<button class="button_medium" (click)="inviteUser()">CONFIRM</button>
+			<button class="button_medium" [disabled]="!invitedUserId" (click)="inviteUser()">CONFIRM</button>
 			<button class="button_medium button_reverse" (click)="closePopUp('popup-invite-channel')">CANCEL</button>
 		</div>
 	</div>

@@ -22,6 +22,7 @@ import { GameComponent } from './game/game.component';
 import { GameDisplayComponent } from './game/game-display/game-display.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorComponent } from './error/error.component';
+import { ChatChannelDropdownComponent } from './chat/chat-channel/chat-channel-dropdown/chat-channel-dropdown.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -37,6 +38,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ChatComponent,
     ChatDirectMessageComponent,
     ChatChannelComponent,
+    ChatChannelDropdownComponent,
     GameComponent,
     GameDisplayComponent,
     ErrorComponent,

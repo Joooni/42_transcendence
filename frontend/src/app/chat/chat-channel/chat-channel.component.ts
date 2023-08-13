@@ -22,7 +22,7 @@ export class ChatChannelComponent {
 	messages?: Message[];
 
 	activeUser!: User;
-	invitedUserId: string | null = null; //Our HTML will give the number as string back
+	invitedUserId: string = '';
 	invitableUsers: User[] = [];
 
 	constructor(
@@ -123,7 +123,7 @@ export class ChatChannelComponent {
 	}
 
 	async setInvitableUsers() {
-		this.invitedUserId = null;
+		this.invitedUserId = '';
 		const invitableUsers: User[] = [];
 		let allUsers: User[];
 		await this.userService.findAllExceptMyself().then(users => allUsers = users);
@@ -140,6 +140,12 @@ export class ChatChannelComponent {
 	}
 
 	async inviteUser() {
+		console.log('inviteUser has been called for:');
+		console.log(this.invitedUserId);
+		const userId = Number(this.invitedUserId);
+		let invitedUser: User;
+		await this.userService.findUserById(userId).then(user => invitedUser = user);
+		
 		//TO-DO: add function to actually send an invite to someone
 		if (!this.invitedUserId)
 			return;

@@ -1,0 +1,45 @@
+<div class="icons">
+	<a class="dropdown">
+		<img class="icon" src="../../../assets/dots_icon_yellow.png">
+		<div class="dropdown-content">
+			<div class="dropdown-content-items">
+				<a class="dropdown-content-item" routerLink="{{'/profile/' + selectedUser.username}}">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div>Visit profile</div>
+				</a>
+				<a *ngIf="!blocksOrIsBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div>Direct message</div>
+				</a>
+				<a *ngIf="canBeSetAsAdmin()" class="dropdown-content-item" (click)="setUserAsAdmin()">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div>Set as admin</div>
+				</a>
+				<a *ngIf="canBeRemovedAsAdmin()" class="dropdown-content-item" (click)="removeUserAsAdmin()">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div>Remove as admin</div>
+				</a>
+				<a *ngIf="canBeMuted()" class="dropdown-content-item" (click)="muteUser()">
+					<img class="icon" src="../../../assets/mute_icon_yellow.png">
+					<div>Mute</div>
+				</a>
+				<a *ngIf="canBeUnmuted()" class="dropdown-content-item" (click)="unmuteUser()">
+					<img class="icon" src="../../../assets/mute_icon_yellow.png">
+					<div>Unmute</div>
+				</a>
+				<a *ngIf="canBeKicked()" class="dropdown-content-item" (click)="kickUser()">
+					<img class="icon" src="../../../assets/kick_icon_yellow.png">
+					<div>Kick</div>
+				</a>
+				<a *ngIf="canBeBanned()" class="dropdown-content-item" (class)="banUser()">
+					<img class="icon" src="../../../assets/ban_icon_yellow.png">
+					<div>Ban</div>
+				</a>
+				<a *ngIf="canBeUnbanned()" class="dropdown-content-item" (click)="unbanUser()">
+					<img class="icon" src="../../../assets/ban_icon_yellow.png">
+					<div>Remove ban</div>
+				</a>
+			</div>
+		</div>
+	</a>
+</div>
