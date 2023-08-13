@@ -22,10 +22,10 @@
 	display: none;
 	position: absolute;
 	background-color: rgba(2, 88, 2, 0.891);
-	min-width: 300px;
 	z-index: 1;
 	height: auto;
-	left: -250px;
+	width: 200px;
+	left: -180px;
 	top: 25px;
 	padding: 0.5rem;
 }
@@ -46,7 +46,7 @@
 	column-gap: 1rem;
 	justify-content: flex-start;
 	align-items: center;
-	font-size: 1rem;
+	font-size: 0.7rem;
 	color: orange;
 	cursor: pointer;
 }

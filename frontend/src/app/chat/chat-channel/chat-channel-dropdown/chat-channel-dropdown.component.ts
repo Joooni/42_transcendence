@@ -37,55 +37,55 @@ export class ChatChannelDropdownComponent {
 
 	canBeSetAsAdmin(): boolean {
 		//selectedUser is not admin or owner
-		if (this.userIsAdmin(this.selectedUser) || this.userIsOwner(this.selectedUser))
+		if (this.userIsAdmin(this.selectedUser) || this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
 		//active user is admin or owner
-		if (this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!))
+		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
 		return false;
 	}
 
 	canBeRemovedAsAdmin(): boolean {
-		if (this.userIsOwner(this.selectedUser))
+		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
 		//TO-DO: TBD if admins can remove other admins
-		return (this.userIsAdmin(this.selectedUser) && this.userIsOwner(this.activeUser!));
+		return (this.userIsAdmin(this.selectedUser) && this.userIsOwner(this.activeUser));
 	}
 
 	canBeMuted(): boolean {
-		if (this.userIsOwner(this.selectedUser))
+		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
 		if (this.channel.mutedUsers.some(user => user.id === this.selectedUser.id))
 			return false;
-		if (this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!))
+		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
 		return false;
 	}
 
 	canBeUnmuted(): boolean {
-		if (!this.channel.mutedUsers.some(user => user.id === this.selectedUser.id))
+		if (!this.channel.mutedUsers.some(user => user.id === this.selectedUser.id) || !this.activeUser)
 			return false;
-		if (this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!))
+		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
 		return false;
 	}
 
 	canBeKicked(): boolean {
-		if (this.userIsOwner(this.selectedUser))
+		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
-		return this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!)
+		return this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser)
 	}
 
 	canBeBanned(): boolean {
-		if (this.userIsOwner(this.selectedUser))
+		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
-		return this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!)
+		return this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser)
 	}
 
 	canBeUnbanned(): boolean {
-		if (!this.channel.bannedUsers.some(user => user.id === this.selectedUser.id))
+		if (!this.channel.bannedUsers.some(user => user.id === this.selectedUser.id) || !this.activeUser)
 			return false;
-		return this.userIsAdmin(this.activeUser!) || this.userIsOwner(this.activeUser!);
+		return this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser);
 	}
 
 	openDMWithUser() {
