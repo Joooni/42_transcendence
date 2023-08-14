@@ -3,14 +3,14 @@
 		<img class="icon" src="../../../assets/dots_icon_yellow.png">
 		<div class="dropdown-content">
 			<div class="dropdown-content-items">
-				<a class="dropdown-content-item" routerLink="{{'/profile/' + selectedUser.username}}">
+				<!-- <a class="dropdown-content-item" routerLink="{{'/profile/' + selectedUser.username}}">
 					<img class="icon" src="../../../assets/admin_icon_yellow.png">
 					<div class="action-item">Visit profile</div>
 				</a>
 				<a *ngIf="!blocksOrIsBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
 					<img class="icon" src="../../../assets/admin_icon_yellow.png">
 					<div class="action-item">Direct message</div>
-				</a>
+				</a> -->
 				<a *ngIf="canBeSetAsAdmin()" class="dropdown-content-item" (click)="setUserAsAdmin()">
 					<img class="icon" src="../../../assets/admin_icon_yellow.png">
 					<div class="action-item">Set as admin</div>

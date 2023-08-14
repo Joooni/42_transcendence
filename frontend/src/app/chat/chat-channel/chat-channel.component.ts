@@ -9,6 +9,7 @@ import { ChannelDataService } from 'src/app/services/channel-data/channel-data.s
 import { ErrorService } from 'src/app/services/error/error.service';
 import { Socket } from 'ngx-socket-io';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
+import { ChannelType } from 'src/app/models/channel-type.enum';
 
 @Component({
   selector: 'app-chat-channel',
@@ -25,6 +26,10 @@ export class ChatChannelComponent {
 	invitedUserId: string = '';
 	invitableUsers: User[] = [];
 
+	selectedChannelType?: ChannelType;//TO-DO: TBD ob channel type string oder number
+	newPassword: string = '';
+
+
 	constructor(
 		public chatComponent: ChatComponent,
 		private messageService: MessageService,
@@ -38,6 +43,8 @@ export class ChatChannelComponent {
 	ngOnInit(): void {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.activeUser = this.chatComponent.activeUser;
+			//TO-DO: TBD ob channel type string oder number
+			this.selectedChannelType = this.chatComponent.selectedChannel.type;
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
 			.then(messages => this.messages = messages);
 		}
@@ -92,6 +99,11 @@ export class ChatChannelComponent {
 	openInviteUserPopUp() {
 		this.setInvitableUsers();
 		const popup = document.getElementById('popup-invite-channel');
+		popup?.classList.toggle('show-popup');
+	}
+
+	openChannelSettingsPopUp() {
+		const popup = document.getElementById('popup-channel-settings');
 		popup?.classList.toggle('show-popup');
 	}
 
@@ -158,7 +170,20 @@ export class ChatChannelComponent {
 		this.closePopUp('popup-invite-channel');
 	}
 
+	updateChannelSettings() {
+		console.log('The new channel type is: ' + this.selectedChannelType);
+		console.log('The new channel password is: ' + this.newPassword);
+	}
+
 	isMuted(user: User): boolean {
 		return this.chatComponent.selectedChannel!.mutedUsers.some((elem) => elem.id === user.id);
+	}
+
+	disableSaveSettings(): boolean {
+		//TO-DO: TBD ob channel type string oder number
+		if (!this.newPassword && this.selectedChannelType === ChannelType.protected 
+			&& this.selectedChannelType !== this.chatComponent.selectedChannel?.type)
+			return true;
+		return false
 	}
 }

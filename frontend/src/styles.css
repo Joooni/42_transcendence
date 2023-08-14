@@ -189,6 +189,14 @@ select {
 	width: 8vmin;
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
+	overflow: hidden;
+}
+
+.profile_picture img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .achievement_icon {
@@ -211,6 +219,13 @@ select {
 	width: 20vmin;
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
+}
+
+.profile_picture_big img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .center {

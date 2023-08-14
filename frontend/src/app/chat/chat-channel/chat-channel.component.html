@@ -3,6 +3,12 @@
 		<div class="chat-box channel-name">
 			<h4>{{chatComponent.selectedChannel?.name}}</h4>
 			<div class="channel-buttons">
+				<a  
+					class="channel-settings"
+					*ngIf="activeUser.id === chatComponent.selectedChannel?.owner?.id" 
+					(click)="openChannelSettingsPopUp()">
+					<img class="settings-icon" src="../../../assets/settings.png">
+				</a>
 				<button class="button_small" (click)="openInviteUserPopUp()">INVITE</button>
 				<button class="button_small button_reverse" (click)="openLeaveChannelPopUp()">LEAVE</button>
 			</div>
@@ -107,6 +113,29 @@
 		<div class="popup-buttons">
 			<button class="button_medium" [disabled]="!invitedUserId" (click)="inviteUser()">CONFIRM</button>
 			<button class="button_medium button_reverse" (click)="closePopUp('popup-invite-channel')">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-channel-settings">
+	<div class="popup-content">
+		<h2>CHANNEL SETTINGS</h2>
+		<h4>Here you can change the channel type and set a password for the channel.</h4>
+		<div class="pop-up-channel-settings-selector">
+			<h4>Type:</h4>
+			<select [(ngModel)]="selectedChannelType">
+				<option [value]="0">Public</option>
+				<option [value]="1">Private</option>
+				<option [value]="2">Protected</option>
+			</select>
+		</div>
+		<div class="pop-up-channel-settings-selector" *ngIf="selectedChannelType == 2">
+			<h4>New Password:</h4>
+			<input class="popup-channel-settings-input" type="password" [(ngModel)]="newPassword">
+		</div>
+		<div class="popup-buttons">
+			<button class="button_medium" [disabled]="disableSaveSettings()" (click)="updateChannelSettings()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-channel-settings')">CANCEL</button>
 		</div>
 	</div>
 </div>
