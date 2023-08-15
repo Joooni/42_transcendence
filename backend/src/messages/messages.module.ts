@@ -13,7 +13,14 @@ import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelsResolver } from 'src/channels/channels.resolver';
 
 @Module({
-  providers: [MessagesService, MessagesResolver, UsersService, UsersResolver, ChannelsService, ChannelsResolver],
+  providers: [
+    MessagesService,
+    MessagesResolver,
+    UsersService,
+    UsersResolver,
+    ChannelsService,
+    ChannelsResolver,
+  ],
   imports: [
     TypeOrmModule.forFeature([Message, User, Channel]),
     ConfigModule,

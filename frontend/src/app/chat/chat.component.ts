@@ -26,6 +26,7 @@ export class ChatComponent implements OnInit {
 
 	memberChannels?: Channel[];
 	otherVisibleChannels?: Channel[];
+	invitedInChannel?: Channel[];
 
 	showFriends: boolean = true;
 	showOtherUsers: boolean = false;
@@ -68,6 +69,7 @@ export class ChatComponent implements OnInit {
 			
 			//This should work now:
 			this.memberChannels = this.activeUser.channelList;
+			this.invitedInChannel = this.activeUser.invitedInChannel;
 			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
 		});
 
@@ -75,6 +77,34 @@ export class ChatComponent implements OnInit {
 
 		this.socket.listen('identify').subscribe(() => {
 			this.socket.emit('identify', this.activeUser?.id);
+		});
+		this.socket.listen('updateChannel').subscribe(() => {
+			this.updateSelectedChannel();
+		});
+		//Will update username & status & profilepic of specific user
+		this.socket.listen('updateUser').subscribe((user: any) => {
+			if (!user.id || user.id === this.activeUser?.id || !this.allUsers)
+				return;
+			const userIndex = this.allUsers?.findIndex(elem => elem.id === user.id);
+			if (userIndex !== undefined) {
+				if (userIndex !== -1) {
+					if (user.username)
+						this.allUsers![userIndex].username = user.username;
+					if (user.status)
+						this.allUsers![userIndex].status = user.status;
+					if (user.picture)
+						this.allUsers![userIndex].picture = user.picture;
+				}
+				else {
+					console.log('user will be added');
+					this.userDataService.findUserById(user.id).then(dbuser => {
+						this.allUsers!.push(dbuser);
+					});
+				}
+			}
+		});
+		this.socket.listen('updateChannelList').subscribe(() => {
+			this.updateChannelList();
 		});
 	}
 
@@ -116,6 +146,16 @@ export class ChatComponent implements OnInit {
 			.then(rtrnChannel => this.selectedChannel = rtrnChannel)
 		this.messageService.changeOfDM('change of channel');
 		this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
+	}
+
+	async updateSelectedChannel() {
+		console.log('updateChannel is called');
+		if (typeof(this.selectedChannel) == undefined || !this.selectedChannel?.id)
+			return;
+		const findChannel = await this.channelDataService.getChannel(this.selectedChannel.id);
+		if (!findChannel)
+			return;
+		this.selectedChannel = findChannel;
 	}
 
 	selectUser(user: User) {
@@ -208,6 +248,14 @@ export class ChatComponent implements OnInit {
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
 			this.memberChannels = this.activeUser.channelList;
+			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
+				other => this.otherVisibleChannels = other
+			);
+			if (this.selectedChannel) {
+				const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
+				if (!findChannel)
+					this.selectedChannel = undefined;
+			}
 		});
 	}
 }

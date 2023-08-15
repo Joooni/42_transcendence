@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Message {
+  id: Int!
+  sender: User!
+  receiverUser: User!
+  receiverChannel: Channel
+  timestamp: DateTime!
+  content: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Channel {
   id: String!
   owner: User!
@@ -9,6 +23,7 @@ type Channel {
   type: ChannelType!
   password: String
   createdAt: DateTime!
+  messages: [Message!]
   users: [User!]
   admins: [User!]
   mutedUsers: [User!]
@@ -21,11 +36,6 @@ enum ChannelType {
   private
   protected
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type User {
   id: Int!
@@ -69,15 +79,6 @@ type Match {
   goalsFirstPlayer: Int!
   goalsSecondPlayer: Int!
   date: DateTime!
-}
-
-type Message {
-  id: Int!
-  sender: User!
-  receiverUser: User!
-  receiverChannel: Channel!
-  timestamp: DateTime!
-  content: String!
 }
 
 type Query {

@@ -98,6 +98,16 @@
 					</div>
 				</div>
 			</div>
+			<div *ngFor="let channel of invitedInChannel">
+				<div class="channel other">
+					<h4>{{channel.name}}</h4>
+					<div class="icons">
+						<button class="button_reverse button_small" (click)="joinChannel(channel)">
+							JOIN
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<button type="button" class="button_collapsible" (click)="changeShowBlocked()">

@@ -96,7 +96,9 @@ export class User {
   ownedChannels: Channel[];
 
   @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel, (channel) => channel.users)
+  @ManyToMany(() => Channel, (channel) => channel.users, {
+    onDelete: 'CASCADE',
+  })
   channelList: Channel[];
 
   @Field(() => [Channel], { nullable: true })

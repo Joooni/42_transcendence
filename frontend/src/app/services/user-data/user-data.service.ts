@@ -118,6 +118,10 @@ export class UserDataService {
             id
             name
           }
+          invitedInChannel {
+            id
+            name
+          }
         }
       }
       `,
@@ -161,7 +165,7 @@ export class UserDataService {
 
   async findAllExceptMyself(): Promise<User[]> {
     console.log('findAllExceptMyself called');
-    const response = await graphQLService.query(
+    let response = await graphQLService.query(
       `
         query {
           allUsersExceptMyself {
@@ -187,7 +191,8 @@ export class UserDataService {
     if (typeof response === 'undefined') {
       return Promise.reject(new Error('Empty user data'));
     }
-    return response.allUsersExceptMyself;
+    const editableResult = (response.allUsersExceptMyself as User[]).map(users => ({...users}));
+    return editableResult;
   }
 
   async findUserById(id: number): Promise<User> {
@@ -203,6 +208,7 @@ export class UserDataService {
           email
           picture
           twoFAEnabled
+          status
           wins
           losses
           xp
@@ -218,7 +224,8 @@ export class UserDataService {
     );
 		if (typeof userById === 'undefined') throw new Error('Empty user data');
     console.log('findUserById called:', userById)
-		return userById;
+    const editableResult = {...userById};
+    return editableResult;
   }
 
 	async findUserByUsername(username: string): Promise<User> {

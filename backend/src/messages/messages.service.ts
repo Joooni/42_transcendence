@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, QueryFailedError, Repository } from 'typeorm';
-import { CreateMessageInput } from './dto/create-message.input';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { MessageObj } from 'src/objects/message';
 import { Socket } from 'socket.io';
@@ -57,10 +56,13 @@ export class MessagesService {
       .leftJoinAndSelect('message.sender', 'sender')
       .leftJoinAndSelect('message.receiverUser', 'receiverUser')
       .leftJoinAndSelect('message.receiverChannel', 'receiverChannel')
-      .where('message.receiverUser.id = :id AND message.sender.id = :idReceiver', {
-        id: id,
-        idReceiver: idReceiver,
-      })
+      .where(
+        'message.receiverUser.id = :id AND message.sender.id = :idReceiver',
+        {
+          id: id,
+          idReceiver: idReceiver,
+        },
+      )
       .orWhere(
         'message.receiverUser.id = :idReceiver AND message.sender.id = :id',
         { id: id, idReceiver: idReceiver },
@@ -69,9 +71,8 @@ export class MessagesService {
       .getMany();
   }
 
-  async findMessagesChannel(id: string):Promise<Message[]> {
-    if (typeof id === 'undefined')
-      throw new EntityNotFoundError(User, {});
+  async findMessagesChannel(id: string): Promise<Message[]> {
+    if (typeof id === 'undefined') throw new EntityNotFoundError(User, {});
 
     return await this.messageRepository
       .createQueryBuilder('message')
@@ -86,9 +87,6 @@ export class MessagesService {
   }
 
   async receiveMessage(client: Socket, message: MessageObj): Promise<void> {
-    let dbUserSender: User = new User();
-    let receiver;
-
     try {
       // Create the Message Entity
       const mesEntity = new Message();
@@ -98,10 +96,12 @@ export class MessagesService {
       if (mesEntity.sender === undefined) {
         throw new Error('Sender does not exist');
       }
-      
+
       if (message.receiverChannel !== undefined) {
         // Channel Messages
-        mesEntity.receiverChannel = await this.channelsService.getChannelById(message.receiverChannel.id);
+        mesEntity.receiverChannel = await this.channelsService.getChannelById(
+          message.receiverChannel.id,
+        );
         if (mesEntity.receiverChannel === undefined) {
           throw new Error('Channel does not exist');
         }
@@ -110,7 +110,9 @@ export class MessagesService {
         if (message.receiverUser === undefined) {
           throw new Error('Message without receiver');
         }
-        mesEntity.receiverUser = await this.userService.findOne(message.receiverUser.id);
+        mesEntity.receiverUser = await this.userService.findOne(
+          message.receiverUser.id,
+        );
         if (mesEntity.receiverUser === undefined) {
           throw new Error('Receiver does not exist');
         }
@@ -118,7 +120,6 @@ export class MessagesService {
 
       // Save in DB
       this.messageRepository.insert(mesEntity);
-
     } catch (error) {
       console.log('Error: \n', error);
     }
