@@ -118,6 +118,10 @@ export class UserDataService {
             id
             name
           }
+          invitedInChannel {
+            id
+            name
+          }
         }
       }
       `,

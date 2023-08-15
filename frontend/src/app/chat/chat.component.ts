@@ -26,6 +26,7 @@ export class ChatComponent implements OnInit {
 
 	memberChannels?: Channel[];
 	otherVisibleChannels?: Channel[];
+	invitedInChannel?: Channel[];
 
 	showFriends: boolean = true;
 	showOtherUsers: boolean = false;
@@ -68,6 +69,7 @@ export class ChatComponent implements OnInit {
 			
 			//This should work now:
 			this.memberChannels = this.activeUser.channelList;
+			this.invitedInChannel = this.activeUser.invitedInChannel;
 			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
 		});
 

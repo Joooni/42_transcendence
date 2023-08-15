@@ -22,7 +22,7 @@ export class ChatChannelComponent {
 	messages?: Message[];
 
 	activeUser!: User;
-	invitedUserId: number | null = null;
+	invitedUserId: string | null = null; //Our HTML will give the number as string back
 	invitableUsers: User[] = [];
 
 	constructor(
@@ -140,12 +140,14 @@ export class ChatChannelComponent {
 	}
 
 	async inviteUser() {
-		console.log('inviteUser has been called for:', this.invitedUserId);
 		//TO-DO: add function to actually send an invite to someone
+		if (!this.invitedUserId)
+			return;
+		const tmp: number = parseInt(this.invitedUserId, 10);
 		this.socket.emit('inviteUser', {
 			channelid: this.chatComponent.selectedChannel!.id,
 			activeUserid: this.activeUser?.id,
-			invitedUserid: this.invitedUserId,
+			inviteThisUserId: tmp,
 		});
 		this.closePopUp('popup-invite-channel');
 	}

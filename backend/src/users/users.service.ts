@@ -75,9 +75,6 @@ export class UsersService {
         .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
         .getOneOrFail();
-
-      //old
-      //return this.userRepository.findOneByOrFail({ id: identifier });
     } else if (typeof identifier === 'string') {
       return await this.userRepository
         .createQueryBuilder('user')
@@ -88,8 +85,6 @@ export class UsersService {
         .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
         .getOneOrFail();
-      // old
-      // return this.userRepository.findOneByOrFail({ username: identifier });
     }
     throw new EntityNotFoundError(User, {});
   }

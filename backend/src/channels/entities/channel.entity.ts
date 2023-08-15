@@ -60,11 +60,12 @@ export class Channel {
   }
 
   async comparePassword(password: string): Promise<boolean> {
-    if (typeof this.password !== undefined) {
+    if (!this.password) {
       console.log('no password set for the channel:', this.name);
       return false;
-    }
-    if (await this.passwordService.comparePassword(password, this.password!))
+    } else if (
+      await this.passwordService.comparePassword(password, this.password)
+    )
       return true;
     else return false;
   }

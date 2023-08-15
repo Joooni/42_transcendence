@@ -30,7 +30,7 @@ export class Message {
   @Field(() => Channel, { nullable: true })
   @ManyToOne(() => Channel, (channel) => channel.messages, {
     onDelete: 'CASCADE',
-    })
+  })
   @JoinColumn()
   receiverChannel?: Channel;
 

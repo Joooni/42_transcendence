@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -102,7 +101,13 @@ export class ChannelsService {
     }
   }
 
-  async createChannel(client: Socket, channelname: string, owner: number, type: ChannelType, password?: string) {
+  async createChannel(
+    client: Socket,
+    channelname: string,
+    owner: number,
+    type: ChannelType,
+    password?: string,
+  ) {
     console.log('got channel', channelname);
     const user = await this.userService.findOne(owner);
     if (!user) {
@@ -143,10 +148,10 @@ export class ChannelsService {
 
   async joinChannelRoom(client: Socket, channelid: string, userid: number) {
     const channel = await this.channelRepository
-        .createQueryBuilder('channel')
-        .where('channel.id = :id', { id: channelid })
-        .leftJoinAndSelect('channel.users', 'users')
-        .getOne();
+      .createQueryBuilder('channel')
+      .where('channel.id = :id', { id: channelid })
+      .leftJoinAndSelect('channel.users', 'users')
+      .getOne();
     if (!channel) {
       console.log('channel does not exist');
     }
@@ -158,7 +163,12 @@ export class ChannelsService {
     });
   }
 
-  async addUserToChannel(client: Socket, channelId: string, userid: number, password?: string) {
+  async addUserToChannel(
+    client: Socket,
+    channelId: string,
+    userid: number,
+    password?: string,
+  ) {
     try {
       const channel = await this.channelRepository.findOneByOrFail({
         id: channelId,
@@ -167,21 +177,21 @@ export class ChannelsService {
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
-      
+
       if (channel.type === ChannelType.private) {
         if (channel.invitedUsers.includes(user)) {
           // Remove user from invitedUsers and go on...
-          channel.invitedUsers = channel.invitedUsers.filter((user) => user.id !== userid);
+          channel.invitedUsers = channel.invitedUsers.filter(
+            (user) => user.id !== userid,
+          );
         } else {
           throw new Error('User not invited');
         }
-      }
-
-      else if (channel.type === ChannelType.protected) {
+      } else if (channel.type === ChannelType.protected) {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }
-        if (await channel.comparePassword(password) == false) {
+        if ((await channel.comparePassword(password)) == false) {
           throw new Error('Wrong password');
         }
       }
@@ -207,13 +217,12 @@ export class ChannelsService {
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
-      
+
       if (channel.owner.id === user.id) {
         //Delete channel
         await this.channelRepository.delete(channel.id);
         server.emit('updateChannelList', {});
-      }
-      else {
+      } else {
         //Remove user from channel
         channel.users = channel.users.filter((user) => user.id !== userid);
         await this.channelRepository.save(channel);
@@ -226,16 +235,14 @@ export class ChannelsService {
 
   async inviteUserToChannel(
     client: Socket,
-    channelid: string,
+    inviteThisUserId: number,
     activeUser: number,
-    invitedUserId: number,
+    channelid: string,
   ) {
-    console.log('user invited to channel', invitedUserId);
+    console.log('user invited to channel', inviteThisUserId);
     try {
-      const channel = await this.channelRepository.findOneByOrFail({
-        id: channelid,
-      });
-      const invitedUser = await this.userService.findOne(invitedUserId);
+      const channel = await this.getChannelById(channelid);
+      const invitedUser = await this.userService.findOne(inviteThisUserId);
       if (!channel || !invitedUser) {
         throw new NotFoundException('Channel or User not found');
       }
