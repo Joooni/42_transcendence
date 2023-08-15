@@ -157,6 +157,7 @@ export class ChatComponent implements OnInit {
 	}
 
 	selectUser(user: User) {
+		console.log(user.picture);
 		if (this.selectedChannel)
 			this.selectedChannel = undefined;
 		this.selectedUser = user;

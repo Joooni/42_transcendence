@@ -103,6 +103,8 @@ export class ChatChannelComponent {
 	}
 
 	openChannelSettingsPopUp() {
+		this.newPassword = '';
+		this.selectedChannelType = this.chatComponent.selectedChannel?.type;
 		const popup = document.getElementById('popup-channel-settings');
 		popup?.classList.toggle('show-popup');
 	}
@@ -154,6 +156,7 @@ export class ChatChannelComponent {
 	async inviteUser() {
 		console.log('inviteUser has been called for:');
 		console.log(this.invitedUserId);
+		//PROBLEM: initial value of channel is string ('public') not enum numeric value )
 		const userId = Number(this.invitedUserId);
 		let invitedUser: User;
 		await this.userService.findUserById(userId).then(user => invitedUser = user);
@@ -172,7 +175,10 @@ export class ChatChannelComponent {
 
 	updateChannelSettings() {
 		console.log('The new channel type is: ' + this.selectedChannelType);
-		console.log('The new channel password is: ' + this.newPassword);
+		if (this.newPassword)
+			console.log('The new channel password is: ' + this.newPassword);
+		//TO-DO: BE call: update channel
+		this.closePopUp('popup-channel-settings');
 	}
 
 	isMuted(user: User): boolean {
@@ -181,9 +187,10 @@ export class ChatChannelComponent {
 
 	disableSaveSettings(): boolean {
 		//TO-DO: TBD ob channel type string oder number
-		if (!this.newPassword && this.selectedChannelType === ChannelType.protected 
-			&& this.selectedChannelType !== this.chatComponent.selectedChannel?.type)
+		if (this.selectedChannelType === ChannelType.protected && !this.newPassword)
 			return true;
-		return false
+		if (this.selectedChannelType === this.chatComponent.selectedChannel?.type)
+			return true;
+		return false;
 	}
 }

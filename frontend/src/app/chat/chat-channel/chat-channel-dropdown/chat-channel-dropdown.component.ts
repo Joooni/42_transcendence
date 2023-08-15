@@ -29,17 +29,9 @@ export class ChatChannelDropdownComponent {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
-	blocksOrIsBlockedByActiveUser(): boolean {
-		//TO-DO: check if the selectedUser blocked the other user or the other way around
-		//if so, return true
-		return false;
-	}
-
 	canBeSetAsAdmin(): boolean {
-		//selectedUser is not admin or owner
 		if (this.userIsAdmin(this.selectedUser) || this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
-		//active user is admin or owner
 		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
 		return false;
@@ -86,10 +78,6 @@ export class ChatChannelDropdownComponent {
 		if (!this.channel.bannedUsers.some(user => user.id === this.selectedUser.id) || !this.activeUser)
 			return false;
 		return this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser);
-	}
-
-	openDMWithUser() {
-		this.chatComponent.selectUser(this.selectedUser);
 	}
 
 	setUserAsAdmin() {

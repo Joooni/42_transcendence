@@ -1,0 +1,17 @@
+<div class="icons">
+	<a class="dropdown">
+		<img class="icon" src="../../../assets/dots_icon_yellow.png">
+		<div class="dropdown-content">
+			<div class="dropdown-content-items">
+				<a class="dropdown-content-item" routerLink="{{'/profile/' + selectedUser.username}}">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div class="action-item">Visit profile</div>
+				</a>
+				<a *ngIf="!blocksOrIsBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+					<img class="icon" src="../../../assets/admin_icon_yellow.png">
+					<div class="action-item">Direct message</div>
+				</a>
+			</div>
+		</div>
+	</a>
+</div>
