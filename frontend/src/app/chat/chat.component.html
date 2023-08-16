@@ -154,12 +154,12 @@
 		<div class="pop-up-new-channel-selector">
 			<h4>Type:</h4>
 			<select [(ngModel)]="selectedChannelType">
-				<option [value]="0">Public</option>
-				<option [value]="1">Private</option>
-				<option [value]="2">Protected</option>
+				<option [value]="'public'">Public</option>
+				<option [value]="'private'">Private</option>
+				<option [value]="'protected'">Protected</option>
 			</select>
 		</div>
-		<div class="pop-up-new-channel-selector" *ngIf="selectedChannelType == 2">
+		<div class="pop-up-new-channel-selector" *ngIf="selectedChannelType == 'protected'">
 			<h4>Password:</h4>
 			<input class="popup-new-channel-input" type="password" [(ngModel)]="setChannelPassword">
 		</div>

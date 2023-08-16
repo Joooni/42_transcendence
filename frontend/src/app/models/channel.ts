@@ -5,7 +5,7 @@ export interface Channel {
 	name: string;
 	createdAt: Date;
 	owner: User;
-	type: number; //ENUM: PUBLIC,PRIVATE,PASSWORD
+	type: string; //ENUM: PUBLIC,PRIVATE,PASSWORD
 	users: User[];
 	admins: User[];
 	mutedUsers: User[];
