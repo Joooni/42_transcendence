@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
-import { ChannelType } from '../entities/channel.entity';
 
 @InputType()
 export class CreateChannelInput {
@@ -15,9 +14,9 @@ export class CreateChannelInput {
   @Field(() => String)
   name: string;
 
-  @Field(() => ChannelType)
+  @Field(() => String)
   @IsNotEmpty()
-  type: ChannelType;
+  type: string;
 
   @Field(() => String)
   password?: string;

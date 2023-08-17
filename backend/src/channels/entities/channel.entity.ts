@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Message } from 'src/messages/entities/message.entity';
 import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
@@ -15,16 +15,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export enum ChannelType {
-  public,
-  private,
-  protected,
-}
-
-registerEnumType(ChannelType, {
-  name: 'ChannelType',
-});
 
 @ObjectType()
 @Entity()
@@ -42,9 +32,9 @@ export class Channel {
   @Column('text')
   name: string;
 
-  @Field(() => ChannelType)
-  @Column({ type: 'enum', enum: ChannelType, default: ChannelType.public })
-  type: ChannelType;
+  @Field(() => String)
+  @Column('text')
+  type: string;
 
   @Field({ nullable: true })
   password?: string;

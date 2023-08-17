@@ -5,7 +5,6 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { Channel } from './entities/channel.entity';
-import { ChannelType } from './entities/channel.entity';
 
 @Injectable()
 export class ChannelsService {
@@ -92,7 +91,7 @@ export class ChannelsService {
         .leftJoinAndSelect('channel.users', 'users')
         .where(`channel.id NOT IN (${subQuery.getQuery()})`)
         .andWhere('channel.type IN (:...types)', {
-          types: [ChannelType.public, ChannelType.protected],
+          types: ['public', 'protected'],
         })
         .setParameters(subQuery.getParameters())
         .getMany();
@@ -105,7 +104,7 @@ export class ChannelsService {
     client: Socket,
     channelname: string,
     owner: number,
-    type: ChannelType,
+    type: string,
     password?: string,
   ) {
     console.log('got channel', channelname);
@@ -178,7 +177,7 @@ export class ChannelsService {
         throw new NotFoundException('Channel or User not found');
       }
 
-      if (channel.type === ChannelType.private) {
+      if (channel.type === 'private') {
         if (channel.invitedUsers.includes(user)) {
           // Remove user from invitedUsers and go on...
           channel.invitedUsers = channel.invitedUsers.filter(
@@ -187,7 +186,7 @@ export class ChannelsService {
         } else {
           throw new Error('User not invited');
         }
-      } else if (channel.type === ChannelType.protected) {
+      } else if (channel.type === 'protected') {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }

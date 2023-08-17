@@ -20,7 +20,7 @@ type Channel {
   id: String!
   owner: User!
   name: String!
-  type: ChannelType!
+  type: String!
   password: String
   createdAt: DateTime!
   messages: [Message!]
@@ -29,12 +29,6 @@ type Channel {
   mutedUsers: [User!]
   invitedUsers: [User!]
   bannedUsers: [User!]
-}
-
-enum ChannelType {
-  public
-  private
-  protected
 }
 
 type User {

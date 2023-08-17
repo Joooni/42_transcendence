@@ -10,7 +10,6 @@ import { ChatDirectMessageComponent } from './chat-direct-message/chat-direct-me
 import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
 import { delay } from 'rxjs';
-import { ChannelType } from '../models/channel-type.enum';
 
 @Component({
   selector: 'app-chat',
@@ -41,7 +40,7 @@ export class ChatComponent implements OnInit {
 	newChannelName?: string;
 	newChannelNameInvalid: boolean = false;
 
-	selectedChannelType: ChannelType = ChannelType.public;
+	selectedChannelType: string = 'public';
 
 	setChannelPassword?: string;
 	enterChannelPassword?: string;
@@ -195,7 +194,7 @@ export class ChatComponent implements OnInit {
 		this.newChannelName = undefined;
 		this.newChannelNameInvalid = false;
 		this.setChannelPassword = undefined;
-		this.selectedChannelType = ChannelType.public;
+		this.selectedChannelType = 'public';
 		const popup = document.getElementById('popup-new-channel');
 		popup?.classList.toggle('show-popup');
 	}
@@ -209,7 +208,7 @@ export class ChatComponent implements OnInit {
 	}
 
 	async joinChannel(channel: Channel) {
-		if (channel.type == ChannelType.protected) {
+		if (channel.type == 'protected') {
 			this.channelToJoin = channel;
 			const popup = document.getElementById('popup-channel-password');
 			popup?.classList.toggle('show-popup');
@@ -236,7 +235,7 @@ export class ChatComponent implements OnInit {
 	disableCreateChannelButton(): boolean {
 		if (!this.newChannelName)
 			return true;
-		if (this.selectedChannelType == ChannelType.protected && !this.setChannelPassword) {
+		if (this.selectedChannelType == 'protected' && !this.setChannelPassword) {
 			return true;
 		}	
 		return false;
