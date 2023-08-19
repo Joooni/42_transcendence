@@ -7,9 +7,7 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 import { User } from 'src/app/models/user';
 import { ChannelDataService } from 'src/app/services/channel-data/channel-data.service';
 import { ErrorService } from 'src/app/services/error/error.service';
-import { Socket } from 'ngx-socket-io';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
-import { ChannelType } from 'src/app/models/channel-type.enum';
 
 @Component({
   selector: 'app-chat-channel',
@@ -26,7 +24,7 @@ export class ChatChannelComponent {
 	invitedUserId: string = '';
 	invitableUsers: User[] = [];
 
-	selectedChannelType?: ChannelType;//TO-DO: TBD ob channel type string oder number
+	selectedChannelType?: string;
 	newPassword: string = '';
 
 
@@ -187,7 +185,7 @@ export class ChatChannelComponent {
 
 	disableSaveSettings(): boolean {
 		//TO-DO: TBD ob channel type string oder number
-		if (this.selectedChannelType === ChannelType.protected && !this.newPassword)
+		if (this.selectedChannelType === 'protected' && !this.newPassword)
 			return true;
 		if (this.selectedChannelType === this.chatComponent.selectedChannel?.type)
 			return true;

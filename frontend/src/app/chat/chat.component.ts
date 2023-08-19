@@ -7,8 +7,6 @@ import { User } from '../models/user';
 import { Channel } from '../models/channel';
 import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
-import { delay } from 'rxjs';
-import { ChannelType } from '../models/channel-type.enum';
 
 @Component({
   selector: 'app-chat',
