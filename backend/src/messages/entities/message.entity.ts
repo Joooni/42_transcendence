@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Channel } from 'src/channels/entities/channel.entity';
 import {
   Column,
   CreateDateColumn,
@@ -24,7 +25,14 @@ export class Message {
   @ManyToOne(() => User)
   @JoinColumn()
   @Field(() => User)
-  receiver: User; //Or Channel
+  receiverUser?: User;
+
+  @Field(() => Channel, { nullable: true })
+  @ManyToOne(() => Channel, (channel) => channel.messages, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  receiverChannel?: Channel;
 
   @Field()
   @CreateDateColumn()

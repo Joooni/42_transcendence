@@ -6,14 +6,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
-import { gameData, gameDataBE } from 'src/game/match/GameData';
+import { ChannelsService } from 'src/channels/channels.service';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
@@ -21,7 +21,6 @@ export class SocketGateway
 {
   intervalSearchOpp: any;
   intervalRunGame: any;
-  io: Server;
 
   private socketMap: Map<number, Socket> = new Map<number, Socket>();
 
@@ -29,14 +28,10 @@ export class SocketGateway
     private readonly usersService: UsersService,
     private matchService: MatchService,
     private gameService: GameService,
-    //private socketModule: SocketModule
-    // @Inject(MessagesService)
     private readonly messagesService: MessagesService,
-  ) {
-	const io = new Server;
-  }
-
-
+    private readonly channelsService: ChannelsService,
+    private jwtService: JwtService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -45,9 +40,9 @@ export class SocketGateway
     console.log('SocketGateway initialized');
   }
 
-  async handleConnection(client: Socket) {
-    client.emit('identify');
-    console.log('SocketClient connected:', client.id);
+  async handleConnection(socket: Socket) {
+    socket.emit('identify');
+    console.log('SocketClient connected:', socket.id);
   }
 
   async handleDisconnect(client: Socket) {
@@ -56,7 +51,12 @@ export class SocketGateway
       const user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
       this.removeSocket(user.id); // Remove Socket from SocketMap
-      this.usersService.updateStatus(user.id, 'offline');
+      this.usersService.updateStatus(user.id, 'offline').then(() => {
+        this.server.emit('updateUser', {
+          id: user.id,
+          status: 'offline',
+        });
+      });
     } catch (error) {
       console.log('Error Socket: User not found');
     }
@@ -78,20 +78,88 @@ export class SocketGateway
   handleMessage(client: Socket, message: MessageObj): void {
     console.log('Message received');
     this.messagesService.receiveMessage(client, message);
-    const socket = this.getSocket(message.receiver.id);
-    // client.emit('message', message); // Zurück an den Absender
-    if (socket) {
-      socket.emit('message', message);
+
+    if (message.receiverUser !== undefined) {
+      //DM
+      const socket = this.getSocket(message.receiverUser.id);
+      if (socket) {
+        socket.emit('message', message);
+      }
+    } else if (message.receiverChannel !== undefined) {
+      //Channel message
+      this.server.to(message.receiverChannel.id).emit('message', message);
+    } else {
+      console.log('Error: Receiver is neither a user nor a channel');
+    }
+  }
+
+  @SubscribeMessage('createChannel')
+  async createChannel(client: Socket, obj: any) {
+    await this.channelsService.createChannel(
+      client,
+      obj.channelname,
+      obj.ownerid,
+      obj.type,
+      obj.password,
+    );
+    this.server.emit('updateChannelList', {});
+  }
+
+  @SubscribeMessage('joinChannelRoom')
+  joinChannelRoom(client: Socket, obj: any): void {
+    this.channelsService.joinChannelRoom(client, obj.channelid, obj.userid);
+  }
+
+  @SubscribeMessage('joinChannel')
+  async joinChannel(client: Socket, obj: any) {
+    await this.channelsService.addUserToChannel(
+      client,
+      obj.channelid,
+      obj.userid,
+    );
+    this.server.to(obj.channelid).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('leaveChannel')
+  async leaveChannel(client: Socket, obj: any) {
+    await this.channelsService.removeUserFromChannel(
+      this.server,
+      client,
+      obj.channelid,
+      obj.userid,
+    );
+  }
+
+  @SubscribeMessage('inviteUser')
+  async inviteUser(client: Socket, obj: any) {
+    await this.channelsService.inviteUserToChannel(
+      client,
+      obj.inviteThisUserId,
+      obj.activeUserid,
+      obj.channelid,
+    );
+    const socket: Socket | undefined = this.getSocket(
+      obj.inviteThisUserId as number,
+    );
+    if (!socket) {
+      console.log('Error Socket: User not found');
+      return;
+    } else {
+      socket.emit('updateChannelList', {});
     }
   }
 
   @SubscribeMessage('identify')
-  identifyUser(client: Socket, userid: number | undefined): void {
+  async identifyUser(client: Socket, userid: number | undefined) {
     if (typeof userid !== 'undefined' && userid !== null) {
-      console.log('SocketId will be updated in database', userid);
       this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
       this.addSocket(userid, client); // Add Socket to SocketMap
-      this.usersService.updateStatus(userid, 'online');
+
+      await this.usersService.updateStatus(userid, 'online');
+      this.server.emit('updateUser', {
+        id: userid,
+        status: 'online',
+      });
     } else {
       console.log('Error Socket: User not identified');
       client.emit('identify');
@@ -123,24 +191,76 @@ export class SocketGateway
 			}
 		}, 1000 / 25);
 	}
+    if (userID === this.gameService.playerWaitingID) {
+      return;
+    }
+    const roomNbr = this.gameService.checkForOpponent(userID, client);
+    console.log(
+      'User with ID:  ',
+      userID,
+      ' is searching a game. The roomNbr is:  ',
+      roomNbr,
+    );
+    if (roomNbr !== undefined) {
+      this.gameService.room = 0;
+      this.gameService.gameDataBEMap
+        .get(roomNbr)
+        ?.leftUserSocket.join(roomNbr.toString());
+      this.gameService.gameDataBEMap
+        .get(roomNbr)
+        ?.rightUserSocket!.join(roomNbr.toString());
+      console.log('The game with id:  ', roomNbr, '   is running');
+      this.intervalRunGame = setInterval(() => {
+        this.gameService.startMatch(
+          this.gameService.gameDataMap.get(roomNbr!)!,
+        );
+        this.server
+          .to(roomNbr!.toString())
+          .emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
+        if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
+          clearInterval(this.intervalRunGame);
+          this.gameService.gameDataBEMap
+            .get(roomNbr!)
+            ?.leftUserSocket.leave(roomNbr!.toString());
+          this.gameService.gameDataBEMap
+            .get(roomNbr!)
+            ?.rightUserSocket!.leave(roomNbr!.toString());
+          console.log(
+            'The game with id:  ',
+            roomNbr,
+            '   is over. The users with id:  ',
+            this.gameService.gameDataMap.get(roomNbr!)?.leftUserID,
+            '  and  ',
+            this.gameService.gameDataMap.get(roomNbr!)?.rightUserID,
+            'left.',
+          );
+          this.gameService.gameDataBEMap.delete(roomNbr!);
+          this.gameService.gameDataMap.delete(roomNbr!);
+        }
+      }, 1000 / 25);
+    }
   }
 
   @SubscribeMessage('stopSearching')
   stopSearching(client: Socket) {
-	console.log("User with ID:  ", this.gameService.playerWaitingID, " stoped searching a game.");
+    console.log(
+      'User with ID:  ',
+      this.gameService.playerWaitingID,
+      ' stoped searching a game.',
+    );
     this.gameService.playerWaitingID = undefined;
-	this.gameService.gameDataBEMap.delete(this.gameService.room);
-	this.gameService.gameDataMap.delete(this.gameService.room);
-	this.gameService.room = 0;
+    this.gameService.gameDataBEMap.delete(this.gameService.room);
+    this.gameService.gameDataMap.delete(this.gameService.room);
+    this.gameService.room = 0;
   }
 
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
-	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
+    this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
   }
 
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
-	this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+    this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
   }
 }

@@ -3,6 +3,9 @@ import { Observable, of } from 'rxjs';
 
 import { Channel } from '../../models/channel';
 import { CHANNELS } from '../../mock-data/mock_channels';
+import graphQLService from '../graphQL/GraphQLService';
+import { User } from 'src/app/models/user';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,30 +14,156 @@ export class ChannelDataService {
 
 	channels = CHANNELS;
 
-	constructor() { }
+	constructor(private socket: SocketService) { }
 
-	//update - BE call instead
-	getChannelsOf(id: number): Observable<string[]> {
-		const channelsOfUser: string[] = [];
-		for (let i = 0; i < this.channels.length; i++) {
-			const tmpChannel = this.channels[i].users.find(elem => elem === id);
-			if (tmpChannel)
-				channelsOfUser.push(this.channels[i].name);
+	async getChannel(channelid: string): Promise<Channel> {
+		const response = await graphQLService.query(
+			`
+				query getChannel($channelid: String!){
+					channel(id: $channelid) {
+						id
+						name
+						createdAt
+						type
+						owner {
+							id
+							username
+							status
+						}
+						users {
+							id
+							username
+							status
+						}
+						admins {
+							id
+							username
+							status
+						}
+						mutedUsers {
+							id
+							username
+							status
+						}
+						bannedUsers {
+							id
+							username
+						}
+					}
+				}
+			`,
+			{ channelid },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
 		}
-		return of(channelsOfUser);
+		return response.channel;
 	}
 
-	//update - BE call instead
-	getAllChannelsVisibleFor(id: number): Observable<Channel[]> {
-		const channelsVisibleForUser: Channel[] = [];
-		for (let i = 0; i < this.channels.length; i++) {
-			if (this.channels[i].users.find(elem => elem === id))
-				channelsVisibleForUser.push(this.channels[i]);
-			else if (this.channels[i].type !== 'PRIVATE' && !this.channels[i].banned.find(elem => elem === id))
-				channelsVisibleForUser.push(this.channels[i]);
-			else if (this.channels[i].type === 'PRIVATE' && this.channels[i].invited.find(elem => elem === id))
-			channelsVisibleForUser.push(this.channels[i]);
+	async getChannelByName(name: string) {
+		const response = await graphQLService.query(
+			`
+				query getChannelByName($name: String!){
+					channelByName(name: $name) {
+						id
+						name
+						createdAt
+						type
+						owner {
+							id
+							username
+						}
+						users {
+							id
+							username
+						}
+						admins {
+							id
+							username
+						}
+						mutedUsers {
+							id
+							username
+						}
+						bannedUsers {
+							id
+							username
+						}
+					}
+				}
+			`,
+			{ name },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
 		}
-		return of(channelsVisibleForUser);
+		return response.channel;
+	}
+
+	//lieber inkl. der MemberChannel
+	async getOtherVisibleChannels(id: number): Promise<Channel[]> {		
+		const response = await graphQLService.query(
+			`
+				query getOtherVisibleChannels($id: Int!) {
+					visibleChannelsWithoutUser(id: $id) {
+						id
+						name
+						createdAt
+						users {
+							id
+							intra
+						}
+					}
+				}
+			`,
+			{ id },
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Channel not found'));
+		}
+		console.log('getOtherVisibleChannels:', response.visibleChannelsWithoutUser);
+		return response.visibleChannelsWithoutUser;
+	}
+
+	//Test Backend query
+	async getChannels(): Promise<Channel[]> {
+		const response = await graphQLService.query(
+			`
+				query {
+					channels {
+						id
+						name
+						createdAt
+						type
+						owner {
+							id
+							firstname
+						}
+						users {
+							id
+						}
+					}
+				}
+			`,
+			undefined,
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof response === 'undefined') {
+			return Promise.reject(new Error('Empty channel data'));
+		}
+		const channels = response.channels;
+		console.log(channels);
+		return channels;
+	}
+
+	joinChannel(channel: Channel, user: User) {
+		console.log('Joining channel: ', channel.name);
+		this.socket.emit('joinChannel', {
+			channelid: channel.id,
+			userid: user.id,
+		});
 	}
 }

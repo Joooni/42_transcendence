@@ -10,15 +10,25 @@ import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
 import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
+import { ChannelsService } from 'src/channels/channels.service';
+import { Channel } from 'src/channels/entities/channel.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message, User]),
+    TypeOrmModule.forFeature([Message, User, Channel]),
     HttpModule,
     MatchModule,
     GameModule,
   ],
-  providers: [SocketGateway, UsersService, MatchService, MessagesService],
+  providers: [
+    SocketGateway,
+    UsersService,
+    MatchService,
+    MessagesService,
+    ChannelsService,
+    JwtService,
+  ],
   exports: [SocketGateway],
 })
 export class SocketModule {

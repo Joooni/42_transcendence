@@ -126,7 +126,8 @@ button {
 	padding-bottom: 0.25rem;
 }
 
-input[type=text] {
+input[type=text],
+input[type=password] {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
@@ -138,6 +139,22 @@ input[type=text] {
 	color: orange;
 	padding-left: 2vmin;
 	padding-right: 2vmin;
+}
+
+select {
+	appearance: none;
+	background: green;
+	height: 4vmin;
+	border-radius: 30px;
+	font-family: press_start;
+	font-size: 2vmin;
+	color: orange;
+	padding-left: 3%;
+	padding-right: 7%;
+	background: url('./assets/arrow-down-icon.png') no-repeat, green;
+	background-position-x: 95%;
+	background-position-y: 50%;
+	background-size: 20px 20px;
 }
 
 ::placeholder {
@@ -345,7 +362,7 @@ input:checked + .toggle:after {
 }
 
 .popup-buttons {
-	margin-top: 1rem;
+	margin-top: 2rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;

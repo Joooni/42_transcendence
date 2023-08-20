@@ -118,8 +118,17 @@ export class UserDataService {
           wins
           losses
           xp
+          map
 					selectedMap
           achievements
+          channelList {
+            id
+            name
+          }
+          invitedInChannel {
+            id
+            name
+          }
         }
       }
       `,
@@ -130,11 +139,74 @@ export class UserDataService {
       return userById;
   }
 
-  async findAll(): Promise<User[]> {
-    const response = await graphQLService.query(
+     // We don't need it?
+  // async findAll(): Promise<User[]> {
+  //   const response = await graphQLService.query(
+  //     `
+  //       query {
+  //         allUsers {
+  //           id
+  //           intra
+  //           firstname
+  //           lastname
+  //           username
+  //           email
+  //           picture
+  //           twoFAEnabled
+  //           status
+  //           wins
+  //           losses
+  //           xp
+  //           achievements
+  //         }
+  //       }
+  //     `,
+  //     undefined,
+  //     { fetchPolicy: 'network-only' },
+  //   );
+  //   if (typeof response === 'undefined') {
+  //     return Promise.reject(new Error('Empty user data'));
+  //   }
+  //   return response.allUsers;
+  // }
+
+  async findAllExceptMyself(): Promise<User[]> {
+    console.log('findAllExceptMyself called');
+    let response = await graphQLService.query(
       `
-      query {
-        allUsers {
+        query {
+          allUsersExceptMyself {
+            id
+            intra
+            firstname
+            lastname
+            username
+            email
+            picture
+            twoFAEnabled
+            status
+            wins
+            losses
+            xp
+            achievements
+          }
+        }
+      `,
+      undefined,
+      { fetchPolicy: 'network-only' },
+    );
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    const editableResult = (response.allUsersExceptMyself as User[]).map(users => ({...users}));
+    return editableResult;
+  }
+
+  async findUserById(id: number): Promise<User> {
+    const { userById } = await graphQLService.query(
+      `
+      query findUserById($id: Int) {
+        userById(id: $id) {
           id
           intra
           firstname
@@ -148,43 +220,19 @@ export class UserDataService {
           losses
           xp
           achievements
-        }
-      }
-      `,
-      undefined,
-      { fetchPolicy: 'network-only' },
-    );
-    if (typeof response === 'undefined') {
-      return Promise.reject(new Error('Empty user data'));
-    }
-    const users = response.users;
-    return users;
-  }
-
-  async findUserById(id: number): Promise<User> {
-    const { userById } = await graphQLService.query(
-      `
-      query findUserById($id: Int!) {
-        userById(id: $id) {
-          id
-          intra
-          firstname
-          lastname
-          username
-          email
-          picture
-          twoFAEnabled
-          wins
-          losses
-          xp
-          achievements
+          channelList {
+            id
+            name
+          }
         }
       }
       `,
       { id },
     );
 		if (typeof userById === 'undefined') throw new Error('Empty user data');
-		return userById;
+    console.log('findUserById called:', userById)
+    const editableResult = {...userById};
+    return editableResult;
   }
 
 	async findUserByUsername(username: string): Promise<User> {

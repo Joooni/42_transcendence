@@ -1,13 +1,14 @@
-export interface Channel {
-	id: number;
-	name: string;
-	ownerid: number;
-	type: string; //ENUM: PUBLIC,PRIVATE,PASSWORD,DM
-	users: number[];
-	admins: number[];
-	muted: number[];
-	invited: number[];
-	banned: number[];
+import { User } from "./user";
 
-	hasUnreadMessagesToActiveUser?: boolean;
+export interface Channel {
+	id: string;
+	name: string;
+	createdAt: Date;
+	owner: User;
+	type: string;
+	users: User[];
+	admins: User[];
+	mutedUsers: User[];
+	invitedUsers: User[];
+	bannedUsers: User[];
 }

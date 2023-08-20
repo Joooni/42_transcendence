@@ -1,1 +1,102 @@
-<p>chat-channel works!</p>
+<div class="chat-channel">
+	<div class="chat-box-section">
+		<div class="chat-box channel-name">
+			<h4>{{chatComponent.selectedChannel?.name}}</h4>
+			<div class="channel-buttons">
+				<button class="button_small" (click)="openInviteUserPopUp()">INVITE</button>
+				<button class="button_small button_reverse" (click)="openLeaveChannelPopUp()">LEAVE</button>
+			</div>
+		</div>
+		<div class="chat-box message-display" id="chatHistory">
+				<div class="message" *ngFor="let message of messages">
+					<div class="sender">{{ message.sender.username }}:</div>
+					<div>{{ message.content }}</div>
+				</div>
+				<div id="anchor"></div>
+		</div>
+
+		<div class="chat-box message-input">
+			<input type="text" class="chat_input" (keyup.enter)="sendInput()" [formControl]="messageInput">
+			<button class="button_small" (click)="sendInput()">SEND</button>
+		</div>
+	</div>
+	<div class="channel-member-section">
+		<div class="chat-box channel-member-display">
+			<h2>OWNER</h2>
+			<div class="user" [ngClass]="chatComponent.selectedChannel?.owner?.status">
+				<h4>{{chatComponent.selectedChannel?.owner?.username}}</h4>
+				<div class="icons">
+					<a class="dropdown">
+						<img class="icon" src="../../../assets/dots_icon_yellow.png">
+						<!-- <div class="dropdown-content">
+							TEST
+						</div> -->
+					</a>
+				</div>
+			</div>
+
+			<h2>ADMINS</h2>
+			<ng-container *ngFor="let admin of chatComponent.selectedChannel?.admins">
+				<div class="user" [ngClass]="admin.status" *ngIf="admin.id !== chatComponent.selectedChannel?.owner?.id">
+					<h4>{{admin.username}}</h4>
+					<div class="icons">
+						<img class="icon" *ngIf="isMuted(admin)" src="../../../assets/mute_icon_yellow.png">
+						<img class="icon" src="../../../assets/dots_icon_yellow.png">
+					</div>
+				</div>
+			</ng-container>
+
+			<h2>MEMBERS</h2>
+			<ng-container *ngFor="let user of chatComponent.selectedChannel?.users">
+				<div class="user" [ngClass]="user.status" *ngIf="isNotOwnerOrAdmin(user)">
+					<h4>{{user.username}}</h4>
+					<div class="icons">
+						<img class="icon" *ngIf="isMuted(user)" src="../../../assets/mute_icon_yellow.png">
+						<img class="icon" src="../../../assets/dots_icon_yellow.png">
+					</div>
+				</div>
+			</ng-container>
+
+			<ng-container *ngIf="!isNotOwnerOrAdmin(activeUser)">
+				<h2>BANNED USERS</h2>
+				<ng-container *ngFor="let user of chatComponent.selectedChannel?.bannedUsers">
+					<div class="user banned">
+						<h4>{{user.username}}</h4>
+						<div class="icons">
+							<img class="icon" *ngIf="!isNotOwnerOrAdmin(activeUser)" src="../../../assets/dots_icon_yellow.png">
+						</div>
+					</div>
+				</ng-container>
+			</ng-container>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-leave-channel">
+	<div class="popup-content">
+		<h2>LEAVING CHANNEL</h2>
+		<h4>Are you sure you want to leave this channel?</h4>
+		<h4 class="error-message" *ngIf="activeUser.id === chatComponent.selectedChannel?.owner?.id">Since you are the owner, the channel will be deleted when you leave.</h4>
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="leaveChannel()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-leave-channel')">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-invite-channel">
+	<div class="popup-content">
+		<h2>INVITE TO CHANNEL</h2>
+		<h4>Who do you want to invite to this channel?</h4>
+		<select class="select-invited-user"[(ngModel)]="invitedUserId">
+			<option [value]="null">Please select a User</option>
+			<ng-container *ngFor="let user of invitableUsers">
+				<option [value]="user.id">{{user.username}}</option>
+			</ng-container>
+		</select>
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="inviteUser()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-invite-channel')">CANCEL</button>
+		</div>
+	</div>
+</div>
