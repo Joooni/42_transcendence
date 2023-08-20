@@ -1,18 +1,27 @@
 version: '3.8'
 
+# for prod and eval, we need to clean this up
+
 services:
 
   frontend:
     build:
       context: ./frontend
-    networks:
-      - nw_app
-    ports:
-      - 80:80
     depends_on:
       - backend
+    volumes:
+      - ${PWD}/frontend:/app
+    ports:
+      - 80:80
     restart: unless-stopped
     container_name: frontend
+    networks:
+      - nw_app
+
+    # command: "ng serve --port 80"
+    # command: "npm run local"
+    command: "ng serve --open --host 0.0.0.0 --port 80"
+    # command: "ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
 
   backend:
     build:

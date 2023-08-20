@@ -39,7 +39,7 @@ export class UsersController {
 		@CurrentJwtPayload()
 		payload: JwtPayload,
 	) {
-		const uploadedPictureUrl = `http://${this.configService.get('DOMAIN')}:8000/${file.path}`;
+		const uploadedPictureUrl = `http://${this.configService.get('DOMAIN')}:3000/${file.path}`;
 		await this.usersService.updatePicture(payload.id, uploadedPictureUrl);
 		// do we need to return anything here?
 	}

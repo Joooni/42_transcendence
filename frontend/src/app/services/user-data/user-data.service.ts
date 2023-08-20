@@ -100,6 +100,25 @@ export class UserDataService {
     }
   }
 
+  async uploadPicture(uploadedPicture: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('picture', uploadedPicture);
+    return axios.post(
+      `http://${environment.DOMAIN}:3000/users/upload`,
+      formData,
+      {
+        withCredentials: true,
+      },
+    ).then((res) => {
+      if (typeof res.data.url === 'undefined')
+        throw new Error('Picture url is empty.');
+      return res.data.url;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
+    });
+  }
+
   async findSelf(): Promise<User> {
     const { userById } = await graphQLService.query(
       `

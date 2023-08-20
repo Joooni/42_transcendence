@@ -37,4 +37,11 @@ export class ProfileComponent {
       return true;
     return false;
   }
+
+  /*
+  here I would like do declare an uploadProfilePicture method
+  that takes a file as an input and passes it to the
+  the userDataService.uploadPicture method
+  */
+
 }

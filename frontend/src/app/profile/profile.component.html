@@ -1,6 +1,7 @@
 <div *ngIf="selectedUser" class="profile_flex_column">
 	<div class="profile_flex_row">
 		<div class="box_row profile_box_row">
+			
 			<img class="profile_picture_big" src={{selectedUser.picture}}>
 			<div>
 				<h3>{{selectedUser.username}}</h3>
@@ -21,7 +22,7 @@
 				</a>
 			</div>
 
-			
+
 		</div>
 		<div class="box_column profile_box_column">
 			<h1> - ACHIEVEMENTS - </h1>
@@ -51,7 +52,7 @@
 	</div>
 	<h1> - GAME HISTORY - </h1>
 	<div class="profile_flex_column">
-		
+
 		<div *ngFor="let history of gameHistory" [class.red]= "history.result === 'loss'" class="box_row profile_box_games">
 			<h4>{{ history.result }}</h4>
 			<h4>{{ history.player_score }} : {{ history.other_score }}</h4>
