@@ -184,6 +184,14 @@ export class UsersService {
     await this.userRepository.save(user);
   }
 
+  async updatePicture(id: number, newPicture: string): Promise<void> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      picture: newPicture
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
   /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
     const result: UpdateResult = await this.userRepository.createQueryBuilder()
     .update(User)

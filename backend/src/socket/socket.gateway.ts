@@ -168,29 +168,6 @@ export class SocketGateway
 
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {
-	if (userID === this.gameService.playerWaitingID) {
-		return;
-	}
- 	var roomNbr = this.gameService.checkForOpponent(userID, client);
-	console.log("User with ID:  ", userID, " is searching a game. The roomNbr is:  ", roomNbr);
-	if (roomNbr !== undefined) {
-		this.gameService.room = 0;
-		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
-		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
-		console.log("The game with id:  ", roomNbr, "   is running");
-		this.intervalRunGame = setInterval(() => {
-			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
-			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
-			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
-				clearInterval(this.intervalRunGame);
-				this.gameService.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
-				this.gameService.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
-				console.log("The game with id:  ", roomNbr, "   is over. The users with id:  ", this.gameService.gameDataMap.get(roomNbr!)?.leftUserID, "  and  ", this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, "left." );
-				this.gameService.gameDataBEMap.delete(roomNbr!)
-				this.gameService.gameDataMap.delete(roomNbr!);
-			}
-		}, 1000 / 25);
-	}
     if (userID === this.gameService.playerWaitingID) {
       return;
     }
