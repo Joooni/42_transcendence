@@ -52,6 +52,10 @@ export class SocketGateway
     }
   }
 
+  async diconnectUser(socketId: string) {
+    this.server.to(socketId).disconnectSockets();
+  }
+
   @SubscribeMessage('message')
   handleMessage(client: Socket, message: MessageObj): void {
     console.log('Message received');
