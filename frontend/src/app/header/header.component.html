@@ -3,11 +3,11 @@
 		<img src="../../assets/DonkeyPong_logo.png" />
 	</a>
 	<div class="link-icons">
-		<a *ngIf="isAuthenticated" class="flex_chat_icon" routerLink="/chat" routerLinkActive="active">
+		<a *ngIf="checkAuthentication()" class="flex_chat_icon" routerLink="/chat" routerLinkActive="active">
 			<img class="chat_icon" src="../../assets/chat.png">
 			<h2>CHAT</h2>
 		</a>
-		<a *ngIf="isAuthenticated" class="flex_header_profile" routerLink="{{'/profile/' + activeUser?.username}}" routerLinkActive="active">
+		<a *ngIf="checkAuthentication()" class="flex_header_profile" routerLink="{{'/profile/' + activeUser?.username}}" routerLinkActive="active">
 			<div class="header_profile_picture">
 				<img src={{activeUser?.picture}}>
 			</div>

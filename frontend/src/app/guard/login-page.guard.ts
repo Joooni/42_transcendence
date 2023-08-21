@@ -6,7 +6,7 @@ import { UserDataService } from '../services/user-data/user-data.service';
 export const loginPageGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const isAuthenticated: boolean = await authService.isAuthenticated();
+  const isAuthenticated: boolean = await authService.isUserAuthenticated();
   if ( isAuthenticated ) {
     return router.createUrlTree(['/home']);
   }
