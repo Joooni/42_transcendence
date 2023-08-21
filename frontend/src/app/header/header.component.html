@@ -8,7 +8,9 @@
 			<h2>CHAT</h2>
 		</a>
 		<a *ngIf="isAuthenticated" class="flex_header_profile" routerLink="{{'/profile/' + activeUser?.username}}" routerLinkActive="active">
-			<img class="header_profile_picture" src={{activeUser?.picture}}>
+			<div class="header_profile_picture">
+				<img src={{activeUser?.picture}}>
+			</div>
 			<h2>MY<br>PROFILE</h2>
 		</a>
 	</div>

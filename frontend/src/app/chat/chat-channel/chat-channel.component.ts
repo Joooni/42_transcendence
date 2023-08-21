@@ -7,7 +7,6 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 import { User } from 'src/app/models/user';
 import { ChannelDataService } from 'src/app/services/channel-data/channel-data.service';
 import { ErrorService } from 'src/app/services/error/error.service';
-import { Socket } from 'ngx-socket-io';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 
 @Component({
@@ -22,8 +21,12 @@ export class ChatChannelComponent {
 	messages?: Message[];
 
 	activeUser!: User;
-	invitedUserId: string | null = null; //Our HTML will give the number as string back
+	invitedUserId: string = '';
 	invitableUsers: User[] = [];
+
+	selectedChannelType?: string;
+	newPassword: string = '';
+
 
 	constructor(
 		public chatComponent: ChatComponent,
@@ -38,6 +41,8 @@ export class ChatChannelComponent {
 	ngOnInit(): void {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.activeUser = this.chatComponent.activeUser;
+			//TO-DO: TBD ob channel type string oder number
+			this.selectedChannelType = this.chatComponent.selectedChannel.type;
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
 			.then(messages => this.messages = messages);
 		}
@@ -95,6 +100,13 @@ export class ChatChannelComponent {
 		popup?.classList.toggle('show-popup');
 	}
 
+	openChannelSettingsPopUp() {
+		this.newPassword = '';
+		this.selectedChannelType = this.chatComponent.selectedChannel?.type;
+		const popup = document.getElementById('popup-channel-settings');
+		popup?.classList.toggle('show-popup');
+	}
+
 	closePopUp(popupName: string) {
 		const popup = document.getElementById(popupName);
 		popup?.classList.toggle('show-popup');
@@ -123,7 +135,7 @@ export class ChatChannelComponent {
 	}
 
 	async setInvitableUsers() {
-		this.invitedUserId = null;
+		this.invitedUserId = '';
 		const invitableUsers: User[] = [];
 		let allUsers: User[];
 		await this.userService.findAllExceptMyself().then(users => allUsers = users);
@@ -140,6 +152,13 @@ export class ChatChannelComponent {
 	}
 
 	async inviteUser() {
+		console.log('inviteUser has been called for:');
+		console.log(this.invitedUserId);
+		//PROBLEM: initial value of channel is string ('public') not enum numeric value )
+		const userId = Number(this.invitedUserId);
+		let invitedUser: User;
+		await this.userService.findUserById(userId).then(user => invitedUser = user);
+		
 		//TO-DO: add function to actually send an invite to someone
 		if (!this.invitedUserId)
 			return;
@@ -152,7 +171,24 @@ export class ChatChannelComponent {
 		this.closePopUp('popup-invite-channel');
 	}
 
+	updateChannelSettings() {
+		console.log('The new channel type is: ' + this.selectedChannelType);
+		if (this.newPassword)
+			console.log('The new channel password is: ' + this.newPassword);
+		//TO-DO: BE call: update channel
+		this.closePopUp('popup-channel-settings');
+	}
+
 	isMuted(user: User): boolean {
 		return this.chatComponent.selectedChannel!.mutedUsers.some((elem) => elem.id === user.id);
+	}
+
+	disableSaveSettings(): boolean {
+		//TO-DO: TBD ob channel type string oder number
+		if (this.selectedChannelType === 'protected' && !this.newPassword)
+			return true;
+		if (this.selectedChannelType === this.chatComponent.selectedChannel?.type)
+			return true;
+		return false;
 	}
 }
