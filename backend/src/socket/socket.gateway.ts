@@ -11,9 +11,7 @@ import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
-import { MatchService } from 'src/game/match/match.service';
 import { ChannelsService } from 'src/channels/channels.service';
-import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class SocketGateway
@@ -68,8 +66,6 @@ export class SocketGateway
           this.server.to(user.socketid).emit('message', message);
         }
       });
-
-
     } else if (message.receiverChannel !== undefined) {
       //Channel message
       this.server.to(message.receiverChannel.id).emit('message', message);
@@ -151,12 +147,6 @@ export class SocketGateway
       status: status,
     });
   }
-
-
-
-
-
-
 
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {

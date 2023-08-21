@@ -176,18 +176,17 @@ export class ChannelsService {
       if (!channel || !user) {
         throw new NotFoundException('Channel or User not found');
       }
-      
+
       if (channel.type === 'private') {
-        const foundUser = channel.invitedUsers.find(u => u.id === userid);
+        const foundUser = channel.invitedUsers.find((u) => u.id === userid);
         if (foundUser) {
           channel.invitedUsers = channel.invitedUsers.filter(
             (user) => user.id !== userid,
           );
         } else {
-        throw new Error('User not invited');
+          throw new Error('User not invited');
         }
-      }
-      else if (channel.type === 'protected') {
+      } else if (channel.type === 'protected') {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }
@@ -237,7 +236,7 @@ export class ChannelsService {
     inviteThisUserId: number,
     activeUser: number,
     channelid: string,
-  ) : Promise<User | undefined>{
+  ): Promise<User | undefined> {
     console.log('user invited to channel', inviteThisUserId);
     try {
       const channel = await this.getChannelById(channelid);

@@ -7,25 +7,26 @@ import { SocketGateway } from './socket.gateway';
 
 @Controller('socket')
 export class SocketController {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly socketGateway: SocketGateway,
+  ) {}
 
-	constructor(
-		private readonly usersService: UsersService,
-		private readonly socketGateway: SocketGateway,
-	) {}
+  @Get('verify/:socketId')
+  @UseGuards(JwtAuthGuard)
+  async verifySocket(
+    @Param('socketId') socketId: string,
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+  ): Promise<{ verified: boolean }> {
+    console.log(
+      'verifySocket called with socketId:',
+      socketId,
+      'and user id:',
+      jwtPayload.id,
+    );
 
-	@Get('verify/:socketId')
-	@UseGuards(JwtAuthGuard)
-	async verifySocket(
-		@Param('socketId') socketId: string,
-		@CurrentJwtPayload() jwtPayload: JwtPayload,
-	): Promise<{ verified: boolean }> {
-		
-		
-		console.log('verifySocket called with socketId:', socketId,
-		'and user id:', jwtPayload.id);
-
-		await this.usersService.updateSocketid(jwtPayload.id, socketId);
-		this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
-		return { verified: true };
-	}
+    await this.usersService.updateSocketid(jwtPayload.id, socketId);
+    this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+    return { verified: true };
+  }
 }
