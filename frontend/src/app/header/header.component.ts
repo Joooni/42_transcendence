@@ -13,17 +13,22 @@ import { UserDataService } from '../services/user-data/user-data.service';
 export class HeaderComponent implements OnInit {
 	
 	activeUser?: User;
+	isAuthenticated: boolean = false;
 	
 	constructor(
 		private authService: AuthService,
 		private userDataService: UserDataService
 		) {}
 
-	async ngOnInit() {
+	ngOnInit() {
 		this.checkAuthentication();
 	}
 
-	checkAuthentication(): boolean {
-		return this.authService.isAuthenticated;
+	checkAuthentication() {
+		setInterval(() => {
+			this.isAuthenticated = this.authService.isAuthenticated;
+			if (this.isAuthenticated)
+				this.userDataService.findSelf().then(user => this.activeUser = user);
+		}, 500);
 	}
 }
