@@ -22,7 +22,7 @@ export class SocketGateway
   intervalSearchOpp: any;
   intervalRunGame: any;
 
-  private socketMap: Map<number, Socket> = new Map<number, Socket>();
+  // private socketMap: Map<number, Socket> = new Map<number, Socket>();
 
   constructor(
     private readonly usersService: UsersService,
@@ -50,28 +50,11 @@ export class SocketGateway
     try {
       const user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
-      this.removeSocket(user.id); // Remove Socket from SocketMap
-      this.usersService.updateStatus(user.id, 'offline').then(() => {
-        this.server.emit('updateUser', {
-          id: user.id,
-          status: 'offline',
-        });
-      });
+      //this.removeSocket(user.id); // Remove Socket from SocketMap
+      this.updateStatusAndEmit(user.id, 'offline');
     } catch (error) {
       console.log('Error Socket: User not found');
     }
-  }
-
-  addSocket(userid: number, socket: Socket): void {
-    this.socketMap.set(userid, socket);
-  }
-
-  getSocket(userid: number): Socket | undefined {
-    return this.socketMap.get(userid);
-  }
-
-  removeSocket(userid: number): void {
-    this.socketMap.delete(userid);
   }
 
   @SubscribeMessage('message')
@@ -81,10 +64,17 @@ export class SocketGateway
 
     if (message.receiverUser !== undefined) {
       //DM
-      const socket = this.getSocket(message.receiverUser.id);
-      if (socket) {
-        socket.emit('message', message);
-      }
+      // const socket = this.getSocket(message.receiverUser.id);
+      // if (socket) {
+      //   socket.emit('message', message);
+      // }
+      this.usersService.findOne(message.receiverUser.id).then((user) => {
+        if (user && user.socketid !== '') {
+          this.server.to(user.socketid).emit('message', message);
+        }
+      });
+
+
     } else if (message.receiverChannel !== undefined) {
       //Channel message
       this.server.to(message.receiverChannel.id).emit('message', message);
@@ -132,39 +122,60 @@ export class SocketGateway
 
   @SubscribeMessage('inviteUser')
   async inviteUser(client: Socket, obj: any) {
-    await this.channelsService.inviteUserToChannel(
-      client,
-      obj.inviteThisUserId,
-      obj.activeUserid,
-      obj.channelid,
-    );
-    const socket: Socket | undefined = this.getSocket(
-      obj.inviteThisUserId as number,
-    );
-    if (!socket) {
-      console.log('Error Socket: User not found');
-      return;
-    } else {
-      socket.emit('updateChannelList', {});
-    }
-  }
-
-  @SubscribeMessage('identify')
-  async identifyUser(client: Socket, userid: number | undefined) {
-    if (typeof userid !== 'undefined' && userid !== null) {
-      this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
-      this.addSocket(userid, client); // Add Socket to SocketMap
-
-      await this.usersService.updateStatus(userid, 'online');
-      this.server.emit('updateUser', {
-        id: userid,
-        status: 'online',
+    try {
+      const invitedUser = await this.channelsService.inviteUserToChannel(
+        client,
+        obj.inviteThisUserId,
+        obj.activeUserid,
+        obj.channelid,
+      );
+      if (!invitedUser) {
+        console.log('Error: Invited user not found');
+        return;
+      }
+  
+      await this.server.fetchSockets().then((sockets) => {
+        for (const i of sockets) {
+          console.log('found socket:', i.id);
+          if (i.id == invitedUser.socketid) {
+            i.emit('updateChannelList', {});
+            return;
+          }
+        }
+        throw new Error('Error Socket: User not found or not online');
       });
-    } else {
-      console.log('Error Socket: User not identified');
-      client.emit('identify');
+    } catch (error) {
+      console.log('Error: ', error);
     }
+    return;
   }
+
+  async updateStatusAndEmit(userid: number, status: string) {
+    await this.usersService.updateStatus(userid, status);
+    this.server.emit('updateUser', {
+      id: userid,
+      status: status,
+    });
+  }
+  
+  // @SubscribeMessage('identify')
+  // async identifyUser(client: Socket, userid: number | undefined) {
+  //   if (typeof userid !== 'undefined' && userid !== null) {
+  //     this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
+  //     this.addSocket(userid, client); // Add Socket to SocketMap
+
+  //     this.sendStatusUpdate(userid, 'online');
+  //   } else {
+  //     console.log('Error Socket: User not identified');
+  //     client.emit('identify');
+  //   }
+  // }
+
+
+
+
+
+
 
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {
