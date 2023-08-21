@@ -31,10 +31,6 @@ export class HomeComponent {
 			this.activeUser = user;
 		});
 		this.activeMatches = this.gameservice.getActiveMatches();
-		
-		// this.socket.listen('identify').subscribe(() => {
-		// 	this.socket.emit('identify', this.activeUser?.id);
-		// });
 		this.connectSocket();
 	}
 
