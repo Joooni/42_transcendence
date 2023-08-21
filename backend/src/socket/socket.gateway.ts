@@ -35,7 +35,6 @@ export class SocketGateway
   }
 
   async handleConnection(socket: Socket) {
-    socket.emit('identify');
     console.log('SocketClient connected:', socket.id);
   }
 
@@ -48,10 +47,6 @@ export class SocketGateway
     } catch (error) {
       console.log('Error Socket: User not found');
     }
-  }
-
-  async diconnectUser(socketId: string) {
-    this.server.to(socketId).disconnectSockets();
   }
 
   @SubscribeMessage('message')

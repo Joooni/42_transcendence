@@ -21,7 +21,7 @@ export class HomeComponent {
 
 	constructor(
 		private gameservice: GameDataService,
-		private socket: SocketService,
+		private socketService: SocketService,
 		private router: Router,
 		private userService: UserDataService
 	) {	}
@@ -32,12 +32,23 @@ export class HomeComponent {
 		});
 		this.activeMatches = this.gameservice.getActiveMatches();
 		
-		this.socket.listen('identify').subscribe(() => {
-			this.socket.emit('identify', this.activeUser?.id);
-		});
+		// this.socket.listen('identify').subscribe(() => {
+		// 	this.socket.emit('identify', this.activeUser?.id);
+		// });
+		this.connectSocket();
+	}
+
+	async connectSocket() {
+		for (let i = 0; i < 20; i++) {
+			await new Promise(resolve => setTimeout(resolve, 250));
+			if (this.socketService.connected == false)
+				await this.socketService.connectSocket();
+			else
+				break;
+		}
 	}
 
 	sendMessage(eventName: string, data: string) {
-		this.socket.emit(eventName, data);
+		this.socketService.emit(eventName, data);
 	}
 }
