@@ -22,15 +22,11 @@ export class SocketGateway
   intervalSearchOpp: any;
   intervalRunGame: any;
 
-  // private socketMap: Map<number, Socket> = new Map<number, Socket>();
-
   constructor(
     private readonly usersService: UsersService,
-    private matchService: MatchService,
     private gameService: GameService,
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
-    private jwtService: JwtService,
   ) {}
 
   @WebSocketServer()
@@ -50,7 +46,6 @@ export class SocketGateway
     try {
       const user = await this.usersService.findOnebySocketId(client.id);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
-      //this.removeSocket(user.id); // Remove Socket from SocketMap
       this.updateStatusAndEmit(user.id, 'offline');
     } catch (error) {
       console.log('Error Socket: User not found');
@@ -64,10 +59,6 @@ export class SocketGateway
 
     if (message.receiverUser !== undefined) {
       //DM
-      // const socket = this.getSocket(message.receiverUser.id);
-      // if (socket) {
-      //   socket.emit('message', message);
-      // }
       this.usersService.findOne(message.receiverUser.id).then((user) => {
         if (user && user.socketid !== '') {
           this.server.to(user.socketid).emit('message', message);
@@ -133,10 +124,9 @@ export class SocketGateway
         console.log('Error: Invited user not found');
         return;
       }
-  
+
       await this.server.fetchSockets().then((sockets) => {
         for (const i of sockets) {
-          console.log('found socket:', i.id);
           if (i.id == invitedUser.socketid) {
             i.emit('updateChannelList', {});
             return;
@@ -157,19 +147,6 @@ export class SocketGateway
       status: status,
     });
   }
-  
-  // @SubscribeMessage('identify')
-  // async identifyUser(client: Socket, userid: number | undefined) {
-  //   if (typeof userid !== 'undefined' && userid !== null) {
-  //     this.usersService.updateSocketid(userid, client.id); // Update SocketId in database
-  //     this.addSocket(userid, client); // Add Socket to SocketMap
-
-  //     this.sendStatusUpdate(userid, 'online');
-  //   } else {
-  //     console.log('Error Socket: User not identified');
-  //     client.emit('identify');
-  //   }
-  // }
 
 
 

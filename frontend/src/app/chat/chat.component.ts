@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { UserDataService } from '../services/user-data/user-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
@@ -66,7 +65,6 @@ export class ChatComponent implements OnInit {
 			//This should work now:
 			this.memberChannels = this.activeUser.channelList;
 			this.invitedInChannel = this.activeUser.invitedInChannel;
-			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
 		});
 
 		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
@@ -77,7 +75,7 @@ export class ChatComponent implements OnInit {
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
 		});
-		//Will update username & status & profilepic of specific user
+		//Will update username & status & profile picture of specific user
 		this.socket.listen('updateUser').subscribe((user: any) => {
 			if (!user.id || user.id === this.activeUser?.id || !this.allUsers)
 				return;
@@ -244,6 +242,7 @@ export class ChatComponent implements OnInit {
 		//TO-DO: update list of all visible channels
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
+			this.invitedInChannel = this.activeUser.invitedInChannel;
 			this.memberChannels = this.activeUser.channelList;
 			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
 				other => this.otherVisibleChannels = other
