@@ -20,13 +20,13 @@ export class HeaderComponent implements OnInit {
 		private userDataService: UserDataService
 		) {}
 
-	async ngOnInit() {
-		this.checkForActiveUser();
+	ngOnInit() {
+		this.checkAuthentication();
 	}
 
-	checkForActiveUser() {
+	checkAuthentication() {
 		setInterval(() => {
-			this.authService.isAuthenticated().then(isAuthenticated => this.isAuthenticated = isAuthenticated);
+			this.isAuthenticated = this.authService.isAuthenticated;
 			if (this.isAuthenticated)
 				this.userDataService.findSelf().then(user => this.activeUser = user);
 		}, 500);
