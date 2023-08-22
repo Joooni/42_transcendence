@@ -124,4 +124,20 @@ export class SettingsComponent {
 				this.router.navigate(['/profile/' + this.activeUser?.username]);
 		});
 	}
+
+	async onFileSelected(event: Event) {
+		// super umständlich, aber er beschwert sich bei 
+		// const file = event.target.files[0];
+		// saskia: vielleicht kennst du da n besseren weg?
+		const target = event.target as HTMLInputElement;
+		const fileList = target.files as FileList;
+		const file = fileList[0];
+		console.log("on file selected: ",file);
+		if (file)
+		{
+			await this.userService.uploadPicture(file);
+		}
+	}
+
+
 }

@@ -8,6 +8,14 @@
 			</td>
 		</tr>
 		<tr>
+			<td><h4>Profile picture:</h4></td>
+			<td>
+				<input type="file" class="file-input" 	(change)="onFileSelected($event)" #fileUpload>
+			</td>
+		</tr>
+		
+	
+		<tr>
 			<td><h4>Two-Factor-<br>Authentication:</h4></td>
 			<td>
 				<input type="checkbox" id="switch" [(ngModel)]="twoFAEnabled" (click)="toggle2FA()"/>

@@ -35,7 +35,7 @@ ps:
 	docker compose -f docker-compose.yaml ps
 
 clean:
-	docker volume rm $(FOLDER_NAME)_postgres-data
+	docker volume rm $(docker volume ls -q)
 
 fclean: down
 	rm .env

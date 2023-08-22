@@ -11,5 +11,6 @@ COPY . /app
 
 
 EXPOSE 3000
+VOLUME /app/uploads/profile_pictures/
 # ENTRYPOINT [ "nodemon", "--config /app/backend/nodemon.json"]
 CMD ["npm", "run", "start:nodemon"]

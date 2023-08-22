@@ -1,11 +1,15 @@
-import { Controller, MaxFileSizeValidator, Post, UseGuards, UseInterceptors, ParseFilePipe, FileTypeValidator, UploadedFile } from '@nestjs/common';
+import { Controller, Post, UseGuards, UseInterceptors, ParseFilePipe, FileTypeValidator, UploadedFile } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { TwoFAGuard } from 'src/auth/guard/twoFA.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 import { CurrentJwtPayload } from './decorator/current-jwt-payload.decorator';
 import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
+import { Express } from 'express';
+import { diskStorage } from 'multer';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, TwoFAGuard)
@@ -24,8 +28,18 @@ export class UsersController {
 	-> I have used dest, but storage could give us more control about how and where data gets stored. Do we need that?
 	-> could have some conflicts when two people upload image with the same name?
 	*/
-	@Post('upload')
-	@UseInterceptors(FileInterceptor('picture', {dest: 'uploads/profile_pictures/'}))
+	@Post('upload/:id')
+	@UseInterceptors(FileInterceptor('picture', {
+		storage: diskStorage({
+			destination: './uploads/profile_pictures',
+			filename: (req, file, cb) => {
+			  const filename: string = req.params.id + '_pfp_' + uuidv4();
+			  const extension: string = path.parse(file.originalname).ext;
+	
+			  cb(null, `${filename}${extension}`);
+			},
+		}),
+	}))
 	async uploadFile(
 		@UploadedFile(
 		new ParseFilePipe({
@@ -40,7 +54,8 @@ export class UsersController {
 		payload: JwtPayload,
 	) {
 		const uploadedPictureUrl = `http://${this.configService.get('DOMAIN')}:3000/${file.path}`;
+		console.log("uploaded picture url: ", uploadedPictureUrl);
 		await this.usersService.updatePicture(payload.id, uploadedPictureUrl);
-		// do we need to return anything here?
+		return {url: uploadedPictureUrl };
 	}
 }

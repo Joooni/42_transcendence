@@ -192,6 +192,10 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
+  /*
+  wollen wir hier ein resetPicture einbauen, damit man auf das default (aka intra) Bild zurückswitchen kann?
+  */
+
   /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
     const result: UpdateResult = await this.userRepository.createQueryBuilder()
     .update(User)

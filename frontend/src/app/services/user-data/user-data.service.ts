@@ -100,23 +100,27 @@ export class UserDataService {
     }
   }
 
-  async uploadPicture(uploadedPicture: File): Promise<string> {
+  async uploadPicture(uploadedPicture: File): Promise<void> {
+    const userID: number = (await this.findSelf()).id;
     const formData = new FormData();
     formData.append('picture', uploadedPicture);
-    return axios.post(
-      `http://${environment.DOMAIN}:3000/users/upload`,
-      formData,
-      {
-        withCredentials: true,
-      },
-    ).then((res) => {
-      if (typeof res.data.url === 'undefined')
-        throw new Error('Picture url is empty.');
-      return res.data.url;
-    }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
-      throw new Error(error.response.data.message);
-    });
+    try {
+      return axios.post(
+        `http://${environment.DOMAIN}:3000/users/upload/${userID}`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      ).then((res) => {
+        if (typeof res.data.url === 'undefined')
+          throw new Error('Picture url is empty.');
+      }).catch((error) => {
+        if (typeof error.response === 'undefined') throw error;
+        throw new Error(error.response.data.message);
+      });
+   } catch {
+    throw new Error("Error uploading picture");
+   }
   }
 
   async findSelf(): Promise<User> {
