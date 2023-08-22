@@ -26,7 +26,7 @@ export class SocketService {
         this.connected = true;
         resolve();
       } catch (error) {
-        console.log('Error verifying socket:', error);
+        console.log('Error verifying socket');
         reject(error);
       }
     });
