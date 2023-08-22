@@ -1,21 +1,41 @@
-import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { Injectable, OnDestroy } from '@angular/core';
 import { USERS } from 'src/app/mock-data/mock_users';
 import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
+import { Subscription, interval } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy {
+  private authSubscription?: Subscription;
+  public isAuthenticated: boolean = false;
 
-  constructor(private cookieService: CookieService, private readonly userDataService: UserDataService) { }
+  constructor(private readonly userDataService: UserDataService, private router: Router) {
+    this.checkAuthenticationStatus();
+  }
 
-  async isAuthenticated(): Promise<boolean> {
-    let user: User = USERS[0];
+  private checkAuthenticationStatus() {
+    this.authSubscription = interval(2000)
+      .subscribe(async () => {
+        try {
+          await this.userDataService.findSelf();
+          this.isAuthenticated = true;
+        } catch (error) {
+          this.isAuthenticated = false;
+          //TO-DO: disconnect socket
+          this.router.navigate(['/login'])
+        }
+      });
+  }
+
+  async isUserAuthenticated(): Promise<boolean> {
     try {
-      const user = await this.userDataService.findSelf();
+      await this.userDataService.findSelf();
+      this.isAuthenticated = true;
     } catch (error) {
+      this.isAuthenticated = false;
       return false;
     }
     return true;
@@ -27,5 +47,10 @@ export class AuthService {
       const user = await this.userDataService.findSelf();
     } catch (error) {}
     return user.twoFAEnabled;
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription)
+      this,this.authSubscription.unsubscribe();
   }
 }

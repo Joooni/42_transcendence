@@ -24,9 +24,7 @@ export class LoginComponent {
   twoFACode?: string;
 
   async ngOnInit() {
-    console.log(`http://${environment.DOMAIN}/auth/login`);
-
-    this.activeUser = await this.authService.isAuthenticated();
+    this.activeUser = await this.authService.isUserAuthenticated();
     this.twoFAEnabled = await this.authService.twoFAEnabled();
     this.activatedRoute.queryParamMap.subscribe((params) => {
       const code = params.get('code');

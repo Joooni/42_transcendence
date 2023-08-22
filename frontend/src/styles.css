@@ -108,11 +108,11 @@ button {
 
 .button_medium {
 	height: 4rem;
-	font-size: 3rem;
+	font-size: 2rem;
 	margin-top: 0;
 	padding-left: 0.7rem;
 	padding-right: 0.7rem;
-	padding-top: 0;
+	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
 }
 
@@ -149,7 +149,7 @@ select {
 	font-family: press_start;
 	font-size: 2vmin;
 	color: orange;
-	padding-left: 3%;
+	padding-left: 7%;
 	padding-right: 7%;
 	background: url('./assets/arrow-down-icon.png') no-repeat, green;
 	background-position-x: 95%;
@@ -189,6 +189,14 @@ select {
 	width: 8vmin;
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
+	overflow: hidden;
+}
+
+.profile_picture img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .achievement_icon {
@@ -211,6 +219,13 @@ select {
 	width: 20vmin;
 	margin-top: 1vmin;
 	margin-bottom: 1vmin;
+}
+
+.profile_picture_big img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .center {

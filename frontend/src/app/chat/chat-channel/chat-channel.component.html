@@ -3,6 +3,12 @@
 		<div class="chat-box channel-name">
 			<h4>{{chatComponent.selectedChannel?.name}}</h4>
 			<div class="channel-buttons">
+				<a  
+					class="channel-settings"
+					*ngIf="activeUser.id === chatComponent.selectedChannel?.owner?.id" 
+					(click)="openChannelSettingsPopUp()">
+					<img class="settings-icon" src="../../../assets/settings.png">
+				</a>
 				<button class="button_small" (click)="openInviteUserPopUp()">INVITE</button>
 				<button class="button_small button_reverse" (click)="openLeaveChannelPopUp()">LEAVE</button>
 			</div>
@@ -25,14 +31,11 @@
 			<h2>OWNER</h2>
 			<div class="user" [ngClass]="chatComponent.selectedChannel?.owner?.status">
 				<h4>{{chatComponent.selectedChannel?.owner?.username}}</h4>
-				<div class="icons">
-					<a class="dropdown">
-						<img class="icon" src="../../../assets/dots_icon_yellow.png">
-						<!-- <div class="dropdown-content">
-							TEST
-						</div> -->
-					</a>
-				</div>
+				<app-chat-channel-dropdown
+					*ngIf="chatComponent.selectedChannel?.owner?.id !== activeUser.id"
+					[channel]="chatComponent.selectedChannel!"
+					[selectedUser]="chatComponent.selectedChannel!.owner"
+				></app-chat-channel-dropdown>
 			</div>
 
 			<h2>ADMINS</h2>
@@ -41,7 +44,11 @@
 					<h4>{{admin.username}}</h4>
 					<div class="icons">
 						<img class="icon" *ngIf="isMuted(admin)" src="../../../assets/mute_icon_yellow.png">
-						<img class="icon" src="../../../assets/dots_icon_yellow.png">
+						<app-chat-channel-dropdown
+							*ngIf="admin.id !== activeUser.id"
+							[channel]="chatComponent.selectedChannel!"
+							[selectedUser]="admin"
+						></app-chat-channel-dropdown>
 					</div>
 				</div>
 			</ng-container>
@@ -52,7 +59,11 @@
 					<h4>{{user.username}}</h4>
 					<div class="icons">
 						<img class="icon" *ngIf="isMuted(user)" src="../../../assets/mute_icon_yellow.png">
-						<img class="icon" src="../../../assets/dots_icon_yellow.png">
+						<app-chat-channel-dropdown
+							*ngIf="user.id !== activeUser.id"
+							[channel]="chatComponent.selectedChannel!"
+							[selectedUser]="user"
+						></app-chat-channel-dropdown>
 					</div>
 				</div>
 			</ng-container>
@@ -64,6 +75,11 @@
 						<h4>{{user.username}}</h4>
 						<div class="icons">
 							<img class="icon" *ngIf="!isNotOwnerOrAdmin(activeUser)" src="../../../assets/dots_icon_yellow.png">
+							<app-chat-channel-dropdown
+								*ngIf="user.id !== activeUser.id"
+								[channel]="chatComponent.selectedChannel!"
+								[selectedUser]="user"
+							></app-chat-channel-dropdown>
 						</div>
 					</div>
 				</ng-container>
@@ -89,14 +105,37 @@
 		<h2>INVITE TO CHANNEL</h2>
 		<h4>Who do you want to invite to this channel?</h4>
 		<select class="select-invited-user"[(ngModel)]="invitedUserId">
-			<option [value]="null">Please select a User</option>
+			<option [value]="''">Please select a User</option>
 			<ng-container *ngFor="let user of invitableUsers">
 				<option [value]="user.id">{{user.username}}</option>
 			</ng-container>
 		</select>
 		<div class="popup-buttons">
-			<button class="button_medium" (click)="inviteUser()">CONFIRM</button>
+			<button class="button_medium" [disabled]="!invitedUserId" (click)="inviteUser()">CONFIRM</button>
 			<button class="button_medium button_reverse" (click)="closePopUp('popup-invite-channel')">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-channel-settings">
+	<div class="popup-content">
+		<h2>CHANNEL SETTINGS</h2>
+		<h4>Here you can change the channel type and set a password for the channel.</h4>
+		<div class="pop-up-channel-settings-selector">
+			<h4>Type:</h4>
+			<select [(ngModel)]="selectedChannelType">
+				<option [value]="'public'">Public</option>
+				<option [value]="'private'">Private</option>
+				<option [value]="'protected'">Protected</option>
+			</select>
+		</div>
+		<div class="pop-up-channel-settings-selector" *ngIf="selectedChannelType === 'protected'">
+			<h4>New Password:</h4>
+			<input class="popup-channel-settings-input" type="password" [(ngModel)]="newPassword">
+		</div>
+		<div class="popup-buttons">
+			<button class="button_medium" [disabled]="disableSaveSettings()" (click)="updateChannelSettings()">CONFIRM</button>
+			<button class="button_medium button_reverse" (click)="closePopUp('popup-channel-settings')">CANCEL</button>
 		</div>
 	</div>
 </div>

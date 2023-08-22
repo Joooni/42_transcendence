@@ -1,8 +1,10 @@
 <div *ngIf="selectedUser" class="profile_flex_column">
 	<div class="profile_flex_row">
 		<div class="box_row profile_box_row">
+			<div class="profile_picture_big">
+				<img  src={{selectedUser.picture}}>
+			</div>
 			
-			<img class="profile_picture_big" src={{selectedUser.picture}}>
 			<div>
 				<h3>{{selectedUser.username}}</h3>
 				<table>
@@ -17,7 +19,7 @@
 				</table>
 			</div>
 			<div>
-				<a routerLink="/settings" routerLinkActive="active">
+				<a routerLink="/settings" routerLinkActive="active" *ngIf="selectedUser.id === activeUser?.id">
 					<img class="settings_icon" src="../../assets/settings.png">
 				</a>
 			</div>
@@ -66,7 +68,7 @@
 
 	</div>
 </div>
-<div *ngIf="!selectedUser">
+<div *ngIf="!hasSelectedUser">
 	<h1>NO SUCH USER</h1>
 	<h3>(WORK IN PROGRESS)</h3>
 </div>

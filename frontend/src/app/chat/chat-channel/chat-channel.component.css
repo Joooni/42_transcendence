@@ -64,6 +64,10 @@ h4 {
 	column-gap: 10px;
 }
 
+.channel-settings {
+	cursor: pointer;
+}
+
 .settings-icon {
 	padding-top: 2px;
 	height: 2.2rem;
@@ -72,7 +76,7 @@ h4 {
 
 .message-display {
 	font-family: press_start;
-	font-size: 1vmin;
+	font-size: 0.7rem;
 	color: white;
 	height: 87%;
 	padding-bottom: 10px;
@@ -125,7 +129,7 @@ h4 {
 .user {
 	border-radius: 15px;
 	font-family: press_start;
-	padding: 5px 15px;
+	padding: 5px 8px;
 	margin: 15px 0px;
 	width: 90%;
 	height: 2rem;
@@ -172,21 +176,16 @@ h4 {
 	margin: 0px 5px;
 }
 
-.dropdown {
-	position: relative;
-	display: inline-block;
+.popup-channel-settings-input {
+	width: 85%;
 }
 
-.dropdown-content {
-	display: none;
-	position: absolute;
-	background-color: rgba(2, 88, 2, 0.797);
-	min-width: 300px;
-	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-	z-index: 1;
-	height: 10rem;
-}
-
-.dropdown:hover .dropdown-content {
-	display: block;
+.pop-up-channel-settings-selector {
+	display: grid;
+	grid-template-columns: 1.5fr 2fr;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 2rem;
+	margin: 1rem 0;
+	width: 90%;
 }

@@ -5,11 +5,8 @@ import { UserRelationService } from '../services/user-relation/user-relation.ser
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
 import { User } from '../models/user';
 import { Channel } from '../models/channel';
-import { CookieService } from 'ngx-cookie-service';
-import { ChatDirectMessageComponent } from './chat-direct-message/chat-direct-message.component';
 import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -158,6 +155,7 @@ export class ChatComponent implements OnInit {
 	}
 
 	selectUser(user: User) {
+		console.log(user.picture);
 		if (this.selectedChannel)
 			this.selectedChannel = undefined;
 		this.selectedUser = user;

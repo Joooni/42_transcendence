@@ -1,0 +1,51 @@
+.icons {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 5px;
+}
+
+.icon {
+	height: 25px;
+	width: 25px;
+	margin: 0px 5px;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: rgba(2, 88, 2, 0.891);
+	z-index: 1;
+	height: auto;
+	width: 200px;
+	left: -180px;
+	top: 25px;
+	padding: 0.5rem;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown-content-items {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1rem;
+}
+
+.dropdown-content-item {
+	display: flex;
+	flex-direction: row;
+	column-gap: 1rem;
+	justify-content: flex-start;
+	align-items: center;
+	font-size: 0.7rem;
+	color: orange;
+	cursor: pointer;
+}

@@ -16,6 +16,7 @@ import { GameDataService } from '../services/game-data/game-data.service';
 export class ProfileComponent {
 
   selectedUser?: User;
+	hasSelectedUser: boolean = true;
   activeUser?: User;
   gameHistory?: Array<GameHistory>;
 
@@ -26,9 +27,10 @@ export class ProfileComponent {
     ) {}
 
   async ngOnInit(): Promise<void> {
-    await this.userService.findSelf().then(user => this.activeUser = user)
     const username = String(this.route.snapshot.paramMap.get('username'));
-    await this.userService.findUserByUsername(username).then(user => this.selectedUser = user);
+    await this.userService.findUserByUsername(username).then(user => this.selectedUser = user).catch((e) => this.hasSelectedUser = false);
+		console.log(this.selectedUser);
+		await this.userService.findSelf().then(user => this.activeUser = user)
     this.gameHistory = this.gameservice.getMatchesOfUser(this.selectedUser?.id);
   }
 
