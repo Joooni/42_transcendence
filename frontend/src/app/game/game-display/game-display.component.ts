@@ -47,7 +47,7 @@ export class GameDisplayComponent implements AfterViewInit {
 	startGame() {
 		this.search = false;
 		this.stopSearch = true;
-		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
+		this.socketService.emit('startGameSearching', this.gameDisplayService.activeUser?.id);
 	}
 
 	stopSearching() {

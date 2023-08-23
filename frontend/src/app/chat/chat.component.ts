@@ -5,6 +5,7 @@ import { ChannelDataService } from '../services/channel-data/channel-data.servic
 import { User } from '../models/user';
 import { Channel } from '../models/channel';
 import { MessageService } from '../services/message/message.service';
+// import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { SocketService } from '../services/socket/socket.service';
 
 @Component({
@@ -44,12 +45,17 @@ export class ChatComponent implements OnInit {
 
 	channelToJoin?: Channel;
 
+	gameRequestSender?: User;
+	gameRequestRecipient?: User;
+	
+
 	constructor(
 		private userDataService: UserDataService,
 		private userRelationService: UserRelationService,
 		private channelDataService: ChannelDataService,
 		private messageService: MessageService,
 		private socket: SocketService,
+		// private game: GameDisplayComponent,
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -74,6 +80,10 @@ export class ChatComponent implements OnInit {
 		this.socket.listen('updateChannelList').subscribe(() => {
 			this.updateChannelList();
 		});
+
+		this.socket.listen('gotGameRequest').subscribe((data) => {
+			this.gotGameRequest(data as number)
+		})
 	}
 
 	changeShowFriends() {
@@ -292,4 +302,70 @@ export class ChatComponent implements OnInit {
 			}
 		}
 	}
+
+
+
+
+	popUpSendGameRequest(selectedUser: User) {
+		this.gameRequestRecipient =  selectedUser;
+		const popup = document.getElementById('popup-send-game-request');
+		popup?.classList.toggle('show-popup');
+		this.socket.emit2('sendGameRequest', this.activeUser?.id, this.gameRequestRecipient.id);
+		this.socket.listen('gameRequestDecliend').subscribe((data) => {
+			this.PopUpGameRequestDecliend(data as number);
+		})
+	}
+
+	closePopUpSendGameRequest() {
+		this.socket.emit2('gameRequestWithdrawn', this.activeUser?.id, this.gameRequestRecipient?.id);
+		this.gameRequestRecipient = undefined;		
+		const popup = document.getElementById('popup-send-game-request');
+		popup?.classList.toggle('show-popup');
+	}
+
+
+
+
+
+	PopUpGameRequestDecliend(gameRequestRecipientID: number) {
+		const popup = document.getElementById('popup-send-game-request');
+		popup?.classList.toggle('show-popup');
+		const popup2 = document.getElementById('popup-game-request-decliend');
+		popup2?.classList.toggle('show-popup');
+	}
+
+	closePopUpGameRequestDecliend() {
+		this.gameRequestRecipient = undefined;
+		const popup = document.getElementById('popup-game-request-decliend');
+		popup?.classList.toggle('show-popup');
+	}
+
+
+
+
+	async gotGameRequest(senderID: number) {
+		this.gameRequestSender = await this.userDataService.findUserById(senderID);
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.socket.listen('withdrawnGameRequest').subscribe((data) => {
+			const popup = document.getElementById('popup-got-game-request');
+			popup?.classList.toggle('show-popup');
+			this.gameRequestSender = undefined;
+		})
+	}
+	
+	closePopUpYesToGameRequest() {
+		// this.game.search = false;
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.gameRequestSender = undefined;
+	}
+
+	closePopUpNoToGameRequest() {
+		this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.gameRequestSender = undefined;
+	}
+
 }

@@ -176,7 +176,8 @@ export class SocketGateway
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
   }
 
-  @SubscribeMessage('startGame')
+
+  @SubscribeMessage('startGameSearching')
   startGame(client: Socket, userID: number) {
     if (userID === this.gameService.playerWaitingID) {
       return;
@@ -239,6 +240,33 @@ export class SocketGateway
     this.gameService.gameDataBEMap.delete(this.gameService.room);
     this.gameService.gameDataMap.delete(this.gameService.room);
     this.gameService.room = 0;
+  }
+
+  @SubscribeMessage('sendGameRequest')
+  sendGameRequest(client: Socket, data: number[]) {
+  	const gameRequestSenderID : number = data[0];
+	const gameRequestRecipientID : number = data[1];
+	console.log('User with ID:  ', gameRequestSenderID, '  sent a game requested to User with ID:   ', gameRequestRecipientID);
+	const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
+	gameRequestRecipientSocket?.emit("gotGameRequest", gameRequestSenderID);
+  }
+
+  @SubscribeMessage('gameRequestWithdrawn')
+  gameRequestWithdrawn(client: Socket, data: number[]) {
+  	const gameRequestSenderID : number = data[0];
+	const gameRequestRecipientID : number = data[1];
+	console.log('User with ID:  ', gameRequestSenderID, '  withdrawn the game requested to User with ID:   ', gameRequestRecipientID);
+	const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
+	gameRequestRecipientSocket?.emit("withdrawnGameRequest", gameRequestSenderID);
+  }
+
+  @SubscribeMessage('gameRequestDecliend')
+  gameRequestDecliend(client: Socket, data: number[]) {
+	const gameRequestSenderID : number = data[1];
+	const gameRequestRecipientID : number = data[0];
+	console.log('The GameRequest from User with ID:  ', gameRequestSenderID, '  was decliend by the User with ID:   ', gameRequestRecipientID);
+	const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
+	gameRequestSenderSocket?.emit("gameRequestDecliend", gameRequestRecipientID);
   }
 
   @SubscribeMessage('sendRacketPositionLeft')

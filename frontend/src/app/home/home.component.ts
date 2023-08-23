@@ -18,6 +18,7 @@ export class HomeComponent {
 	games = GAMES;
 	activeMatches?: Array<Game>;
 	activeUser?: User;
+	senderUser?: User;
 
 	constructor(
 		private gameservice: GameDataService,
@@ -47,4 +48,7 @@ export class HomeComponent {
 	sendMessage(eventName: string, data: string) {
 		this.socketService.emit(eventName, data);
 	}
+
+
+
 }
