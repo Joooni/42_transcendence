@@ -1,14 +1,36 @@
 import { Injectable } from '@angular/core';
+import axios from 'axios';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { gameData } from 'src/app/game/game-display/GameData';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
+  
+  constructor(private socket: Socket) {
+    this.socket.on('connect', async () => {
+      this.connectSocket();
+    });
+  }
+  
+  connected = false;
 
-  constructor(private socket: Socket) {  }
+  async connectSocket() {
+    return new Promise<void>(async (resolve, reject) => {
+      const socketId = this.socket.ioSocket.id;
+      console.log('socketid:', socketId);
+      try {
+        await axios.get(`http://localhost:3000/socket/verify/${socketId}`, { withCredentials: true });
+        console.log('Socket verified');
+        this.connected = true;
+        resolve();
+      } catch (error) {
+        console.log('Error verifying socket');
+        reject(error);
+      }
+    });
+  }
 
   listen(eventName: string) {
     return new Observable((subscriber) => {
@@ -16,6 +38,11 @@ export class SocketService {
         subscriber.next(data);
       })
     });
+  }
+
+  disconnect() {
+    this.socket.disconnect();
+    this.connected = false;
   }
 
   emit(eventName: string, data: any) {

@@ -20,6 +20,7 @@ import { MatchModule } from './game/match/match.module';
 import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';
+import { SocketController } from './socket/socket.controller';
 
 @Module({
   imports: [
@@ -56,7 +57,7 @@ import { Channel } from './channels/entities/channel.entity';
     SocketModule,
     ChannelsModule,
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController, UsersController, SocketController],
   providers: [AppService, PasswordService],
 })
 export class AppModule {}

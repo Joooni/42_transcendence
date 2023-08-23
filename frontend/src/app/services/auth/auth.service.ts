@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,11 @@ export class AuthService implements OnDestroy {
   private authSubscription?: Subscription;
   public isAuthenticated: boolean = false;
 
-  constructor(private readonly userDataService: UserDataService, private router: Router) {
+  constructor(
+    private readonly userDataService: UserDataService,
+    private router: Router,
+    private readonly socketService: SocketService,
+    ) {
     this.checkAuthenticationStatus();
   }
 
@@ -25,7 +30,8 @@ export class AuthService implements OnDestroy {
         } catch (error) {
           this.isAuthenticated = false;
           //TO-DO: disconnect socket
-          this.router.navigate(['/login'])
+          this.socketService.disconnect();
+          this.router.navigate(['/login']);
         }
       });
   }
