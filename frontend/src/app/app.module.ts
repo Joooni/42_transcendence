@@ -29,6 +29,7 @@ import { GameWatchComponent } from './game/game-watch/game-watch.component';
 import { GameInviteComponent } from './game-invite/game-invite.component';
 import { AlreadyConnectedComponent } from './already-connected/already-connected.component';
 import { GameSearchComponent } from './game/game-search/game-search.component';
+import { NotificationComponent } from './notification/notification.component';
 
 const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, options: {} };
 
@@ -53,6 +54,7 @@ const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, optio
     GameInviteComponent,
     AlreadyConnectedComponent,
     GameSearchComponent,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,

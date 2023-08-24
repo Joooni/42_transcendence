@@ -74,5 +74,4 @@ export class HomeComponent implements OnInit {
 		this.socketService.emit('watchGame', roomNbr);
 		this.router.navigate(['/gameWatch']);
 	}
-
 }
