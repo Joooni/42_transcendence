@@ -27,6 +27,10 @@ export class ChatDropdownComponent {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
+	isBlockedOrOffline(): boolean {
+		return this.isBlockedByActiveUser() || this.selectedUser.status === 'offline';
+	}
+
 	isBlockedByActiveUser(): boolean {
 		const user = this.activeUser?.blockedUsers.find(user => user.id === this.selectedUser.id);
 		if(user)

@@ -355,6 +355,7 @@ input:checked + .toggle:after {
 	justify-content: center;
 	align-items: center;
 	visibility: hidden;
+	z-index: 1000;
 }
 
 .popup-content {

@@ -29,6 +29,10 @@
 	padding: 0.5rem;
 }
 
+.grey {
+	background-color: rgb(65, 65, 65, 0.891);
+}
+
 .dropdown:hover .dropdown-content {
 	display: block;
 }

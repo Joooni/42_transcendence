@@ -154,7 +154,6 @@ h4 {
 .banned {
 	background-color: rgb(65, 65, 65);
 	color: rgb(165, 165, 165);
-	filter: grayscale(100%)
 }
 
 .select-invited-user {
