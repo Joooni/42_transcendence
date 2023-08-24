@@ -143,6 +143,26 @@ export class SocketGateway
     });
   }
 
+  @SubscribeMessage('sendFriendRequest')
+  async sendFriendRequest(client: Socket, obj: any) {
+    await this.usersService.sendFriendRequest(obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('removeFriend')
+  async removeFriend(client: Socket, obj: any) {
+    await this.usersService.removeFriend(obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('blockUser')
+  async blockUser(client: Socket, obj: any) {
+    await this.usersService.blockUser(obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('unblockUser')
+  async unblockUser(client: Socket, obj: any) {
+    await this.usersService.unblockUser(obj.ownid, obj.otherid);
+  }
+
   @SubscribeMessage('startGame')
   startGame(client: Socket, userID: number) {
     if (userID === this.gameService.playerWaitingID) {

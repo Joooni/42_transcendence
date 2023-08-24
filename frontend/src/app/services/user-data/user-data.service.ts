@@ -122,6 +122,24 @@ export class UserDataService {
             id
             name
           }
+          friends {
+            id
+            username
+            status
+            picture
+          }
+          blockedUsers {
+            id
+            username
+            status
+            picture
+          }
+          blockedFromOther {
+            id
+            username
+            status
+            picture
+          }
         }
       }
       `,

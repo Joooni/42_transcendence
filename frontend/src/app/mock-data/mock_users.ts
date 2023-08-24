@@ -25,6 +25,8 @@ export const USERS: User[] = [
 		friends: [],
 		sendFriendRequests: [],
 		incomingFriendRequests: [],
+		blockedUsers: [],
+		blockedFromOther: []
 	},
 	// {
 	// 	id: 2,

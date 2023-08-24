@@ -7,27 +7,27 @@
 					<img class="icon" src="../../../assets/profile_icon_yellow.png">
 					<div class="action-item">Visit profile</div>
 				</a>
-				<a *ngIf="!isBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+				<a *ngIf="!isBlockedByActiveUser() && !isBlockedByOtherUser()" class="dropdown-content-item" (click)="openDMWithUser()">
 					<img class="icon" src="../../../assets/message_icon_yellow.png">
 					<div class="action-item">Direct message</div>
 				</a>
-				<a *ngIf="!isBlockedByActiveUser() && selectedUser.status === 'online'" class="dropdown-content-item" (click)="sendGameRequest()">
+				<a *ngIf="!isBlockedByActiveUser() && !isBlockedByOtherUser() && selectedUser.status === 'online'" class="dropdown-content-item" (click)="sendGameRequest()">
 					<img class="icon" src="../../../assets/game_icon.png">
 					<div class="action-item">Game Request</div>
 				</a>
-				<a *ngIf="!isFriendsWithActiveUser() && !isBlockedByActiveUser()" class="dropdown-content-item" (click)="sendFriendRequest()">
+				<a *ngIf="!isFriendsWithActiveUser() && !isBlockedByActiveUser() && !isBlockedByOtherUser()" class="dropdown-content-item" (click)="sendFriendRequest()">
 					<img class="icon" src="../../../assets/add_friend_icon_yellow.png">
 					<div class="action-item">Friend Request</div>
 				</a>
-				<a *ngIf="isFriendsWithActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+				<a *ngIf="isFriendsWithActiveUser()" class="dropdown-content-item" (click)="removeAsFriend()">
 					<img class="icon" src="../../../assets/add_friend_icon_yellow.png">
 					<div class="action-item">Unfriend</div>
 				</a>
-				<a *ngIf="!isBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+				<a *ngIf="!isBlockedByActiveUser() && !isBlockedByOtherUser()" class="dropdown-content-item" (click)="blockUser()">
 					<img class="icon" src="../../../assets/block_icon_yellow.png">
 					<div class="action-item">Block</div>
 				</a>
-				<a *ngIf="isBlockedByActiveUser()" class="dropdown-content-item" (click)="openDMWithUser()">
+				<a *ngIf="isBlockedByActiveUser()" class="dropdown-content-item" (click)="unblockUser()">
 					<img class="icon" src="../../../assets/block_icon_yellow.png">
 					<div class="action-item">Unblock</div>
 				</a>

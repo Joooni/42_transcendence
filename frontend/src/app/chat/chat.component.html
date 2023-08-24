@@ -10,9 +10,8 @@
 		</button>
 
 		<div *ngIf="showFriends" class="chat_contact_list">
-			<div *ngFor="let user of allUsers">
-				<div 
-					*ngIf="friends?.includes(user.id)"
+			<div *ngFor="let user of friends">
+				<div
 					class="contact"
 					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']" 
 					(click)="selectUser(user)"
@@ -47,9 +46,9 @@
 		</button>
 
 		<div *ngIf="showOtherUsers" class="chat_contact_list">
-			<div *ngFor="let user of allUsers">
+			<div *ngFor="let user of otherUsers">
 				<div 
-					*ngIf="!friends?.includes(user.id) && !blocked?.includes(user.id) && user.id !== activeUser?.id"
+					*ngIf="!friends?.includes(user) && !blocked?.includes(user) && user.id !== activeUser?.id"
 					class="contact"
 					[ngClass]="[user.status, selectedUser?.id === user.id ? 'selected' : '']"
 					(click)="selectUser(user)"
@@ -130,8 +129,8 @@
 		</button>
 		
 		<div *ngIf="showBlocked" class="chat_contact_list">
-			<div *ngFor="let user of allUsers">
-				<div *ngIf="blocked?.includes(user.id)" class="contact blocked">
+			<div *ngFor="let user of blocked">
+				<div *ngIf="blocked?.includes(user)" class="contact blocked">
 					<div class="user">
 						<img class="profile_picture" src="{{'../' + user.picture}}">
 						<h4>{{user.username}}</h4>
