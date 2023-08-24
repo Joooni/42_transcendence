@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import { UserDataService } from '../services/user-data/user-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
@@ -84,6 +85,10 @@ export class ChatComponent implements OnInit {
 		this.socket.listen('gotGameRequest').subscribe((data) => {
 			this.gotGameRequest(data as number)
 		})
+	}
+
+	ngOnDestroy() {
+		this.socket.stopListen('gotGameRequest');
 	}
 
 	changeShowFriends() {
@@ -328,6 +333,7 @@ export class ChatComponent implements OnInit {
 
 
 	PopUpGameRequestDecliend(gameRequestRecipientID: number) {
+		this.socket.stopListen('gameRequestDecliend');
 		const popup = document.getElementById('popup-send-game-request');
 		popup?.classList.toggle('show-popup');
 		const popup2 = document.getElementById('popup-game-request-decliend');
@@ -351,17 +357,19 @@ export class ChatComponent implements OnInit {
 			const popup = document.getElementById('popup-got-game-request');
 			popup?.classList.toggle('show-popup');
 			this.gameRequestSender = undefined;
+			this.socket.stopListen('withdrawnGameRequest');
 		})
 	}
 	
 	closePopUpYesToGameRequest() {
-		// this.game.search = false;
+		this.socket.stopListen('withdrawnGameRequest');
 		const popup = document.getElementById('popup-got-game-request');
 		popup?.classList.toggle('show-popup');
 		this.gameRequestSender = undefined;
 	}
 
 	closePopUpNoToGameRequest() {
+		this.socket.stopListen('withdrawnGameRequest');
 		this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
 		const popup = document.getElementById('popup-got-game-request');
 		popup?.classList.toggle('show-popup');
