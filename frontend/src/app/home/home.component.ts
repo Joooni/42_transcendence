@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { GAMES } from '../mock-data/mock_games';
 import { Game } from "../models/game";
@@ -13,12 +13,13 @@ import { SocketService } from '../services/socket/socket.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
 
 	games = GAMES;
 	activeMatches?: Array<Game>;
 	activeUser?: User;
 	senderUser?: User;
+	gameRequestSender?: User;
 
 	constructor(
 		private gameservice: GameDataService,
@@ -32,7 +33,12 @@ export class HomeComponent {
 			this.activeUser = user;
 		});
 		this.activeMatches = this.gameservice.getActiveMatches();
+		
 		this.connectSocket();
+
+		this.socketService.listen('gotGameRequest').subscribe((data) => {
+			this.gotGameRequest(data as number)
+		})
 	}
 
 	async connectSocket() {
@@ -45,10 +51,41 @@ export class HomeComponent {
 		}
 	}
 
+	ngOnDestroy() {
+		this.socketService.stopListen('gotGameRequest');
+	}
+
 	sendMessage(eventName: string, data: string) {
 		this.socketService.emit(eventName, data);
 	}
 
 
+
+	async gotGameRequest(senderID: number) {
+		this.gameRequestSender = await this.userService.findUserById(senderID);
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.socketService.listen('withdrawnGameRequest').subscribe((data) => {
+			const popup = document.getElementById('popup-got-game-request');
+			popup?.classList.toggle('show-popup');
+			this.gameRequestSender = undefined;
+			this.socketService.stopListen('withdrawnGameRequest');
+		})
+	}
+	
+	closePopUpYesToGameRequest() {
+		this.socketService.stopListen('withdrawnGameRequest');
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.gameRequestSender = undefined;
+	}
+
+	closePopUpNoToGameRequest() {
+		this.socketService.stopListen('withdrawnGameRequest');
+		this.socketService.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
+		const popup = document.getElementById('popup-got-game-request');
+		popup?.classList.toggle('show-popup');
+		this.gameRequestSender = undefined;
+	}
 
 }

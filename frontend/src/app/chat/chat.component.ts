@@ -14,7 +14,7 @@ import { SocketService } from '../services/socket/socket.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 	activeUser?: User;
 
 	friends?: User[];
@@ -309,8 +309,6 @@ export class ChatComponent implements OnInit {
 	}
 
 
-
-
 	popUpSendGameRequest(selectedUser: User) {
 		this.gameRequestRecipient =  selectedUser;
 		const popup = document.getElementById('popup-send-game-request');
@@ -331,7 +329,6 @@ export class ChatComponent implements OnInit {
 
 
 
-
 	PopUpGameRequestDecliend(gameRequestRecipientID: number) {
 		this.socket.stopListen('gameRequestDecliend');
 		const popup = document.getElementById('popup-send-game-request');
@@ -347,7 +344,7 @@ export class ChatComponent implements OnInit {
 	}
 
 
-
+	
 
 	async gotGameRequest(senderID: number) {
 		this.gameRequestSender = await this.userDataService.findUserById(senderID);
