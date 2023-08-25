@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { mockUsers } from './entities/user.entity.mock';
 import { Channel } from 'src/channels/entities/channel.entity';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 
 @Injectable()
 export class UsersService {
@@ -77,7 +77,10 @@ export class UsersService {
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
         .leftJoinAndSelect('user.friends', 'friends')
         .leftJoinAndSelect('user.sendFriendRequests', 'sendFriendRequests')
-        .leftJoinAndSelect('user.incomingFriendRequests', 'incomingFriendRequests')
+        .leftJoinAndSelect(
+          'user.incomingFriendRequests',
+          'incomingFriendRequests',
+        )
         .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
         .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
         .getOneOrFail();
@@ -92,7 +95,10 @@ export class UsersService {
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
         .leftJoinAndSelect('user.friends', 'friends')
         .leftJoinAndSelect('user.sendFriendRequests', 'sendFriendRequests')
-        .leftJoinAndSelect('user.incomingFriendRequests', 'incomingFriendRequests')
+        .leftJoinAndSelect(
+          'user.incomingFriendRequests',
+          'incomingFriendRequests',
+        )
         .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
         .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
         .getOneOrFail();
@@ -118,10 +124,10 @@ export class UsersService {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
-      
+
       user.sendFriendRequests.push(friend);
       await this.userRepository.save(user);
-      
+
       //To-do: Send a notification to the friend
     } catch (error) {
       console.log(error);
@@ -147,7 +153,7 @@ export class UsersService {
     }
   }
 
-  async removeFriend(server: Server,ownid: number, otherid: number) {
+  async removeFriend(server: Server, ownid: number, otherid: number) {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
@@ -166,12 +172,8 @@ export class UsersService {
     try {
       const user = await this.findOne(ownid);
       const other = await this.findOne(otherid);
-      user.friends = user.friends.filter(
-        (item) => item.id !== other.id,
-      );
-      other.friends = other.friends.filter(
-        (item) => item.id !== user.id,
-      );
+      user.friends = user.friends.filter((item) => item.id !== other.id);
+      other.friends = other.friends.filter((item) => item.id !== user.id);
       await this.userRepository.save(other);
       user.blockedUsers.push(other);
       await this.userRepository.save(user);
@@ -186,7 +188,9 @@ export class UsersService {
     try {
       const user = await this.findOne(ownid);
       const other = await this.findOne(otherid);
-      user.blockedUsers = user.blockedUsers.filter((item) => item.id !== otherid);
+      user.blockedUsers = user.blockedUsers.filter(
+        (item) => item.id !== otherid,
+      );
       await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});
       server.to(other.socketid).emit('updateUserList', {});

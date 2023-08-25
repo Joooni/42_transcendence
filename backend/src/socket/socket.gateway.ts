@@ -154,7 +154,11 @@ export class SocketGateway
 
   @SubscribeMessage('acceptFriendRequest')
   async acceptFriendRequest(client: Socket, obj: any) {
-    await this.usersService.acceptFriendRequest(this.server, obj.ownid, obj.otherid);
+    await this.usersService.acceptFriendRequest(
+      this.server,
+      obj.ownid,
+      obj.otherid,
+    );
   }
 
   @SubscribeMessage('removeFriend')
