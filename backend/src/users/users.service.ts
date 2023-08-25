@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { mockUsers } from './entities/user.entity.mock';
 import { Channel } from 'src/channels/entities/channel.entity';
+import { Server, Socket } from 'socket.io';
 
 @Injectable()
 export class UsersService {
@@ -121,15 +122,13 @@ export class UsersService {
       user.sendFriendRequests.push(friend);
       await this.userRepository.save(user);
       
-      //To-do: Delete this later when the friend is able to accept the request:
-      this.acceptFriendRequest(otherid, ownid);
       //To-do: Send a notification to the friend
     } catch (error) {
       console.log(error);
     }
   }
 
-  async acceptFriendRequest(ownid: number, otherid: number) {
+  async acceptFriendRequest(server: Server, ownid: number, otherid: number) {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
@@ -140,13 +139,15 @@ export class UsersService {
       friend.friends.push(user);
       await this.userRepository.save(user);
       await this.userRepository.save(friend);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(friend.socketid).emit('updateUserList', {});
       //To-do: Send a update message to both users
     } catch (error) {
       console.log(error);
     }
   }
 
-  async removeFriend(ownid: number, otherid: number) {
+  async removeFriend(server: Server,ownid: number, otherid: number) {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
@@ -154,13 +155,14 @@ export class UsersService {
       friend.friends = friend.friends.filter((item) => item.id !== user.id);
       await this.userRepository.save(user);
       await this.userRepository.save(friend);
-      //To-do: Send a update message to both users
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(friend.socketid).emit('updateUserList', {});
     } catch (error) {
       console.log(error);
     }
   }
 
-  async blockUser(ownid: number, otherid: number) {
+  async blockUser(server: Server, ownid: number, otherid: number) {
     try {
       const user = await this.findOne(ownid);
       const other = await this.findOne(otherid);
@@ -173,15 +175,24 @@ export class UsersService {
       await this.userRepository.save(other);
       user.blockedUsers.push(other);
       await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(other.socketid).emit('updateUserList', {});
     } catch (error) {
       console.log(error);
     }
   }
 
-  async unblockUser(ownid: number, otherid: number) {
-    const user = await this.findOne(ownid);
-    user.blockedUsers = user.blockedUsers.filter((item) => item.id !== otherid);
-    await this.userRepository.save(user);
+  async unblockUser(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const other = await this.findOne(otherid);
+      user.blockedUsers = user.blockedUsers.filter((item) => item.id !== otherid);
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(other.socketid).emit('updateUserList', {});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async updateSelectedMap(id: number, selectedMap: number): Promise<void> {

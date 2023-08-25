@@ -146,21 +146,30 @@ export class SocketGateway
   @SubscribeMessage('sendFriendRequest')
   async sendFriendRequest(client: Socket, obj: any) {
     await this.usersService.sendFriendRequest(obj.ownid, obj.otherid);
+    this.acceptFriendRequest(client, {
+      ownid: obj.otherid,
+      otherid: obj.ownid,
+    });
+  }
+
+  @SubscribeMessage('acceptFriendRequest')
+  async acceptFriendRequest(client: Socket, obj: any) {
+    await this.usersService.acceptFriendRequest(this.server, obj.ownid, obj.otherid);
   }
 
   @SubscribeMessage('removeFriend')
   async removeFriend(client: Socket, obj: any) {
-    await this.usersService.removeFriend(obj.ownid, obj.otherid);
+    await this.usersService.removeFriend(this.server, obj.ownid, obj.otherid);
   }
 
   @SubscribeMessage('blockUser')
   async blockUser(client: Socket, obj: any) {
-    await this.usersService.blockUser(obj.ownid, obj.otherid);
+    await this.usersService.blockUser(this.server, obj.ownid, obj.otherid);
   }
 
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, obj: any) {
-    await this.usersService.unblockUser(obj.ownid, obj.otherid);
+    await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
   }
 
   @SubscribeMessage('startGame')

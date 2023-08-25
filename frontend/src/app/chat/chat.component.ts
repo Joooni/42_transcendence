@@ -53,31 +53,23 @@ export class ChatComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			//to be updated when Channel and Relations are fully implemented? Maybe even define services differently...
-			//this.userRelationService.getFriendsOf(this.activeUser.id).subscribe(friends => this.friends = friends);
-			// this.userRelationService.getBlockedOf(this.activeUser.id).subscribe(blocked => this.blocked = blocked);
-			this.friends = user.friends.map(friend => ({...friend}));
-			this.blocked = user.blockedUsers.concat(user.blockedFromOther).map(blocked => ({...blocked}));
-			
-			
+
+		await this.updateUserList();
+		if (this.activeUser) {
 			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
 			this.memberChannels = this.activeUser.channelList;
 			this.invitedInChannel = this.activeUser.invitedInChannel;
-		});
+		}
 
-		await this.userDataService.findAllExceptMyself().then(users => {
-			this.otherUsers = users.filter(user => {
-				return !this.friends?.some(friend => friend.id === user.id) && !this.blocked?.some(blocked => blocked.id === user.id);
-			});
-		});
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
 		});
 		//Will update username & status & profile picture of specific user
 		this.socket.listen('updateUser').subscribe((user: any) => {
 			this.updateSpecificUser(user.id, user.username, user.status, user.picture);
+		});
+		this.socket.listen('updateUserList').subscribe(() => {
+			this.updateUserList();
 		});
 		this.socket.listen('updateChannelList').subscribe(() => {
 			this.updateChannelList();
@@ -273,5 +265,31 @@ export class ChatComponent implements OnInit {
 					this.selectedChannel = undefined;
 			}
 		});
+	}
+
+	async updateUserList() {
+		await this.userDataService.findSelf().then(user => {
+			this.activeUser = user;
+			console.log('update UserList')
+			if (!user) {
+				console.log('no active user, userlist cannot be updated');
+				return;
+			}
+			this.friends = user.friends.map(friend => ({...friend}));
+			this.blocked = user.blockedUsers.concat(user.blockedFromOther).map(blocked => ({...blocked}));
+		});
+		await this.userDataService.findAllExceptMyself().then(users => {
+			this.otherUsers = users.filter(user => {
+				return !this.friends?.some(friend => friend.id === user.id) && !this.blocked?.some(blocked => blocked.id === user.id);
+			});
+		});
+
+		if (this.selectedUser) {
+			const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
+			const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
+			if (!oUser && !fUser) {
+				this.selectedUser = undefined;
+			}
+		}
 	}
 }
