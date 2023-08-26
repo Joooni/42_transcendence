@@ -124,10 +124,19 @@ export class User {
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.incomingFriendRequests)
-  @JoinTable() //?
+  @JoinTable()
   sendFriendRequests: User[];
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.sendFriendRequests)
   incomingFriendRequests: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.blockedFromOther)
+  @JoinTable()
+  blockedUsers: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.blockedUsers)
+  blockedFromOther: User[];
 }

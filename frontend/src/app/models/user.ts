@@ -26,4 +26,6 @@ export interface User {
 	friends: User[];
 	sendFriendRequests: User[];
 	incomingFriendRequests: User[];
+	blockedUsers: User[];
+	blockedFromOther: User[];
 }

@@ -37,6 +37,16 @@ class GraphQLService {
                 return incoming;
               },
             },
+            friends: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            blockedUsers: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
           },
         },
       },

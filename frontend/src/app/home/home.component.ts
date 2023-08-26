@@ -36,7 +36,7 @@ export class HomeComponent {
 
 	async connectSocket() {
 		for (let i = 0; i < 20; i++) {
-			await new Promise(resolve => setTimeout(resolve, 250));
+			await new Promise(resolve => setTimeout(resolve, 500));
 			if (this.socketService.connected == false)
 				await this.socketService.connectSocket();
 			else

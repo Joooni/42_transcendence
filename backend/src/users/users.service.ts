@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { mockUsers } from './entities/user.entity.mock';
 import { Channel } from 'src/channels/entities/channel.entity';
+import { Server } from 'socket.io';
 
 @Injectable()
 export class UsersService {
@@ -74,6 +75,14 @@ export class UsersService {
         .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
         .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .leftJoinAndSelect('user.friends', 'friends')
+        .leftJoinAndSelect('user.sendFriendRequests', 'sendFriendRequests')
+        .leftJoinAndSelect(
+          'user.incomingFriendRequests',
+          'incomingFriendRequests',
+        )
+        .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
+        .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
         .getOneOrFail();
     } else if (typeof identifier === 'string') {
       return await this.userRepository
@@ -84,6 +93,14 @@ export class UsersService {
         .leftJoinAndSelect('user.adminInChannel', 'adminInChannel')
         .leftJoinAndSelect('user.mutedInChannel', 'mutedInChannel')
         .leftJoinAndSelect('user.invitedInChannel', 'invitedInChannel')
+        .leftJoinAndSelect('user.friends', 'friends')
+        .leftJoinAndSelect('user.sendFriendRequests', 'sendFriendRequests')
+        .leftJoinAndSelect(
+          'user.incomingFriendRequests',
+          'incomingFriendRequests',
+        )
+        .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
+        .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
         .getOneOrFail();
     }
     throw new EntityNotFoundError(User, {});
@@ -101,6 +118,85 @@ export class UsersService {
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
+  }
+
+  async sendFriendRequest(ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const friend = await this.findOne(otherid);
+
+      user.sendFriendRequests.push(friend);
+      await this.userRepository.save(user);
+
+      //To-do: Send a notification to the friend
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async acceptFriendRequest(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const friend = await this.findOne(otherid);
+      user.incomingFriendRequests = user.incomingFriendRequests.filter(
+        (item) => item.id !== friend.id,
+      );
+      user.friends.push(friend);
+      friend.friends.push(user);
+      await this.userRepository.save(user);
+      await this.userRepository.save(friend);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(friend.socketid).emit('updateUserList', {});
+      //To-do: Send a update message to both users
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async removeFriend(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const friend = await this.findOne(otherid);
+      user.friends = user.friends.filter((item) => item.id !== friend.id);
+      friend.friends = friend.friends.filter((item) => item.id !== user.id);
+      await this.userRepository.save(user);
+      await this.userRepository.save(friend);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(friend.socketid).emit('updateUserList', {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async blockUser(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const other = await this.findOne(otherid);
+      user.friends = user.friends.filter((item) => item.id !== other.id);
+      other.friends = other.friends.filter((item) => item.id !== user.id);
+      await this.userRepository.save(other);
+      user.blockedUsers.push(other);
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(other.socketid).emit('updateUserList', {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async unblockUser(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
+      const other = await this.findOne(otherid);
+      user.blockedUsers = user.blockedUsers.filter(
+        (item) => item.id !== otherid,
+      );
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateUserList', {});
+      server.to(other.socketid).emit('updateUserList', {});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async updateSelectedMap(id: number, selectedMap: number): Promise<void> {
