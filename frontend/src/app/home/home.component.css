@@ -9,9 +9,6 @@ h2, h4 {
 	flex-direction: row;
 	text-align: center;
 	justify-content: space-evenly;
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
 }
 
 .home_flex_rows {
@@ -22,9 +19,6 @@ h2, h4 {
 	text-align: center;
 	justify-content: flex-start;
 	align-items: center;
-	border-style: solid;
-	border-width: 2px;
-	border-color: cyan;
 	row-gap: 2vmin;
 }
 
@@ -57,7 +51,6 @@ h2, h4 {
 }
 
 .notification-container {
-	background-color: red;
 	width: 100%;
-	height: 50%;
+	height: 45%;
 }

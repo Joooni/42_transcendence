@@ -1,11 +1,14 @@
+<<<<<<< HEAD
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+=======
+import { Component } from '@angular/core';
+>>>>>>> 10c4bd2a (First steps Notifications)
 import { GAMES } from '../mock-data/mock_games';
 import { Game } from "../models/game";
 import { GameDataService } from '../services/game-data/game-data.service';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { Router } from '@angular/router';
 import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
 import { GameDisplayComponent } from '../game/game-display/game-display.component';
