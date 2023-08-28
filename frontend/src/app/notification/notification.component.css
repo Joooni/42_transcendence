@@ -1,7 +1,16 @@
-.title-notifications {
-	margin-block-start: 0.6rem;
+.title-notifications-text {
+	margin-block-start: 0.3rem;
   margin-block-end: 0.3rem;
 	text-align: left;
+}
+
+.title-notifications {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	column-gap: 0.8rem;
+	align-items: center;
+	margin: 0 0.5rem;
 }
 
 .notification-container {
@@ -19,4 +28,9 @@
 .notification {
 	height: 30%;
 	background-color: rgb(1, 47, 1)
+}
+
+.notification-icon {
+	height: 30px;
+	width: 30px;
 }
