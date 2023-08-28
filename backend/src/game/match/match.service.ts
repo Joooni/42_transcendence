@@ -179,7 +179,7 @@ export class MatchService {
         gameData.ballMoveDegree = 90;
       }
       setTimeout(() => {
-        if (gameData.goalsLeft < 5 && gameData.goalsRight < 5) {
+        if (gameData.goalsLeft < 2 && gameData.goalsRight < 2) {
           gameData.ballMoveSpeed = 10;
         } else {
           gameData.gameEnds = true;

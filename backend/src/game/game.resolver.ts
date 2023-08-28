@@ -7,7 +7,7 @@
 import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { JwtPayload } from '../auth/strategy/jwt.strategy';
 import { CurrentJwtPayload } from './../users/decorator/current-jwt-payload.decorator';
-import { Match } from './match.entity';
+import { Match } from './entitites/match.entity';
 import { GameService } from './game.service';
 
 @Resolver()
@@ -29,20 +29,4 @@ export class GameResolver {
     return this.gameService.findMatchById(id);
   }
 
-  // @Mutation(() => Match)
-  // async createMatchDB(@Args() createMatchDB: createMatch) {
-  // 	await this.gameService.createMatchDB(createMatchDB);
-  // }
-
-  // @Mutation(() => Match)
-  // async createMatchDB(
-  //   @CurrentJwtPayload() jwtPayload: JwtPayload,
-  //   @Args() createMatchDB: createMatch,
-  // ) {
-  //   await this.usersService.updateUsername(
-  // 	jwtPayload.id,
-  // 	updateUserUsernameInput.username,
-  //   );
-  //   return this.usersService.findOne(jwtPayload.id);
-  // }
 }

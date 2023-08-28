@@ -70,11 +70,11 @@ scalar Timestamp
 
 type Match {
   gameID: Int!
-  firstPlayer: String!
-  secondPlayer: String!
+  firstPlayer: User!
+  secondPlayer: User!
   goalsFirstPlayer: Int!
   goalsSecondPlayer: Int!
-  date: DateTime!
+  timestamp: DateTime!
 }
 
 type Query {

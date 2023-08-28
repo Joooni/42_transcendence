@@ -18,7 +18,6 @@ export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   intervalSearchOpp: any;
-  intervalRunGame: any;
 
   constructor(
     private readonly usersService: UsersService,
@@ -176,64 +175,32 @@ export class SocketGateway
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
   }
   
+
 	@SubscribeMessage('startGameRequest')
 	startGameRequest(client: Socket, data: number[]) {
-		console.log("startGameRequest - function calld");
 		const gameRequestSenderID : number = data[1];
 		const gameRequestRecipientID : number = data[0];
 		console.log('The GameRequest from User with ID:  ', gameRequestSenderID, '  was accepted by the User with ID:   ', gameRequestRecipientID);
 		const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
 		gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
 		const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
-		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
-		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
-		console.log('The game with id:  ', roomNbr, '   is running');
-		this.intervalRunGame = setInterval(() => {
-			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
-			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
-			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
-				clearInterval(this.intervalRunGame);
-				this.gameService.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
-				this.gameService.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
-				console.log('The game with id:  ', roomNbr,'   is over. The users with id:  ', this.gameService.gameDataMap.get(roomNbr!)?.leftUserID,
-				'  and  ', this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, 'left.',
-				);
-				this.gameService.gameDataBEMap.delete(roomNbr!);
-				this.gameService.gameDataMap.delete(roomNbr!);
-			}
-		}, 1000 / 25);
+		this.gameService.startMatch(roomNbr, this.server);
 	}
 
 
-  @SubscribeMessage('startGameSearching')
-  startGame(client: Socket, userID: number) {
-    if (userID === this.gameService.playerWaitingID) {
-      return;
-    }
-    const roomNbr = this.gameService.checkForOpponent(userID, client);
-    console.log('User with ID:  ', userID, ' is searching a game. The roomNbr is:  ', roomNbr);
-    if (roomNbr !== undefined) {
-		this.gameService.room = 0;
-		this.gameService.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
-		this.gameService.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
-		console.log('The game with id:  ', roomNbr, '   is running');
-		this.intervalRunGame = setInterval(() => {
-			this.gameService.startMatch(this.gameService.gameDataMap.get(roomNbr!)!);
-			this.server.to(roomNbr!.toString()).emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
-			if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
-				clearInterval(this.intervalRunGame);
-				this.gameService.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
-				this.gameService.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
-				console.log('The game with id:  ', roomNbr,'   is over. The users with id:  ', this.gameService.gameDataMap.get(roomNbr!)?.leftUserID,
-				'  and  ', this.gameService.gameDataMap.get(roomNbr!)?.rightUserID, 'left.',
-				);
-				this.gameService.gameDataBEMap.delete(roomNbr!);
-				this.gameService.gameDataMap.delete(roomNbr!);
-			}
-		}, 1000 / 25);
-    }
+@SubscribeMessage('startGameSearching')
+startGame(client: Socket, userID: number) {
+  if (userID === this.gameService.playerWaitingID) {
+	return;
   }
-  
+  const roomNbr = this.gameService.checkForOpponent(userID, client);
+  console.log('User with ID:  ', userID, ' is searching a game. The roomNbr is:  ', roomNbr);
+  if (roomNbr !== undefined) {
+	  this.gameService.room = 0;
+	  this.gameService.startMatch(roomNbr, this.server);
+  }
+}
+ 
 
   @SubscribeMessage('stopSearching')
   stopSearching(client: Socket) {
