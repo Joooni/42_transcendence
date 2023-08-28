@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		private gameservice: GameDataService,
 		private socketService: SocketService,
 		private router: Router,
-		private userService: UserDataService
+		private userService: UserDataService,
 	) {	}
 
 	ngOnInit() {
@@ -59,8 +59,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 		this.socketService.emit(eventName, data);
 	}
 
-
-
 	async gotGameRequest(senderID: number) {
 		this.gameRequestSender = await this.userService.findUserById(senderID);
 		const popup = document.getElementById('popup-got-game-request');
@@ -73,11 +71,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 		})
 	}
 	
-	closePopUpYesToGameRequest() {
+	closePopUpYesToGameRequest() {		
+		this.socketService.emit2('startGameRequest', this.activeUser?.id, this.gameRequestSender?.id)
 		this.socketService.stopListen('withdrawnGameRequest');
 		const popup = document.getElementById('popup-got-game-request');
 		popup?.classList.toggle('show-popup');
 		this.gameRequestSender = undefined;
+		this.router.navigate(['/game']);
 	}
 
 	closePopUpNoToGameRequest() {

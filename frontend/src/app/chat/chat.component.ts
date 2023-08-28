@@ -8,6 +8,7 @@ import { Channel } from '../models/channel';
 import { MessageService } from '../services/message/message.service';
 // import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { SocketService } from '../services/socket/socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -56,6 +57,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 		private channelDataService: ChannelDataService,
 		private messageService: MessageService,
 		private socket: SocketService,
+		private router: Router,
 		// private game: GameDisplayComponent,
 	) {}
 
@@ -317,6 +319,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 		this.socket.listen('gameRequestDecliend').subscribe((data) => {
 			this.PopUpGameRequestDecliend(data as number);
 		})
+		this.socket.listen('gameRequestAccepted').subscribe((data) => {
+			this.router.navigate(['/game']);
+		})		
 	}
 
 	closePopUpSendGameRequest() {
@@ -358,11 +363,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 		})
 	}
 	
-	closePopUpYesToGameRequest() {
+	closePopUpYesToGameRequest() {		
+		this.socket.emit2('startGameRequest', this.activeUser?.id, this.gameRequestSender?.id)
 		this.socket.stopListen('withdrawnGameRequest');
 		const popup = document.getElementById('popup-got-game-request');
 		popup?.classList.toggle('show-popup');
 		this.gameRequestSender = undefined;
+		this.router.navigate(['/game']);
 	}
 
 	closePopUpNoToGameRequest() {

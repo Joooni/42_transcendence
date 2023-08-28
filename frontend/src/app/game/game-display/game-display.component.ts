@@ -60,6 +60,9 @@ export class GameDisplayComponent implements AfterViewInit {
 		if (this.stopSearch === true) {
 			this.stopSearch = false
 		}
+		if (this.search === true) {
+			this.search = false
+		}
 		this.racketMovement();
 		if (data.gameEnds === false) {
 			this.sendRacketPosition(data);

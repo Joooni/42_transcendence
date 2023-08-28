@@ -64,6 +64,34 @@ export class GameService {
     return undefined;
   }
 
+  startWithGameRequest(gameRequestSenderID: number, gameRequestSenderSocket: Socket, gameRequestRecepientID: number, gameRequestRecepientSocket: Socket) : number {
+	var room : number = 0; 
+	while (this.gameDataMap.has(room)) {
+        room++;
+    }
+	this.gameDataMap.set(room, {
+		roomNbr: room,
+		ballX: 472,
+		ballY: 324,
+		ballMoveSpeed: 10,
+		ballMoveDegree: -90,
+		racketLeftY: 298,
+		racketRightY: 298,
+		goalTriggerLeft: false,
+		goalTriggerRight: false,
+		goalsRight: 0,
+		goalsLeft: 0,
+		leftUserID: gameRequestSenderID,
+		rightUserID: gameRequestRecepientID,
+		gameEnds: false,
+	});
+	this.gameDataBEMap.set(room, {
+		leftUserSocket: gameRequestSenderSocket,
+		rightUserSocket: gameRequestRecepientSocket,
+	});
+	return room;
+  }
+
   startMatch(gameData: gameData): gameData {
     gameData = this.matchService.runGame(gameData);
     return gameData;
