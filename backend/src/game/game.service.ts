@@ -106,7 +106,7 @@ export class GameService {
 		server.to(roomNbr!.toString()).emit('getGameData', this.gameDataMap.get(roomNbr!)!);
 		if (this.gameDataMap.get(roomNbr!)!.gameEnds === true) {
 			clearInterval(this.intervalRunGame);
-			console.log(this.gameDataMap.get(roomNbr!));
+			//console.log(this.gameDataMap.get(roomNbr!));
 			this.createMatchDB(this.gameDataMap.get(roomNbr!)?.leftUserID!, this.gameDataMap.get(roomNbr!)?.rightUserID!, this.gameDataMap.get(roomNbr!)!.goalsLeft!, this.gameDataMap.get(roomNbr!)!.goalsRight!);
 			this.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
 			this.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
@@ -141,18 +141,14 @@ export class GameService {
   async createMatchDB(firstPlayer: number, secondPlayer: number, goalsFirstPlayer: number, goalsSecondPlayer: number): Promise<void> {
 	
   	try {
-		const match = new Match()
-		match.firstPlayer = await this.usersService.findOne(firstPlayer);
-		match.secondPlayer = await this.usersService.findOne(secondPlayer);
-		match.goalsFirstPlayer = goalsFirstPlayer;
-		match.goalsSecondPlayer = goalsSecondPlayer;
-		console.log(match);
-		this.matchRepository.insert(match);
+      const match = new Match()
+      match.firstPlayer = await this.usersService.findOne(firstPlayer);
+      match.secondPlayer = await this.usersService.findOne(secondPlayer);
+      match.goalsFirstPlayer = goalsFirstPlayer;
+      match.goalsSecondPlayer = goalsSecondPlayer;
+      this.matchRepository.insert(match);
   	} catch (error) {
-		console.log("Error while pushing match in Database");
-  		// if (!(error instanceof QueryFailedError))
-  		// 	return Promise.reject(error);
-  		// const existingMatch: gameEnt[] = await this.gameRepository.find({where: { gfdsgfds }})
+		  console.log("Error while pushing match in Database", error);
   	}
   	return Promise.resolve();
   }
