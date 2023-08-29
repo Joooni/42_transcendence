@@ -76,6 +76,10 @@ export class User {
   xp: number;
 
   @Field()
+  @Column({ default: 0 })
+  rank: number;
+
+  @Field()
   @Column({ default: 1 })
   map: number;
 

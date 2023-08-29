@@ -65,6 +65,14 @@ export class UsersService {
       .getMany();
   }
 
+  async findAllSortedRanks(): Promise<User[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .orderBy('user.rank', 'ASC')
+      .addOrderBy('user.id')
+      .getMany();
+  }
+
   async findOne(identifier: number | string): Promise<User> {
     if (typeof identifier === 'number') {
       return await this.userRepository
@@ -278,6 +286,60 @@ export class UsersService {
     user.ownedChannels = user.ownedChannels || []; // if user.ownedChannels is undefined, set it to an empty array
     user.ownedChannels.push(channel);
     await this.userRepository.save(user);
+  }
+
+  async updateRanksByXP(): Promise<User[]> {
+    const sortedUsers = await this.userRepository.createQueryBuilder('user')
+      .orderBy('user.xp', 'DESC')
+      .addOrderBy('user.id')
+      .getMany();
+    for (let i = 0; i < sortedUsers.length; i++) {
+      if (sortedUsers[i].rank === i + 1) 
+        continue;
+      const user = sortedUsers[i];
+      user.rank = i + 1;
+      await this.userRepository.save(user);
+    }
+    return sortedUsers;
+  }
+
+  async calcXP(player1id: number, player1score: number, player2id: number, player2score: number): Promise<any> {
+    try {
+      const player1 = await this.userRepository
+      .createQueryBuilder('user')
+      .where({ id: player1id })
+      .getOneOrFail();
+      const player2 = await this.userRepository
+      .createQueryBuilder('user')
+      .where({ id: player2id })
+      .getOneOrFail();
+  
+      let player1xp = 0;
+      let player2xp = 0;
+      let xpDiff = 0;
+  
+      if (player1score > player2score) {
+        player1xp = 5 + (player1score - player2score);
+        xpDiff = player2.xp - player1.xp;
+        if (xpDiff < 0)
+          xpDiff = 0;
+        player1xp = player1xp + Math.trunc(player1xp * (xpDiff / 100));
+        player1.xp += player1xp;
+        await this.userRepository.save(player1);
+      } else {
+        player2xp = 5 + (player2score - player1score);
+        xpDiff = player1.xp - player2.xp;
+        if (xpDiff < 0)
+          xpDiff = 0;
+        player2xp = player2xp + Math.trunc(player2xp * (xpDiff / 100));
+        player2.xp += player2xp;
+        await this.userRepository.save(player2);
+      }
+      return { player1xp: player1xp, player2xp: player2xp };
+    }
+    catch (error) {
+      console.log('Error: while calcXP' + error);
+    }
   }
 
   /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {

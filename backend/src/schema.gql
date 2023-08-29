@@ -55,6 +55,7 @@ type User {
   losses: Float!
   socketid: String!
   xp: Float!
+  rank: Float!
   map: Float!
   achievements: [Int!]!
   selectedMap: Float!
@@ -82,8 +83,10 @@ scalar Timestamp
 type Query {
   allUsers: [User!]!
   allUsersExceptMyself: [User!]!
+  allUsersSortedRanks: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
+  updateRank: User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   messagesChannel(id: String): [Message!]!
