@@ -266,6 +266,7 @@ export class UserDataService {
           wins
           losses
           xp
+          rank
           achievements
         }
       }

@@ -14,6 +14,7 @@ export const USERS: User[] = [
 		wins: 12,
 		losses: 23,
 		xp: 434,
+		rank: 2,
 		map: 2,
 		achievements: [1, 2, 3],
 		ownedChannels: [],

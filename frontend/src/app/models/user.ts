@@ -14,6 +14,7 @@ export interface User {
 	wins: number;
 	losses: number;
 	xp: number;
+	rank: number;
 	map: number;
 	selectedMap?: number;
 	achievements: number[];
