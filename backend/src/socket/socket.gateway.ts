@@ -259,6 +259,10 @@ startGame(client: Socket, userID: number) {
     this.gameService.sendOngoingGames(this.server);
   }
   
+  @SubscribeMessage('userLeftGame')
+  userLeftGame(client: Socket, data: number[]) {
+    this.gameService.userLeftGame(this.server, data[0], data[1]);
+  }
 
   @SubscribeMessage('watchGame')
   watchGame(client: Socket, data: number) {

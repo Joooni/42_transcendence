@@ -173,6 +173,9 @@ export class GameService {
 	server.emit('sendOngoingGames', oGGData);
   }
 
+  userLeftGame(server: Server, activeUserID: number, roomNbr: number) {
+	console.log("user with id:   ", activeUserID, "    leaved the game in room:   ", roomNbr, "   . We have to add the behaviour here.");
+  }
 
   async createMatchDB(firstPlayer: number, secondPlayer: number, goalsFirstPlayer: number, goalsSecondPlayer: number): Promise<void> {
 	
@@ -198,3 +201,4 @@ export class GameService {
     return this.matchRepository.findOneByOrFail({ gameID: identifier });
   }
 }
+

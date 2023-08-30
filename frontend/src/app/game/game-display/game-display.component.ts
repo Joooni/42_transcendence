@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 
-import { GameDisplayService } from 'src/app/services/game/game-display/game-display.service';
+import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { gameData } from './GameData';
 
@@ -17,6 +17,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	search: boolean;
 	stopSearch: boolean;
 	countdown: number;
+	roomNbr?: number;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
@@ -29,6 +30,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
 		this.countdown = 3;
+
 	}
 
 	ngAfterViewInit() {
@@ -48,7 +50,9 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		
+		if (this.roomNbr != undefined) {
+			this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+		}
 	}
 
 	startGame() {
@@ -85,6 +89,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	handleCountdown(data: gameData) {
 		this.draw(data);
 		if (this.countdown === 3) {
+			this.roomNbr = data.roomNbr;
 			this.context.drawImage(this.gameDisplayService.countdown.img3, this.gameDisplayService.countdown.x, this.gameDisplayService.countdown.y, this.gameDisplayService.countdown.width, this.gameDisplayService.countdown.height);
 		} else if (this.countdown === 2) {
 			this.context.drawImage(this.gameDisplayService.countdown.img2, this.gameDisplayService.countdown.x, this.gameDisplayService.countdown.y, this.gameDisplayService.countdown.width, this.gameDisplayService.countdown.height);
@@ -135,9 +140,11 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		}
 		
 		if (data.goalsLeft >= 3 || data.goalsRight >= 3) {
+			this.roomNbr = undefined;
 			setTimeout(() => {
 				this.context.drawImage(this.gameDisplayService.result.img, this.gameDisplayService.result.x, this.gameDisplayService.result.y, this.gameDisplayService.result.width, this.gameDisplayService.result.height);
 			}, 3000);
+			
 		}
 	}
 }
