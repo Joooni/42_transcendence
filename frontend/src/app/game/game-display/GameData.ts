@@ -13,7 +13,15 @@ export interface gameData {
 	leftUserID: number;
 	rightUserID: number;
 	gameEnds: boolean
-  }
+}
 
   
-
+export interface onGoingGamesData {
+	roomNbr: number;
+	leftUserID: number;
+	leftUserName: string;
+	rightUserID: number;
+	rightUserName: string;
+	goalsLeft: number;
+	goalsRight: number;	
+}

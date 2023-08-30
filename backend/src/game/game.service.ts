@@ -57,6 +57,7 @@ export class GameService {
       this.gameDataBEMap.set(this.room, {
         leftUserSocket: userSocket,
         rightUserSocket: undefined,
+		usersWatching: new Array<Socket>,
       });
       return undefined;
     } else if (this.gameDataMap.get(this.room)!.leftUserID !== userID) {
@@ -92,15 +93,12 @@ export class GameService {
 	this.gameDataBEMap.set(room, {
 		leftUserSocket: gameRequestSenderSocket,
 		rightUserSocket: gameRequestRecepientSocket,
+		usersWatching: new Array<Socket>,
 	});
 	return room;
   }
 
-
   startMatch(roomNbr: number, server: Server) {
-	this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
-	this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
-	console.log('The game with id:  ', roomNbr, '   is running');
 	this.intervalRunGame = setInterval(() => {
 		this.matchService.runGame(this.gameDataMap.get(roomNbr!)!);
 		server.to(roomNbr!.toString()).emit('getGameData', this.gameDataMap.get(roomNbr!)!);
@@ -108,8 +106,13 @@ export class GameService {
 			clearInterval(this.intervalRunGame);
 			//console.log(this.gameDataMap.get(roomNbr!));
 			this.createMatchDB(this.gameDataMap.get(roomNbr!)?.leftUserID!, this.gameDataMap.get(roomNbr!)?.rightUserID!, this.gameDataMap.get(roomNbr!)!.goalsLeft!, this.gameDataMap.get(roomNbr!)!.goalsRight!);
-			this.gameDataBEMap.get(roomNbr!)?.leftUserSocket.leave(roomNbr!.toString());
-			this.gameDataBEMap.get(roomNbr!)?.rightUserSocket!.leave(roomNbr!.toString());
+			this.gameDataBEMap.get(roomNbr!)!.leftUserSocket.leave(roomNbr!.toString());
+			this.gameDataBEMap.get(roomNbr!)!.rightUserSocket!.leave(roomNbr!.toString());
+			while(this.gameDataBEMap.get(roomNbr)?.usersWatching && this.gameDataBEMap.get(roomNbr)?.usersWatching.length! > 0)
+			{
+				this.gameDataBEMap.get(roomNbr)?.usersWatching.at(0)?.leave(roomNbr!.toString());
+				this.gameDataBEMap.get(roomNbr)?.usersWatching.shift();
+			}
 			console.log('The game with id:  ', roomNbr,'   is over. The users with id:  ', this.gameDataMap.get(roomNbr!)?.leftUserID,
 			'  and  ', this.gameDataMap.get(roomNbr!)?.rightUserID, 'left.',
 			);
@@ -118,25 +121,58 @@ export class GameService {
 		}
 	}, 1000 / 25);
   }
-
   
+  startCountdown(roomNbr: number, server: Server) {
+	this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
+	this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
+	console.log('The game with id:  ', roomNbr, '   is running');	
+	server.to(roomNbr!.toString()).emit('getGameData', this.gameDataMap.get(roomNbr!)!);
+	setTimeout(() => {
+		server.to(roomNbr!.toString()).emit('getGameData', this.gameDataMap.get(roomNbr!)!);
+		setTimeout(() => {
+			server.to(roomNbr!.toString()).emit('getGameData', this.gameDataMap.get(roomNbr!)!);
+			setTimeout(() => {
+				this.startMatch(roomNbr, server);
+			}, 1000);
+		}, 1000);
+	}, 1000);
 
-//   onGoingGames() {
-// 	var room = 0;
-// 	var oGGData : onGoingGamesData[] = new Array;
-// 	while (room <= 50) {
-// 		if (this.gameDataMap.has(room)) {
-// 			oGGData.push({
-// 				roomNbr: this.gameDataMap.get(room)!.roomNbr,
-// 				leftUserID: this.gameDataMap.get(room)!.leftUserID,
-// 				rightUserID: this.gameDataMap.get(room)!.rightUserID,
-// 				goalsLeft: this.gameDataMap.get(room)!.goalsLeft,
-// 				goalsRight: this.gameDataMap.get(room)!.goalsRight	
-// 			})
-// 		}
-// 		room++;
-//       }
-//   }
+	// setTimeout(() => {
+
+	// }, 3000);
+  }
+      
+  
+  joinWatchGame(roomNbr: number, userSocket: Socket) {
+	userSocket.join(roomNbr.toString());
+	this.gameDataBEMap.get(roomNbr)?.usersWatching.push(userSocket);
+  }
+
+  leaveWatchGame(roomNbr: number, userSocket: Socket) {
+	userSocket.leave(roomNbr.toString());
+	this.gameDataBEMap.get(roomNbr)!.usersWatching = this.gameDataBEMap.get(roomNbr)!.usersWatching.filter(item => item != userSocket);		
+  }
+
+  async sendOngoingGames(server: Server) {
+	var room = 0;
+	var oGGData : onGoingGamesData[] = new Array;
+	while (room <= 50) {
+		if (this.gameDataMap.has(room) && this.gameDataMap.get(room)!.rightUserID != 0)  {
+			oGGData.push({
+				roomNbr: this.gameDataMap.get(room)!.roomNbr,
+				leftUserID: this.gameDataMap.get(room)!.leftUserID,
+				leftUserName: (await this.usersService.findOne(this.gameDataMap.get(room)!.leftUserID)).username,
+				rightUserID: this.gameDataMap.get(room)!.rightUserID,
+				rightUserName: (await this.usersService.findOne(this.gameDataMap.get(room)!.rightUserID)).username,
+				goalsLeft: this.gameDataMap.get(room)!.goalsLeft,
+				goalsRight: this.gameDataMap.get(room)!.goalsRight	
+			})
+		}
+		room++;
+      }
+	server.emit('sendOngoingGames', oGGData);
+  }
+
 
   async createMatchDB(firstPlayer: number, secondPlayer: number, goalsFirstPlayer: number, goalsSecondPlayer: number): Promise<void> {
 	

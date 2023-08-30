@@ -89,10 +89,10 @@ export class MatchService {
         ballPosY < racketLeftPosY + 100
       )
         gameData.ballMoveDegree = 20;
-      else if (gameData.ballMoveDegree < 0) {
+      else if (gameData.ballMoveDegree < 0 || gameData.ballMoveDegree > 180) {
         gameData.goalTriggerLeft = true;
       }
-      if (gameData.ballMoveSpeed < 70) gameData.ballMoveSpeed += 1;
+      if (gameData.ballMoveSpeed < 50) gameData.ballMoveSpeed += 1;
     }
     if (gameData.ballX >= 854) {
       if (ballPosY >= racketRightPosY - 100 && ballPosY < racketRightPosY - 82)
@@ -162,11 +162,13 @@ export class MatchService {
     }
     return gameData;
   }
-
+  
   radInDegrees(degrees: number): number {
     return (degrees * Math.PI) / 180;
   }
+  
 
+  
   goalControl(gameData: gameData): gameData {
     if (gameData.goalTriggerLeft == true || gameData.goalTriggerRight == true) {
       gameData.ballMoveSpeed = 0;
@@ -179,7 +181,7 @@ export class MatchService {
         gameData.ballMoveDegree = 90;
       }
       setTimeout(() => {
-        if (gameData.goalsLeft < 2 && gameData.goalsRight < 2) {
+        if (gameData.goalsLeft < 3 && gameData.goalsRight < 3) {
           gameData.ballMoveSpeed = 10;
         } else {
           gameData.gameEnds = true;

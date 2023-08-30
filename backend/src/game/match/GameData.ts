@@ -20,12 +20,16 @@ export interface gameData {
 export interface gameDataBE {
   leftUserSocket: Socket;
   rightUserSocket?: Socket;
+  usersWatching: Socket[];
 }
 
 export interface onGoingGamesData {
 	roomNbr: number;
 	leftUserID: number;
+	leftUserName: string;
 	rightUserID: number;
+	rightUserName: string;
 	goalsLeft: number;
 	goalsRight: number;	
 }
+

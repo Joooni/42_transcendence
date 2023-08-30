@@ -184,7 +184,7 @@ export class SocketGateway
 		const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
 		gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
 		const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
-		this.gameService.startMatch(roomNbr, this.server);
+		this.gameService.startCountdown(roomNbr, this.server);
 	}
 
 
@@ -197,7 +197,7 @@ startGame(client: Socket, userID: number) {
   console.log('User with ID:  ', userID, ' is searching a game. The roomNbr is:  ', roomNbr);
   if (roomNbr !== undefined) {
 	  this.gameService.room = 0;
-	  this.gameService.startMatch(roomNbr, this.server);
+	  this.gameService.startCountdown(roomNbr, this.server);
   }
 }
  
@@ -214,7 +214,6 @@ startGame(client: Socket, userID: number) {
     this.gameService.gameDataMap.delete(this.gameService.room);
     this.gameService.room = 0;
   }
-
 
 
   @SubscribeMessage('sendGameRequest')
@@ -254,4 +253,24 @@ startGame(client: Socket, userID: number) {
   getRacketPositionRight(client: Socket, data: number[]) {
     this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
   }
+
+  @SubscribeMessage('requestOngoingGames')
+  requestOngoingGames(client: Socket, data: number[]) {
+    this.gameService.sendOngoingGames(this.server);
+  }
+  
+
+  @SubscribeMessage('watchGame')
+  watchGame(client: Socket, data: number) {
+    this.gameService.joinWatchGame(data, client);
+  }
+  @SubscribeMessage('StopWatchGame')
+  stopWatchGame(client: Socket, data: number) {
+    this.gameService.leaveWatchGame(data, client);
+  }
+
+
+
+
+
 }
