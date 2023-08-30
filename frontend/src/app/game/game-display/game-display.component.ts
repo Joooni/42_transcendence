@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
@@ -10,7 +10,7 @@ import { gameData } from './GameData';
   styleUrls: ['./game-display.component.css']
 })
 
-export class GameDisplayComponent implements AfterViewInit {
+export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	
 	moveUp: boolean;
 	moveDown: boolean;
@@ -44,6 +44,11 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.socketService.listen('getGameData').subscribe((data) => {
 			this.runGame(data as gameData)
 		})
+		this.gameDisplayService.restartService();
+	}
+
+	ngOnDestroy() {
+		
 	}
 
 	startGame() {

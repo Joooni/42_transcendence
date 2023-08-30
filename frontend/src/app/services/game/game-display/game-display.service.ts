@@ -109,6 +109,14 @@ export class GameDisplayService {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
+	restartService() {
+		this.goalTrigger = false;
+		this.gameEnds = false;
+		this.racketPositionY = this.racketPositionStartY
+		this.goalsRight.width = 101;
+		this.countdown.width = 101;
+	}
+
 	imageControl(data: gameData) {
 		if (data.goalTriggerLeft == true || data.goalTriggerRight == true) {
 			this.goalTrigger = true;
@@ -142,7 +150,7 @@ export class GameDisplayService {
 			setTimeout(() => {
 				this.racketPositionY = this.racketPositionStartY;
 				this.goalTrigger = false;
-			}, 3000);
+			}, 2900);
 		}
 	}
 

@@ -97,7 +97,7 @@ export class GameService {
 	});
 	return room;
   }
-
+  
   startMatch(roomNbr: number, server: Server) {
 	this.intervalRunGame = setInterval(() => {
 		this.matchService.runGame(this.gameDataMap.get(roomNbr!)!);
