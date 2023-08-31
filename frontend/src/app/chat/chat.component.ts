@@ -332,8 +332,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 
-
-
 	PopUpGameRequestDecliend(gameRequestRecipientID: number) {
 		this.socket.stopListen('gameRequestDecliend');
 		const popup = document.getElementById('popup-send-game-request');
@@ -348,8 +346,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 		popup?.classList.toggle('show-popup');
 	}
 
-
-	
 
 	async gotGameRequest(senderID: number) {
 		this.gameRequestSender = await this.userDataService.findUserById(senderID);

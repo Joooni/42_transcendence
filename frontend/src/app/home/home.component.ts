@@ -36,6 +36,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 			this.activeUser = user;
 		});
 
+		this.connectSocket();
+
 		this.socketService.listen('gotGameRequest').subscribe((data) => {
 			this.gotGameRequest(data as number)
 		})

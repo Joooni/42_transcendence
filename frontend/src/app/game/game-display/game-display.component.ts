@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, HostListener } from '@angular/core';
+// import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy,} from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
@@ -11,7 +12,7 @@ import { gameData } from './GameData';
 })
 
 export class GameDisplayComponent implements AfterViewInit, OnDestroy {
-	
+
 	moveUp: boolean;
 	moveDown: boolean;
 	search: boolean;
@@ -30,7 +31,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
 		this.countdown = 3;
-
 	}
 
 	ngAfterViewInit() {
@@ -47,6 +47,13 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.runGame(data as gameData)
 		})
 		this.gameDisplayService.restartService();
+
+		// window.addEventListener('beforeunload', (event) => {
+		// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+		// 	event.preventDefault();
+		// 	event.stopImmediatePropagation();
+		// 	event.returnValue = '';
+		// });
 	}
 
 	ngOnDestroy() {
@@ -54,6 +61,14 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
 		}
 	}
+
+	// @HostListener('window:onbeforeunload', [ '$event' ])
+	// beforeUnload(event: any) {
+	// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+	// 	event.preventDefault();
+	// 	event.stopImmediatePropagation();
+	// 	event.returnValue = '';
+	// }
 
 	startGame() {
 		this.search = false;

@@ -136,10 +136,6 @@ export class GameService {
 			}, 1000);
 		}, 1000);
 	}, 1000);
-
-	// setTimeout(() => {
-
-	// }, 3000);
   }
       
   
@@ -172,7 +168,8 @@ export class GameService {
       }
 	server.emit('sendOngoingGames', oGGData);
   }
-
+      
+  
   userLeftGame(server: Server, activeUserID: number, roomNbr: number) {
 	console.log("user with id:   ", activeUserID, "    leaved the game in room:   ", roomNbr, "   . We have to add the behaviour here.");
   }
