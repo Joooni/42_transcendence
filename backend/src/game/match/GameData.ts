@@ -24,12 +24,11 @@ export interface gameDataBE {
 }
 
 export interface onGoingGamesData {
-	roomNbr: number;
-	leftUserID: number;
-	leftUserName: string;
-	rightUserID: number;
-	rightUserName: string;
-	goalsLeft: number;
-	goalsRight: number;	
+  roomNbr: number;
+  leftUserID: number;
+  leftUserName: string;
+  rightUserID: number;
+  rightUserName: string;
+  goalsLeft: number;
+  goalsRight: number;
 }
-

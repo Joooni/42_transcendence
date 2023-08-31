@@ -162,13 +162,11 @@ export class MatchService {
     }
     return gameData;
   }
-  
+
   radInDegrees(degrees: number): number {
     return (degrees * Math.PI) / 180;
   }
-  
 
-  
   goalControl(gameData: gameData): gameData {
     if (gameData.goalTriggerLeft == true || gameData.goalTriggerRight == true) {
       gameData.ballMoveSpeed = 0;

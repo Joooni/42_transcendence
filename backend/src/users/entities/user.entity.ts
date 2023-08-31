@@ -140,7 +140,7 @@ export class User {
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.blockedUsers)
   blockedFromOther: User[];
-  
+
   @Field(() => [Match], { nullable: true })
   @OneToMany(() => Match, (match) => match.firstPlayer)
   matchesAsFirstPlayer: Match[];

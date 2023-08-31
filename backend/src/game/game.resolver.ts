@@ -28,5 +28,4 @@ export class GameResolver {
       return this.gameService.findMatchById(jwtPayload.id);
     return this.gameService.findMatchById(id);
   }
-
 }
