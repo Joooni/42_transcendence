@@ -39,4 +39,8 @@ export class ProfileComponent {
       return true;
     return false;
   }
+
+  archivementIsUnlocked(id: number): boolean {
+    return this.selectedUser?.achievements.includes(id) ?? false;
+  }
 }

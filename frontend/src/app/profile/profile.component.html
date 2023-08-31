@@ -29,23 +29,23 @@
 		<div class="box_column profile_box_column">
 			<h1> - ACHIEVEMENTS - </h1>
 			<div class="achievements_box">
-				<div class="achievement">
+				<div *ngIf="archivementIsUnlocked(1)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
 					<h6>Have a banana!</h6>
 				</div>
-				<div class="achievement">
+				<div *ngIf="archivementIsUnlocked(2)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
 					<h6>Have a second banana...</h6>
 				</div>
-				<div class="achievement">
+				<div *ngIf="archivementIsUnlocked(3)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
 					<h6>King Pong</h6>
 				</div>
-				<div class="achievement">
+				<div *ngIf="archivementIsUnlocked(4)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
 					<h6>It's a-me!</h6>
 				</div>
-				<div class="achievement">
+				<div *ngIf="archivementIsUnlocked(5)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
 					<h6>Jungle VIP</h6>
 				</div>
