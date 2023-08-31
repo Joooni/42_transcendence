@@ -24,6 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorComponent } from './error/error.component';
 import { ChatChannelDropdownComponent } from './chat/chat-channel/chat-channel-dropdown/chat-channel-dropdown.component';
 import { ChatDropdownComponent } from './chat/chat-dropdown/chat-dropdown.component';
+import { GameWatchComponent } from './game/game-watch/game-watch.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -44,6 +45,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     GameComponent,
     GameDisplayComponent,
     ErrorComponent,
+    GameWatchComponent,
   ],
   imports: [
     BrowserModule,

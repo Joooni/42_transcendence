@@ -1,5 +1,6 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
 import { Channel } from 'src/channels/entities/channel.entity';
+import { Match } from 'src/game/entitites/match.entity';
 import {
   Entity,
   Column,
@@ -139,4 +140,12 @@ export class User {
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.blockedUsers)
   blockedFromOther: User[];
+
+  @Field(() => [Match], { nullable: true })
+  @OneToMany(() => Match, (match) => match.firstPlayer)
+  matchesAsFirstPlayer: Match[];
+
+  @Field(() => [Match], { nullable: true })
+  @OneToMany(() => Match, (match) => match.secondPlayer)
+  matchesAsSecondPlayer: Match[];
 }

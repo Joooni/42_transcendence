@@ -45,6 +45,10 @@ export class SocketService {
     this.connected = false;
   }
 
+  stopListen(eventName: string) {
+      this.socket.off(eventName);  
+  }
+
   emit(eventName: string, data: any) {
     this.socket.emit(eventName, data);
   }

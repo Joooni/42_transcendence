@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, HostListener } from '@angular/core';
+// import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy,} from '@angular/core';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
@@ -10,12 +11,14 @@ import { gameData } from './GameData';
   styleUrls: ['./game-display.component.css']
 })
 
-export class GameDisplayComponent implements AfterViewInit {
-	
+export class GameDisplayComponent implements AfterViewInit, OnDestroy {
+
 	moveUp: boolean;
 	moveDown: boolean;
 	search: boolean;
 	stopSearch: boolean;
+	countdown: number;
+	roomNbr?: number;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
@@ -27,6 +30,7 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.search = true;
 		this.stopSearch = false;
 		this.gameDisplayService.loadImages();
+		this.countdown = 3;
 	}
 
 	ngAfterViewInit() {
@@ -42,12 +46,34 @@ export class GameDisplayComponent implements AfterViewInit {
 		this.socketService.listen('getGameData').subscribe((data) => {
 			this.runGame(data as gameData)
 		})
+		this.gameDisplayService.restartService();
+
+		// window.addEventListener('beforeunload', (event) => {
+		// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+		// 	event.preventDefault();
+		// 	event.stopImmediatePropagation();
+		// 	event.returnValue = '';
+		// });
 	}
+
+	ngOnDestroy() {
+		if (this.roomNbr != undefined) {
+			this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+		}
+	}
+
+	// @HostListener('window:onbeforeunload', [ '$event' ])
+	// beforeUnload(event: any) {
+	// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
+	// 	event.preventDefault();
+	// 	event.stopImmediatePropagation();
+	// 	event.returnValue = '';
+	// }
 
 	startGame() {
 		this.search = false;
 		this.stopSearch = true;
-		this.socketService.emit('startGame', this.gameDisplayService.activeUser?.id);
+		this.socketService.emit('startGameSearching', this.gameDisplayService.activeUser?.id);
 	}
 
 	stopSearching() {
@@ -60,12 +86,34 @@ export class GameDisplayComponent implements AfterViewInit {
 		if (this.stopSearch === true) {
 			this.stopSearch = false
 		}
-		this.racketMovement();
-		if (data.gameEnds === false) {
-			this.sendRacketPosition(data);
+		if (this.search === true) {
+			this.search = false
 		}
-		this.gameDisplayService.imageControl(data);
+		if (this.countdown > 0) {
+			this.handleCountdown(data);
+		} else {
+			this.racketMovement();
+			if (data.gameEnds === false) {
+				this.sendRacketPosition(data);
+			}
+			this.gameDisplayService.imageControl(data);
+			this.draw(data);
+		}
+	}
+
+	handleCountdown(data: gameData) {
 		this.draw(data);
+		if (this.countdown === 3) {
+			this.roomNbr = data.roomNbr;
+			this.context.drawImage(this.gameDisplayService.countdown.img3, this.gameDisplayService.countdown.x, this.gameDisplayService.countdown.y, this.gameDisplayService.countdown.width, this.gameDisplayService.countdown.height);
+		} else if (this.countdown === 2) {
+			this.context.drawImage(this.gameDisplayService.countdown.img2, this.gameDisplayService.countdown.x, this.gameDisplayService.countdown.y, this.gameDisplayService.countdown.width, this.gameDisplayService.countdown.height);
+		} else if (this.countdown === 1) {
+			this.gameDisplayService.countdown.width = 56;
+			this.gameDisplayService.countdown.x += 24;
+			this.context.drawImage(this.gameDisplayService.countdown.img1, this.gameDisplayService.countdown.x, this.gameDisplayService.countdown.y, this.gameDisplayService.countdown.width, this.gameDisplayService.countdown.height);
+		}
+		this.countdown--;
 	}
 
 	sendRacketPosition(data: gameData) {
@@ -104,9 +152,14 @@ export class GameDisplayComponent implements AfterViewInit {
 		if (this.gameDisplayService.goalTrigger == true) {
 			this.context.drawImage(this.gameDisplayService.goal.img, this.gameDisplayService.goal.x, this.gameDisplayService.goal.y, this.gameDisplayService.goal.width, this.gameDisplayService.goal.height);
 			this.context.drawImage(this.gameDisplayService.explosion.img, this.gameDisplayService.explosion.x, this.gameDisplayService.explosion.y, this.gameDisplayService.explosion.width, this.gameDisplayService.explosion.height);
-		}								
-		if (this.gameDisplayService.gameEnds == true) {
-			this.context.drawImage(this.gameDisplayService.result.img, this.gameDisplayService.result.x, this.gameDisplayService.result.y, this.gameDisplayService.result.width, this.gameDisplayService.result.height);
+		}
+		
+		if (data.goalsLeft >= 3 || data.goalsRight >= 3) {
+			this.roomNbr = undefined;
+			setTimeout(() => {
+				this.context.drawImage(this.gameDisplayService.result.img, this.gameDisplayService.result.x, this.gameDisplayService.result.y, this.gameDisplayService.result.width, this.gameDisplayService.result.height);
+			}, 3000);
+			
 		}
 	}
 }

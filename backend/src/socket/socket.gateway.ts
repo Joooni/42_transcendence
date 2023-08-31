@@ -18,7 +18,6 @@ export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   intervalSearchOpp: any;
-  intervalRunGame: any;
 
   constructor(
     private readonly usersService: UsersService,
@@ -176,7 +175,36 @@ export class SocketGateway
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
   }
 
-  @SubscribeMessage('startGame')
+  @SubscribeMessage('startGameRequest')
+  async startGameRequest(client: Socket, data: number[]) {
+    const gameRequestSenderID: number = data[1];
+    const gameRequestRecipientID: number = data[0];
+    console.log(
+      'The GameRequest from User with ID:  ',
+      gameRequestSenderID,
+      '  was accepted by the User with ID:   ',
+      gameRequestRecipientID,
+    );
+
+    const user = await this.usersService.findOne(gameRequestSenderID);
+    this.server
+      .to(user.socketid)
+      .emit('gameRequestAccepted', gameRequestRecipientID);
+    const roomNbr = this.gameService.startWithGameRequest(
+      gameRequestSenderID,
+      this.server.sockets.sockets.get(user.socketid)!,
+      gameRequestRecipientID,
+      client,
+    );
+
+    // const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
+    // gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
+    // const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
+
+    this.gameService.startCountdown(roomNbr, this.server);
+  }
+
+  @SubscribeMessage('startGameSearching')
   startGame(client: Socket, userID: number) {
     if (userID === this.gameService.playerWaitingID) {
       return;
@@ -190,41 +218,7 @@ export class SocketGateway
     );
     if (roomNbr !== undefined) {
       this.gameService.room = 0;
-      this.gameService.gameDataBEMap
-        .get(roomNbr)
-        ?.leftUserSocket.join(roomNbr.toString());
-      this.gameService.gameDataBEMap
-        .get(roomNbr)
-        ?.rightUserSocket!.join(roomNbr.toString());
-      console.log('The game with id:  ', roomNbr, '   is running');
-      this.intervalRunGame = setInterval(() => {
-        this.gameService.startMatch(
-          this.gameService.gameDataMap.get(roomNbr!)!,
-        );
-        this.server
-          .to(roomNbr!.toString())
-          .emit('getGameData', this.gameService.gameDataMap.get(roomNbr!)!);
-        if (this.gameService.gameDataMap.get(roomNbr!)!.gameEnds === true) {
-          clearInterval(this.intervalRunGame);
-          this.gameService.gameDataBEMap
-            .get(roomNbr!)
-            ?.leftUserSocket.leave(roomNbr!.toString());
-          this.gameService.gameDataBEMap
-            .get(roomNbr!)
-            ?.rightUserSocket!.leave(roomNbr!.toString());
-          console.log(
-            'The game with id:  ',
-            roomNbr,
-            '   is over. The users with id:  ',
-            this.gameService.gameDataMap.get(roomNbr!)?.leftUserID,
-            '  and  ',
-            this.gameService.gameDataMap.get(roomNbr!)?.rightUserID,
-            'left.',
-          );
-          this.gameService.gameDataBEMap.delete(roomNbr!);
-          this.gameService.gameDataMap.delete(roomNbr!);
-        }
-      }, 1000 / 25);
+      this.gameService.startCountdown(roomNbr, this.server);
     }
   }
 
@@ -241,6 +235,64 @@ export class SocketGateway
     this.gameService.room = 0;
   }
 
+  @SubscribeMessage('sendGameRequest')
+  async sendGameRequest(client: Socket, data: number[]) {
+    const gameRequestSenderID: number = data[0];
+    const gameRequestRecipientID: number = data[1];
+    console.log(
+      'User with ID:  ',
+      gameRequestSenderID,
+      '  sent a game requested to User with ID:   ',
+      gameRequestRecipientID,
+    );
+
+    const user = await this.usersService.findOne(gameRequestRecipientID);
+    this.server.to(user.socketid).emit('gotGameRequest', gameRequestSenderID);
+
+    // const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
+    // gameRequestRecipientSocket?.emit("gotGameRequest", gameRequestSenderID);
+  }
+
+  @SubscribeMessage('gameRequestWithdrawn')
+  async gameRequestWithdrawn(client: Socket, data: number[]) {
+    const gameRequestSenderID: number = data[0];
+    const gameRequestRecipientID: number = data[1];
+    console.log(
+      'User with ID:  ',
+      gameRequestSenderID,
+      '  withdrawn the game requested to User with ID:   ',
+      gameRequestRecipientID,
+    );
+
+    const user = await this.usersService.findOne(gameRequestRecipientID);
+    this.server
+      .to(user.socketid)
+      .emit('withdrawnGameRequest', gameRequestSenderID);
+
+    // const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
+    // gameRequestRecipientSocket?.emit("withdrawnGameRequest", gameRequestSenderID);
+  }
+
+  @SubscribeMessage('gameRequestDecliend')
+  async gameRequestDecliend(client: Socket, data: number[]) {
+    const gameRequestSenderID: number = data[1];
+    const gameRequestRecipientID: number = data[0];
+    console.log(
+      'The GameRequest from User with ID:  ',
+      gameRequestSenderID,
+      '  was decliend by the User with ID:   ',
+      gameRequestRecipientID,
+    );
+
+    const user = await this.usersService.findOne(gameRequestSenderID);
+    this.server
+      .to(user.socketid)
+      .emit('gameRequestDecliend', gameRequestRecipientID);
+
+    // const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
+    // gameRequestSenderSocket?.emit("gameRequestDecliend", gameRequestRecipientID);
+  }
+
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
     this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
@@ -249,5 +301,24 @@ export class SocketGateway
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
     this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+  }
+
+  @SubscribeMessage('requestOngoingGames')
+  requestOngoingGames(client: Socket, data: number[]) {
+    this.gameService.sendOngoingGames(this.server);
+  }
+
+  @SubscribeMessage('userLeftGame')
+  userLeftGame(client: Socket, data: number[]) {
+    this.gameService.userLeftGame(this.server, data[0], data[1]);
+  }
+
+  @SubscribeMessage('watchGame')
+  watchGame(client: Socket, data: number) {
+    this.gameService.joinWatchGame(data, client);
+  }
+  @SubscribeMessage('StopWatchGame')
+  stopWatchGame(client: Socket, data: number) {
+    this.gameService.leaveWatchGame(data, client);
   }
 }

@@ -91,12 +91,30 @@ export class GameDisplayService {
 		img: new Image
 	}
 
+	countdown = {
+		x: 462,
+		y: 324,
+		width: 101,
+		height: 156,
+		img1: new Image,
+		img2: new Image,
+		img3: new Image
+	}
+
 	constructor(private userDataService: UserDataService) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
 		this.racketPositionStartY = 298;
 		this.racketPositionY = this.racketPositionStartY
 		this.userDataService.findSelf().then(user => this.activeUser = user);
+	}
+
+	restartService() {
+		this.goalTrigger = false;
+		this.gameEnds = false;
+		this.racketPositionY = this.racketPositionStartY
+		this.goalsRight.width = 101;
+		this.countdown.width = 101;
 	}
 
 	imageControl(data: gameData) {
@@ -127,12 +145,12 @@ export class GameDisplayService {
 				}
 				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + data.goalsLeft + '.png' ;
 			}
+			if (data.goalsLeft >= 3 || data.goalsRight >= 3)
+				this.gameEnds = true;
 			setTimeout(() => {
 				this.racketPositionY = this.racketPositionStartY;
 				this.goalTrigger = false;
-				if (data.goalsLeft >= 5 || data.goalsRight >= 5)
-					this.gameEnds = true;
-			}, 3000);
+			}, 2900);
 		}
 	}
 
@@ -142,7 +160,10 @@ export class GameDisplayService {
 
 	loadImages() {
 		this.background.img.src = this.background.src;
-
+		this.countdown.img1.src = '../../../../assets/gameObjects/nbr1.png';
+		this.countdown.img2.src = '../../../../assets/gameObjects/nbr2.png';
+		this.countdown.img3.src = '../../../../assets/gameObjects/nbr3.png';
+		
 		this.ball.img.src = this.ball.src;
 		this.racketLeft.img.src = this.racketLeft.src;
 		this.racketRight.img.src = this.racketRight.src;

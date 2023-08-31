@@ -51,8 +51,8 @@ export class ChatDropdownComponent {
 	}
 
 	sendGameRequest() {
-		console.log('send Game Request to ' + this.selectedUser.username);
-		//TO-DO: Function to send game request
+		this.chatComponent.popUpSendGameRequest(this.selectedUser);
+		console.log('send Game Request to ' + this.selectedUser);
 	}
 
 	sendFriendRequest() {
@@ -86,4 +86,6 @@ export class ChatDropdownComponent {
 			otherid: this.selectedUser.id,
 		})
 	}
+
+
 }

@@ -6,23 +6,37 @@
 		<h1>
 			- ONGOING GAMES -
 		</h1>
-		<div *ngFor="let game of activeMatches" class="box_row home_game_box">
-			<img class="profile_picture" src="{{ game.player1_profile_pic }}">
+		<div *ngFor="let onGoingGamesData of onGoingGames" class="box_row home_game_box">
+			<!-- <img class="profile_picture" src="{{ game.player1_profile_pic }}"> -->
 			<h4>
-				{{ game.player1_name }}
-				<br>
-				{{ game.player1_score}}
+				{{ onGoingGamesData.leftUserName }}
+				<br> <br>
+				{{ onGoingGamesData.goalsLeft}}
 			</h4>
 			<h4>vs</h4>
 			<h4>
-				{{ game.player2_name }}
-				<br>
-				{{ game.player2_score}}
+				{{ onGoingGamesData.rightUserName }}
+				<br> <br>
+				{{ onGoingGamesData.goalsRight }}
 			</h4>
-			<img class="profile_picture" src="{{ game.player2_profile_pic }}">
+			<br> <br> <br>
+			<button class="home_medium_button" (click)="watchThisMatch(onGoingGamesData.roomNbr)">Watch this match</button>
+			<!-- <img class="profile_picture" src="{{ game.player2_profile_pic }}"> -->
 		</div>
 	</div>
 	<div class="home_flex_rows">
 		Placeholder
+	</div>
+</div>
+
+<div class="popup" id="popup-got-game-request">
+	<div class="popup-content">
+		<h2>You got a game-request from</h2>
+		<h2>{{gameRequestSender?.username}}</h2>
+		<h4>Do you want to play ? </h4>	
+		<div class="popup-buttons">
+			<button class="button_medium button_reverse" (click)="closePopUpYesToGameRequest()">YES</button>
+			<button class="button_medium button_reverse" (click)="closePopUpNoToGameRequest()">NO</button>			
+		</div>
 	</div>
 </div>

@@ -31,6 +31,15 @@ type Channel {
   bannedUsers: [User!]
 }
 
+type Match {
+  gameID: Int!
+  firstPlayer: User!
+  secondPlayer: User!
+  goalsFirstPlayer: Int!
+  goalsSecondPlayer: Int!
+  timestamp: DateTime!
+}
+
 type User {
   id: Int!
   intra: String!
@@ -61,21 +70,14 @@ type User {
   incomingFriendRequests: [User!]
   blockedUsers: [User!]
   blockedFromOther: [User!]
+  matchesAsFirstPlayer: [Match!]
+  matchesAsSecondPlayer: [Match!]
 }
 
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
-
-type Match {
-  gameID: Int!
-  firstPlayer: String!
-  secondPlayer: String!
-  goalsFirstPlayer: Int!
-  goalsSecondPlayer: Int!
-  date: DateTime!
-}
 
 type Query {
   allUsers: [User!]!
