@@ -1,79 +1,48 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Game, GameHistory } from '../../models/game';
-import { GAMES } from '../../mock-data/mock_games';
+import { Match } from '../../models/game';
+import graphQLService from '../graphQL/GraphQLService';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameDataService {
+  
+  constructor() {}
 
-  games = GAMES;
-
-  constructor() { }
-
-  getActiveMatches() {
-    const activeMatches: Array<Game> = this.games.filter(game => game.game_running === true);
-    return(activeMatches);
-  }
-
-  getMatchesOfUser(id: number | undefined) {
-    if (typeof id === "undefined")
-      return;
-    const matches: Array<Game> = this.games.filter(game => game.player1_id === id || game.player2_id === id);
-    const history: Array<GameHistory> = [];
-    
-    for (let entry of matches)
-    {
-      let newentry: GameHistory;
-
-      if (entry.game_running === true)
-        continue;
-      if (entry.player1_id === id)
-      {
-        let result: string;
-        let xp: number;
-        if (entry.player1_score > entry.player2_score)
-          result = 'win';
-        else if (entry.player1_score === entry.player2_score)
-          result = 'draw';
-        else
-          result = 'loss'
-        newentry = { 
-          game_id: entry.id,
-          player_score: entry.player1_score,
-          other_score: entry.player2_score,
-          other_id: entry.player2_id,
-          other_name: entry.player2_name,
-          other_img: entry.player2_profile_pic,
-          result: result,
-          xp: 0
-        };
-        history.push(newentry);
+  async getMatchesOfUser(id: number | undefined): Promise<Match[]> {
+    const response = await graphQLService.query(
+      `
+      query getMatchesOfUser($id: Int!){
+        findMatchesByPlayerId (id: $id) {
+          gameID
+          firstPlayer {
+            id
+            username
+            picture
+          }
+          secondPlayer {
+            id
+            username
+            picture
+          }
+          goalsFirstPlayer
+          goalsSecondPlayer
+          xpFirstPlayer
+          xpSecondPlayer
+          timestamp
+        }
       }
-      else
-      {
-        let result: string;
-        let xp: number;
-        if (entry.player2_score > entry.player1_score)
-          result = 'win';
-        else if (entry.player2_score === entry.player1_score)
-          result = 'draw';
-        else
-          result = 'loss'
-        newentry = {
-          game_id: entry.id,
-          player_score: entry.player2_score,
-          other_score: entry.player1_score,
-          other_id: entry.player1_id,
-          other_name: entry.player1_name,
-          other_img: entry.player1_profile_pic,
-          result: result,
-          xp: 0
-        };
-        history.push(newentry);
+      `,
+      { id },
+      { fetchPolicy: 'network-only' },
+      );
+      if (typeof response === "undefined")
+        throw new Error('Empty match data');
+      const matches: Match[] = response.findMatchesByPlayerId;
+      const plainMatches = matches.map(match => ({...match}));
+      for (let match of plainMatches) {
+        match.timestamp = new Date(match.timestamp);
       }
-    }
-    return(history);
+      return plainMatches;
   }
 }

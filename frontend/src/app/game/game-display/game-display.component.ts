@@ -117,7 +117,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	}
 
 	sendRacketPosition(data: gameData) {
-		console.log("The roomNbr is :   ", data.roomNbr);
 		if (this.gameDisplayService.activeUser?.id === data.leftUserID) {
 			this.socketService.emit2('sendRacketPositionLeft', this.gameDisplayService.racketPositionY, data.roomNbr);
 		} else if (this.gameDisplayService.activeUser?.id === data.rightUserID) {

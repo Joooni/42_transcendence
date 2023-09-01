@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -8,6 +8,7 @@ import { Match } from './entitites/match.entity';
 import { MatchService } from './match/match.service';
 import { gameData, gameDataBE, onGoingGamesData } from './match/GameData';
 import { UsersService } from 'src/users/users.service';
+import { matches } from 'class-validator';
 
 @Injectable()
 export class GameService {
@@ -235,7 +236,16 @@ export class GameService {
       match.secondPlayer = await this.usersService.findOne(secondPlayer);
       match.goalsFirstPlayer = goalsFirstPlayer;
       match.goalsSecondPlayer = goalsSecondPlayer;
-      this.matchRepository.insert(match);
+      const obj = await this.usersService.calcXP(
+        match.firstPlayer.id,
+        match.goalsFirstPlayer,
+        match.secondPlayer.id,
+        match.goalsSecondPlayer,
+      );
+      match.xpFirstPlayer = obj.player1xp;
+      match.xpSecondPlayer = obj.player2xp;
+      await this.matchRepository.insert(match);
+      await this.usersService.updateRanksByXP();
     } catch (error) {
       console.log('Error while pushing match in Database', error);
     }
@@ -252,5 +262,17 @@ export class GameService {
 
   findMatchById(identifier: number): Promise<Match> {
     return this.matchRepository.findOneByOrFail({ gameID: identifier });
+  }
+
+  async findMatchesByPlayerId(identifier: number): Promise<Match[]> {
+    const matches = await this.matchRepository
+      .createQueryBuilder('match')
+      .where('match.firstPlayer = :firstid', { firstid: identifier })
+      .orWhere('match.secondPlayer = :secondid', { secondid: identifier })
+      .leftJoinAndSelect('match.firstPlayer', 'firstPlayer')
+      .leftJoinAndSelect('match.secondPlayer', 'secondPlayer')
+      .orderBy('match.timestamp', 'DESC')
+      .getMany();
+    return matches;
   }
 }

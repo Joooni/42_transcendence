@@ -51,9 +51,7 @@ export class UsersResolver {
 
   //to-do delete this later
   @Query(() => User, { name: 'updateRank' })
-  async updateRanksByXP(
-    @CurrentJwtPayload() jwtPayload: JwtPayload,
-  ) {
+  async updateRanksByXP() {
     console.log('updateRanksByXP');
     return await this.usersService.updateRanksByXP();
   }
@@ -100,5 +98,4 @@ export class UsersResolver {
     await this.usersService.updateAchievements(id, updateAchievement);
     return this.usersService.findOne(id);
   }
-
 }

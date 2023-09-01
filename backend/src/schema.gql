@@ -37,6 +37,8 @@ type Match {
   secondPlayer: User!
   goalsFirstPlayer: Int!
   goalsSecondPlayer: Int!
+  xpFirstPlayer: Int!
+  xpSecondPlayer: Int!
   timestamp: DateTime!
 }
 
@@ -96,6 +98,7 @@ type Query {
   visibleChannelsWithoutUser(id: Int): [Channel!]!
   matches: [Match!]!
   match(id: Int): Match!
+  findMatchesByPlayerId(id: Int): [Match!]!
 }
 
 type Mutation {

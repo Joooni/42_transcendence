@@ -54,18 +54,15 @@
 	</div>
 	<h1> - GAME HISTORY - </h1>
 	<div class="profile_flex_column">
-		
-		<div *ngFor="let history of gameHistory" [class.red]= "history.result === 'loss'" class="box_row profile_box_games">
-			<h4>{{ history.result }}</h4>
-			<h4>{{ history.player_score }} : {{ history.other_score }}</h4>
+		<div *ngFor="let history of gameHistory" [class.red]= " getOwnScore(history) < getOtherScore(history) " class="box_row profile_box_games">
+			<h4>{{ getOwnScore(history) }} : {{ getOtherScore(history) }}</h4>
 			<div class="profile_box_opponent">
-				<img class="profile_picture" src= "{{ history.other_img }}">
-				<h4>{{ history.other_name }}</h4>
+				<img class="profile_picture" src= "{{ getOtherPlayer(history).picture }}">
+				<h4>{{ getOtherPlayer(history).username }}</h4>
 			</div>
-			<h4 class="center">03.05.2023<br class="br_top_gap">17:47h</h4>
-			<h4>+{{ history.xp }}XP</h4>
+			<h4 class="center">{{ history.timestamp.toLocaleString().split(',')[0] }}<br class="br_top_gap">{{ history.timestamp.toLocaleString().split(',')[1] }}</h4>
+			<h4>+ {{ getOwnXP(history) }}XP</h4>
 		</div>
-
 	</div>
 </div>
 <div *ngIf="!hasSelectedUser">

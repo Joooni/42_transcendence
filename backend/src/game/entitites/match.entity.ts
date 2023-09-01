@@ -34,6 +34,14 @@ export class Match {
   @Column()
   goalsSecondPlayer: number;
 
+  @Field(() => Int)
+  @Column({ default: 0 })
+  xpFirstPlayer: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  xpSecondPlayer: number;
+
   @Field()
   @CreateDateColumn()
   timestamp: Date;
