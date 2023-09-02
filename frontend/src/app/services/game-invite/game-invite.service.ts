@@ -21,12 +21,9 @@ export class GameInviteService {
 		private socket: SocketService,
 		private router: Router,
 		private userService: UserDataService
-	) {
-		console.log('constructor');
-		this.initGameInviteService();
-	}
+	) {}
 
-	async initGameInviteService() {
+	initGameInviteService() {
 		console.log('initGameInviteService()');
 		this.socket.listen('gotGameRequest').subscribe(data => {
 			console.log('game request');
