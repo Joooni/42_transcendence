@@ -30,16 +30,20 @@ export class UserDataService {
     });
   }
 
-  async login(code: string, bypassId?: string): Promise<void> {
+  async login(code: string, bypassId?: string): Promise<boolean> {
     try {
       const { require2FAVerify } = await this.fetchJwt(code, bypassId);
       if (require2FAVerify) {
-				// await this.verify2FA(code);
-        return;
+        return new Promise((resolve) => {
+					resolve(false);
+				});
       }
       const user: User = await this.findSelf();
       this.updateStatus('online');
       this.router.navigate(['/home']);
+			return new Promise((resolve) => {
+				resolve(true);
+			})
     } catch (error: any) {
       await this.logout();
       if (typeof error.response === 'undefined') throw error;

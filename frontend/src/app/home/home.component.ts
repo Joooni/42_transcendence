@@ -14,18 +14,15 @@ import { onGoingGamesData } from '../game/game-display/GameData';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
 
 	games = GAMES;
 	activeMatches?: Array<Game>;
 	activeUser?: User;
-	senderUser?: User;
-	gameRequestSender?: User;
 	onGoingGames?: Array<onGoingGamesData>;
 	intervalGetOngoingGames: any;
 	
 	constructor(
-		private gameservice: GameDataService,
 		private socketService: SocketService,
 		private router: Router,
 		private userService: UserDataService,
@@ -38,9 +35,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 		this.connectSocket();
 
-		this.socketService.listen('gotGameRequest').subscribe((data) => {
-			this.gotGameRequest(data as number)
-		})
 		this.socketService.listen('sendOngoingGames').subscribe((data) => {
 			this.onGoingGames = data as Array<onGoingGamesData> ;
 		})
@@ -57,10 +51,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	ngOnDestroy() {
-		this.socketService.stopListen('gotGameRequest');
-	}
-
 	sendMessage(eventName: string, data: string) {
 		this.socketService.emit(eventName, data);
 	}
@@ -74,36 +64,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	watchThisMatch(roomNbr: number) {
 		this.socketService.emit('watchGame', roomNbr);
 		this.router.navigate(['/gameWatch']);
-	}
-
-
-	async gotGameRequest(senderID: number) {
-		this.gameRequestSender = await this.userService.findUserById(senderID);
-		const popup = document.getElementById('popup-got-game-request');
-		popup?.classList.toggle('show-popup');
-		this.socketService.listen('withdrawnGameRequest').subscribe((data) => {
-			const popup = document.getElementById('popup-got-game-request');
-			popup?.classList.toggle('show-popup');
-			this.gameRequestSender = undefined;
-			this.socketService.stopListen('withdrawnGameRequest');
-		})
-	}
-	
-	closePopUpYesToGameRequest() {		
-		this.socketService.emit2('startGameRequest', this.activeUser?.id, this.gameRequestSender?.id)
-		this.socketService.stopListen('withdrawnGameRequest');
-		const popup = document.getElementById('popup-got-game-request');
-		popup?.classList.toggle('show-popup');
-		this.gameRequestSender = undefined;
-		this.router.navigate(['/game']);
-	}
-
-	closePopUpNoToGameRequest() {
-		this.socketService.stopListen('withdrawnGameRequest');
-		this.socketService.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
-		const popup = document.getElementById('popup-got-game-request');
-		popup?.classList.toggle('show-popup');
-		this.gameRequestSender = undefined;
 	}
 
 }
