@@ -92,6 +92,8 @@ export class UsersService {
         )
         .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
         .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
+        .leftJoinAndSelect('user.matchesAsFirstPlayer', 'matchesAsFirstPlayer')
+        .leftJoinAndSelect('user.matchesAsSecondPlayer', 'matchesAsSecondPlayer')
         .getOneOrFail();
     } else if (typeof identifier === 'string') {
       return await this.userRepository
