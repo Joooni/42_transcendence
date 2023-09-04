@@ -36,13 +36,12 @@ export class LoginComponent {
           },
           queryParamsHandling: 'merge'
         });
-				this.userDataService.login(code, bypassId).then(() => {
-					//popup öffnen
-					const popup = document.getElementById("popup-2FA-login");
-					popup?.classList.toggle('show-popup');
-					//auf verify Zeile 40-42 user-data-service.ts wiederholen
+				this.userDataService.login(code, bypassId).then((result) => {
+					if (result === false) {
+						const popup = document.getElementById("popup-2FA-login");
+						popup?.classList.toggle('show-popup');
+					}
 				});
-
       } else {
         //error????
 				return;
