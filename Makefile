@@ -35,11 +35,11 @@ ps:
 	docker compose -f docker-compose.yaml ps
 
 clean:
-	docker volume rm $(docker volume ls -q)
+	rm -rf ./backend/uploads/
+	docker volume rm $(FOLDER_NAME)_postgres-data
 
-fclean: down
+fclean: down clean
 	rm .env
-	rm -rf backend/uploads/
 	docker system prune -af --volumes
 
 re: fclean up
