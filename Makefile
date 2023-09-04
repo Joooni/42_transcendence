@@ -39,6 +39,7 @@ clean:
 
 fclean: down
 	rm .env
+	rm -rf backend/uploads/
 	docker system prune -af --volumes
 
 re: fclean up

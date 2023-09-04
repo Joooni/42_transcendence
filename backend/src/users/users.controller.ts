@@ -44,7 +44,7 @@ export class UsersController {
 		@UploadedFile(
 		new ParseFilePipe({
 			validators: [
-				new FileTypeValidator({ fileType: '(jpeg|jpg|png)$'}),
+				new FileTypeValidator({ fileType: '(jpeg|jpg|png|gif)$'}),
 				// we can validate file size here too - do we want that?
 			],
 		}),
