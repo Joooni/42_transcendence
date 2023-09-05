@@ -115,11 +115,6 @@ export class ChatChannelComponent {
 	async leaveChannel() {
 		try {
 			const dbChannel = await this.channelDataService.getChannel(this.chatComponent.selectedChannel!.id);
-			//TBD: i would find it better if he could leave and the channel would be deleted
-			// if (dbChannel.owner.id === this.activeUser?.id) {
-			// 	console.log("You can't leave, because you are the owner");
-			// 	return;
-			// }
 			this.socket.emit('leaveChannel', {
 				channelid: this.chatComponent.selectedChannel!.id,
 				userid: this.activeUser?.id,

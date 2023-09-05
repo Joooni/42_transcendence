@@ -130,6 +130,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 		const findChannel = await this.channelDataService.getChannel(this.selectedChannel.id);
 		if (!findChannel)
 			return;
+		if (findChannel.users.find(user => user.id === this.activeUser?.id) === undefined) {
+			this.selectedChannel = undefined;
+			return;
+		}
 		this.selectedChannel = findChannel;
 	}
 

@@ -4,6 +4,7 @@ import { User } from "src/app/models/user";
 import { ChatComponent } from "../../chat.component";
 import { UserDataService } from "src/app/services/user-data/user-data.service";
 import { ChannelDataService } from "src/app/services/channel-data/channel-data.service";
+import { SocketService } from "src/app/services/socket/socket.service";
 
 @Component({
 	selector: 'app-chat-channel-dropdown',
@@ -22,7 +23,8 @@ export class ChatChannelDropdownComponent {
 	constructor(
 		private chatComponent: ChatComponent,
 		private userDataService: UserDataService,
-		private channelService: ChannelDataService
+		private channelService: ChannelDataService,
+		private socket: SocketService,
 	) {}
 
 	ngOnInit() {
@@ -82,12 +84,30 @@ export class ChatChannelDropdownComponent {
 
 	setUserAsAdmin() {
 		console.log('setUserAsAdmin() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:SetUserAsAdmin', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id 
+		});
+		// this.updateUserAndChannel();
 	}
 
 	removeUserAsAdmin() {
 		console.log('removeUserAsAdmin() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:RemoveUserAsAdmin', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id 
+		});
+		// this.updateUserAndChannel();
 	}
 
 	muteUser() {
@@ -107,12 +127,30 @@ export class ChatChannelDropdownComponent {
 
 	banUser() {
 		console.log('banUser() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:BanUser', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id 
+		});
+		// this.updateUserAndChannel();
 	}
 
 	unbanUser() {
 		console.log('unbanUser() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:UnbanUser', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id 
+		});
+		// this.updateUserAndChannel();
 	}
 
 	//so that the available options in the dropdown update

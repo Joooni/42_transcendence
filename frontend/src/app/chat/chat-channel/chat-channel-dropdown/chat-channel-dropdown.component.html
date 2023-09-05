@@ -31,7 +31,7 @@
 					<img class="icon" src="../../../assets/kick_icon_yellow.png">
 					<div class="action-item">Kick</div>
 				</a>
-				<a *ngIf="canBeBanned()" class="dropdown-content-item" (class)="banUser()">
+				<a *ngIf="canBeBanned()" class="dropdown-content-item" (click)="banUser()">
 					<img class="icon" src="../../../assets/ban_icon_yellow.png">
 					<div class="action-item">Ban</div>
 				</a>

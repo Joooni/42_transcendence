@@ -99,7 +99,6 @@ export class SocketGateway
   async leaveChannel(client: Socket, obj: any) {
     await this.channelsService.removeUserFromChannel(
       this.server,
-      client,
       obj.channelid,
       obj.userid,
     );
@@ -173,6 +172,29 @@ export class SocketGateway
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, obj: any) {
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('channel:SetUserAsAdmin')
+  async setAsAdmin(client: Socket, obj: any) {
+    await this.channelsService.setUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('channel:RemoveUserAsAdmin')
+  async RemoveUserAsAdmin(client: Socket, obj: any) {
+    await this.channelsService.removeUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('channel:BanUser')
+  async banUser(client: Socket, obj: any) {
+    await this.channelsService.banUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+  }
+
+  @SubscribeMessage('channel:UnbanUser')
+  async unbanUser(client: Socket, obj: any) {
+    await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
   }
 
   @SubscribeMessage('startGameRequest')

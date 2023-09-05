@@ -50,6 +50,25 @@ class GraphQLService {
             },
           },
         },
+        Channel: {
+          fields: {
+            bannedUsers: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            users: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            admins: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+          },
+        },
       },
     });
     this.apolloClient = new ApolloClient({
