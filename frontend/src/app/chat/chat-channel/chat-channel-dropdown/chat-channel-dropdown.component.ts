@@ -122,7 +122,16 @@ export class ChatChannelDropdownComponent {
 
 	kickUser() {
 		console.log('kickUser() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:KickUser', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id 
+		});
+		// this.updateUserAndChannel();
 	}
 
 	banUser() {

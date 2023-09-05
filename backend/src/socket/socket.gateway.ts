@@ -191,6 +191,11 @@ export class SocketGateway
     await this.channelsService.banUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
   }
 
+  @SubscribeMessage('channel:KickUser')
+  async kickUser(client: Socket, obj: any) {
+    await this.channelsService.kickUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+  }
+
   @SubscribeMessage('channel:UnbanUser')
   async unbanUser(client: Socket, obj: any) {
     await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
