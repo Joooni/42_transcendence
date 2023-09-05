@@ -29,6 +29,11 @@ export class UsersResolver {
     return this.usersService.findAllExceptMyself(jwtPayload.id);
   }
 
+  @Query(() => [User], { name: 'allUsersSortedRanks' })
+  findAllSortedRanks() {
+    return this.usersService.findAllSortedRanks();
+  }
+
   @Query(() => User, { name: 'userById' })
   findOneById(
     @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
@@ -42,6 +47,13 @@ export class UsersResolver {
   @Query(() => User, { name: 'userByName' })
   findOneByUsername(@Args('username') username: string) {
     return this.usersService.findOne(username);
+  }
+
+  //to-do delete this later
+  @Query(() => User, { name: 'updateRank' })
+  async updateRanksByXP() {
+    console.log('updateRanksByXP');
+    return await this.usersService.updateRanksByXP();
   }
 
   @Mutation(() => User)

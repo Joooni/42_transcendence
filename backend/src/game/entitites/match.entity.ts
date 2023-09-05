@@ -16,14 +16,14 @@ export class Match {
   @PrimaryGeneratedColumn({ type: 'int' })
   gameID: number;
 
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.matchesAsFirstPlayer)
   @JoinColumn()
-  @Field(() => User)
   firstPlayer: User;
 
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.matchesAsSecondPlayer)
   @JoinColumn()
-  @Field(() => User)
   secondPlayer: User;
 
   @Field(() => Int)
@@ -33,6 +33,14 @@ export class Match {
   @Field(() => Int)
   @Column()
   goalsSecondPlayer: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  xpFirstPlayer: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  xpSecondPlayer: number;
 
   @Field()
   @CreateDateColumn()

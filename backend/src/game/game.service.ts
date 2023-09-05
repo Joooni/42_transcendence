@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -8,6 +8,8 @@ import { Match } from './entitites/match.entity';
 import { MatchService } from './match/match.service';
 import { gameData, gameDataBE, onGoingGamesData } from './match/GameData';
 import { UsersService } from 'src/users/users.service';
+import { matches } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class GameService {
@@ -20,6 +22,8 @@ export class GameService {
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private matchService: MatchService,
@@ -235,7 +239,26 @@ export class GameService {
       match.secondPlayer = await this.usersService.findOne(secondPlayer);
       match.goalsFirstPlayer = goalsFirstPlayer;
       match.goalsSecondPlayer = goalsSecondPlayer;
-      this.matchRepository.insert(match);
+      const obj = await this.usersService.calcXP(
+        match.firstPlayer.id,
+        match.goalsFirstPlayer,
+        match.secondPlayer.id,
+        match.goalsSecondPlayer,
+      );
+      match.xpFirstPlayer = obj.player1xp;
+      match.xpSecondPlayer = obj.player2xp;
+      if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
+        match.firstPlayer.wins += 1;
+        match.secondPlayer.losses += 1;
+      }
+      else {
+        match.secondPlayer.wins += 1;
+        match.firstPlayer.losses += 1;
+      }
+      await this.matchRepository.insert(match);
+      await this.userRepository.save(match.firstPlayer);
+      await this.userRepository.save(match.secondPlayer);
+      await this.usersService.updateRanksByXP();
     } catch (error) {
       console.log('Error while pushing match in Database', error);
     }
@@ -252,5 +275,17 @@ export class GameService {
 
   findMatchById(identifier: number): Promise<Match> {
     return this.matchRepository.findOneByOrFail({ gameID: identifier });
+  }
+
+  async findMatchesByPlayerId(identifier: number): Promise<Match[]> {
+    const matches = await this.matchRepository
+      .createQueryBuilder('match')
+      .where('match.firstPlayer = :firstid', { firstid: identifier })
+      .orWhere('match.secondPlayer = :secondid', { secondid: identifier })
+      .leftJoinAndSelect('match.firstPlayer', 'firstPlayer')
+      .leftJoinAndSelect('match.secondPlayer', 'secondPlayer')
+      .orderBy('match.timestamp', 'DESC')
+      .getMany();
+    return matches;
   }
 }

@@ -37,6 +37,8 @@ type Match {
   secondPlayer: User!
   goalsFirstPlayer: Int!
   goalsSecondPlayer: Int!
+  xpFirstPlayer: Int!
+  xpSecondPlayer: Int!
   timestamp: DateTime!
 }
 
@@ -55,6 +57,7 @@ type User {
   losses: Float!
   socketid: String!
   xp: Float!
+  rank: Float!
   map: Float!
   achievements: [Int!]!
   selectedMap: Float!
@@ -82,8 +85,10 @@ scalar Timestamp
 type Query {
   allUsers: [User!]!
   allUsersExceptMyself: [User!]!
+  allUsersSortedRanks: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
+  updateRank: User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   messagesChannel(id: String): [Message!]!
@@ -93,6 +98,7 @@ type Query {
   visibleChannelsWithoutUser(id: Int): [Channel!]!
   matches: [Match!]!
   match(id: Int): Match!
+  findMatchesByPlayerId(id: Int): [Match!]!
 }
 
 type Mutation {

@@ -9,10 +9,12 @@
 
 .profile_flex_row {
 	display: flex;
-	flex-direction: row;
+	flex-wrap: wrap;
+	/* flex-direction: row; */
 	justify-content: space-between;
 	margin: 2vmin 2vmin;
 	column-gap: 5vmin;
+	row-gap: 5vmin;
 
 	border-style: solid;
 	border-width: 2px;
@@ -20,6 +22,7 @@
 }
 
 .profile_box_row {
+	flex: 45%;
 	justify-content: space-between;
 	align-items: flex-start;
 	min-height: auto;
@@ -28,6 +31,7 @@
 }
 
 .profile_box_column {
+	flex: 37%;
 	justify-content: center;
 	align-items: center;
 	min-height: auto;

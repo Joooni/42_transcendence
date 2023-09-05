@@ -28,4 +28,14 @@ export class GameResolver {
       return this.gameService.findMatchById(jwtPayload.id);
     return this.gameService.findMatchById(id);
   }
+
+  @Query(() => [Match], { name: 'findMatchesByPlayerId' })
+  async findMatchesByPlayerId(
+    @Args('id', { type: () => Int, nullable: true }) id: number | undefined,
+    @CurrentJwtPayload() jwtPayload: JwtPayload,
+  ) {
+    if (typeof id === 'undefined')
+      return this.gameService.findMatchesByPlayerId(jwtPayload.id);
+    return this.gameService.findMatchesByPlayerId(id);
+  }
 }
