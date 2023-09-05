@@ -9,6 +9,7 @@ import { MatchService } from './match/match.service';
 import { gameData, gameDataBE, onGoingGamesData } from './match/GameData';
 import { UsersService } from 'src/users/users.service';
 import { matches } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class GameService {
@@ -21,6 +22,8 @@ export class GameService {
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private matchService: MatchService,
@@ -244,7 +247,17 @@ export class GameService {
       );
       match.xpFirstPlayer = obj.player1xp;
       match.xpSecondPlayer = obj.player2xp;
+      if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
+        match.firstPlayer.wins += 1;
+        match.secondPlayer.losses += 1;
+      }
+      else {
+        match.secondPlayer.wins += 1;
+        match.firstPlayer.losses += 1;
+      }
       await this.matchRepository.insert(match);
+      await this.userRepository.save(match.firstPlayer);
+      await this.userRepository.save(match.secondPlayer);
       await this.usersService.updateRanksByXP();
     } catch (error) {
       console.log('Error while pushing match in Database', error);
