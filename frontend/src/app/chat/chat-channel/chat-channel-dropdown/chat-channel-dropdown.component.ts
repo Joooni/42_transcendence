@@ -112,7 +112,17 @@ export class ChatChannelDropdownComponent {
 
 	muteUser() {
 		console.log('muteUser() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:MuteUser', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id,
+			time: 10,
+		});
+		// this.updateUserAndChannel();
 	}
 
 	unmuteUser() {

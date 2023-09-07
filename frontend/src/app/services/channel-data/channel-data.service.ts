@@ -42,8 +42,7 @@ export class ChannelDataService {
 						}
 						mutedUsers {
 							id
-							username
-							status
+							mutedUntil
 						}
 						bannedUsers {
 							id

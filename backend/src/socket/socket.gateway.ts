@@ -12,6 +12,7 @@ import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
+import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
 
 @WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
@@ -24,6 +25,7 @@ export class SocketGateway
     private gameService: GameService,
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
+    private readonly channelMuteService: ChannelMuteService,
   ) {}
 
   @WebSocketServer()
@@ -191,15 +193,20 @@ export class SocketGateway
     await this.channelsService.banUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
   }
 
+  @SubscribeMessage('channel:UnbanUser')
+  async unbanUser(client: Socket, obj: any) {
+    await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
   @SubscribeMessage('channel:KickUser')
   async kickUser(client: Socket, obj: any) {
     await this.channelsService.kickUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
   }
 
-  @SubscribeMessage('channel:UnbanUser')
-  async unbanUser(client: Socket, obj: any) {
-    await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
-    this.server.to(obj.channelId).emit('updateChannel', {});
+  @SubscribeMessage('channel:MuteUser')
+  async muteUser(client: Socket, obj: any) {
+    await this.channelMuteService.muteUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
   }
 
   @SubscribeMessage('startGameRequest')

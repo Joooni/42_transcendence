@@ -4,7 +4,9 @@ import { Server, Socket } from 'socket.io';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+import { ChannelMuteService } from './channel-mute/channel-mute.service';
 import { Channel } from './entities/channel.entity';
+import { ChannelMute } from './entities/channelMute.entity';
 
 @Injectable()
 export class ChannelsService {
@@ -13,6 +15,7 @@ export class ChannelsService {
     private readonly channelRepository: Repository<Channel>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly userService: UsersService,
+    // private readonly channelMuteService: ChannelMuteService,
   ) {}
 
   async findAll(): Promise<Channel[]> {

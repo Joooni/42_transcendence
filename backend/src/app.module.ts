@@ -22,6 +22,7 @@ import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SocketController } from './socket/socket.controller';
+import { ChannelMute } from './channels/entities/channelMute.entity';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { SocketController } from './socket/socket.controller';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Message, Match, Channel],
+        entities: [User, Message, Match, Channel, ChannelMute],
         synchronize: true,
       }),
     }),

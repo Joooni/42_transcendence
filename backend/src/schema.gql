@@ -16,6 +16,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ChannelMute {
+  id: Float!
+  channel: Channel!
+  user: User!
+  mutedUntil: DateTime!
+}
+
 type Channel {
   id: String!
   owner: User!
@@ -26,7 +33,7 @@ type Channel {
   messages: [Message!]
   users: [User!]
   admins: [User!]
-  mutedUsers: [User!]
+  mutedUsers: [ChannelMute!]
   invitedUsers: [User!]
   bannedUsers: [User!]
 }
@@ -65,7 +72,7 @@ type User {
   ownedChannels: Channel
   channelList: [Channel!]
   adminInChannel: [Channel!]
-  mutedInChannel: [Channel!]
+  mutedInChannel: [ChannelMute!]
   invitedInChannel: [Channel!]
   bannedInChannel: [Channel!]
   friends: [User!]
@@ -96,6 +103,7 @@ type Query {
   channel(id: String): Channel!
   channelByName(name: String): Channel!
   visibleChannelsWithoutUser(id: Int): [Channel!]!
+  channelMutes: [ChannelMute!]!
   matches: [Match!]!
   match(id: Int): Match!
   findMatchesByPlayerId(id: Int): [Match!]!

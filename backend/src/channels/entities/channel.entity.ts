@@ -15,6 +15,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ChannelMute } from './channelMute.entity';
 
 @ObjectType()
 @Entity()
@@ -89,14 +90,9 @@ export class Channel {
   @JoinTable()
   admins: User[];
 
-  @Field(() => [User], { nullable: true })
-  @ManyToMany(() => User, (user) => user.mutedInChannel, {
-    eager: true,
-    cascade: ['insert', 'update', 'remove'],
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  mutedUsers: User[];
+  @Field(() => [ChannelMute], { nullable: true })
+  @OneToMany(() => ChannelMute, (channelMute) => channelMute.channel)
+  mutedUsers: ChannelMute[];
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.invitedInChannel, {

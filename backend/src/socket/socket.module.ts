@@ -14,10 +14,12 @@ import { ChannelsService } from 'src/channels/channels.service';
 import { Channel } from 'src/channels/entities/channel.entity';
 import { JwtService } from '@nestjs/jwt';
 import { SocketController } from './socket.controller';
+import { ChannelMute } from 'src/channels/entities/channelMute.entity';
+import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message, User, Channel]),
+    TypeOrmModule.forFeature([Message, User, Channel, ChannelMute]),
     HttpModule,
     MatchModule,
     GameModule,
@@ -28,6 +30,7 @@ import { SocketController } from './socket.controller';
     MatchService,
     MessagesService,
     ChannelsService,
+    ChannelMuteService,
     JwtService,
   ],
   exports: [SocketGateway],

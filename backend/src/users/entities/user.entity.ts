@@ -1,5 +1,6 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
 import { Channel } from 'src/channels/entities/channel.entity';
+import { ChannelMute } from 'src/channels/entities/channelMute.entity';
 import { Match } from 'src/game/entitites/match.entity';
 import {
   Entity,
@@ -110,9 +111,9 @@ export class User {
   @ManyToMany(() => Channel, (channel) => channel.admins)
   adminInChannel: Channel[];
 
-  @Field(() => [Channel], { nullable: true })
-  @ManyToMany(() => Channel, (channel) => channel.mutedUsers)
-  mutedInChannel: Channel[];
+  @Field(() => [ChannelMute], { nullable: true })
+  @OneToMany(() => ChannelMute, (channelMute) => channelMute.user)
+  mutedInChannel: ChannelMute[];
 
   @Field(() => [Channel], { nullable: true })
   @ManyToMany(() => Channel, (channel) => channel.invitedUsers)
