@@ -49,7 +49,7 @@ export class ChatChannelDropdownComponent {
 	canBeMuted(): boolean {
 		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
-		if (this.channel.mutedUsers.some(user => user.id === this.selectedUser.id))
+		if (this.channel.mutedUsers.some(mutedUser => mutedUser.user.id === this.selectedUser.id))
 			return false;
 		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
@@ -57,7 +57,7 @@ export class ChatChannelDropdownComponent {
 	}
 
 	canBeUnmuted(): boolean {
-		if (!this.channel.mutedUsers.some(user => user.id === this.selectedUser.id) || !this.activeUser)
+		if (!this.channel.mutedUsers.some(mutedUser => mutedUser.user.id === this.selectedUser.id) || !this.activeUser)
 			return false;
 		if (this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser))
 			return true;
@@ -120,14 +120,23 @@ export class ChatChannelDropdownComponent {
 			activeUser: this.chatComponent.activeUser.id,
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id,
-			time: 10,
+			time: 1,
 		});
 		// this.updateUserAndChannel();
 	}
 
 	unmuteUser() {
 		console.log('unmuteUser() called for ' + this.selectedUser.username);
-		this.updateUserAndChannel();
+		if (!this.chatComponent.activeUser) {
+			console.log('Error: activeUser is undefined');
+			return;
+		}
+		this.socket.emit('channel:UnmuteUser', {
+			activeUser: this.chatComponent.activeUser.id,
+			selectedUser: this.selectedUser.id,
+			channelId: this.channel.id,
+		});
+		// this.updateUserAndChannel();
 	}
 
 	kickUser() {

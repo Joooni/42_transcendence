@@ -175,7 +175,7 @@ export class ChatChannelComponent {
 	}
 
 	isMuted(user: User): boolean {
-		return this.chatComponent.selectedChannel!.mutedUsers.some((elem) => elem.id === user.id);
+		return this.chatComponent.selectedChannel!.mutedUsers.some(mutedUser => mutedUser.user.id === user.id);
 	}
 
 	disableSaveSettings(): boolean {

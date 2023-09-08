@@ -69,6 +69,15 @@ class GraphQLService {
             },
           },
         },
+        Query: {
+          fields: {
+            visibleChannelsWithoutUser: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+          },
+        },
       },
     });
     this.apolloClient = new ApolloClient({

@@ -27,6 +27,7 @@ export class ChannelsService {
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admins', 'admins')
       .leftJoinAndSelect('channel.mutedUsers', 'mutedUsers')
+      .leftJoinAndSelect('mutedUsers.user', 'mutedUsersUser')
       .leftJoinAndSelect('channel.invitedUsers', 'invitedUsers')
       .leftJoinAndSelect('channel.bannedUsers', 'bannedUsers')
       .getMany();
@@ -43,6 +44,7 @@ export class ChannelsService {
         .leftJoinAndSelect('channel.users', 'users')
         .leftJoinAndSelect('channel.admins', 'admins')
         .leftJoinAndSelect('channel.mutedUsers', 'mutedUsers')
+        .leftJoinAndSelect('mutedUsers.user', 'mutedUsersUser')
         .leftJoinAndSelect('channel.invitedUsers', 'invitedUsers')
         .leftJoinAndSelect('channel.bannedUsers', 'bannedUsers')
         .getOne();
@@ -66,6 +68,7 @@ export class ChannelsService {
         .leftJoinAndSelect('channel.users', 'users')
         .leftJoinAndSelect('channel.admins', 'admins')
         .leftJoinAndSelect('channel.mutedUsers', 'mutedUsers')
+        .leftJoinAndSelect('mutedUsers.user', 'mutedUsersUser')
         .leftJoinAndSelect('channel.invitedUsers', 'invitedUsers')
         .leftJoinAndSelect('channel.bannedUsers', 'bannedUsers')
         .getOne();

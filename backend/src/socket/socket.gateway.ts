@@ -51,7 +51,7 @@ export class SocketGateway
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: Socket, message: MessageObj): void {
+  async handleMessage(client: Socket, message: MessageObj) {
     console.log('Message received');
     this.messagesService.receiveMessage(client, message);
 
@@ -64,6 +64,10 @@ export class SocketGateway
       });
     } else if (message.receiverChannel !== undefined) {
       //Channel message
+      if (await this.channelMuteService.isMuted(message.receiverChannel.id, message.sender.id)) {
+        console.log('User is muted in this channel');
+        return;
+      }
       this.server.to(message.receiverChannel.id).emit('message', message);
     } else {
       console.log('Error: Receiver is neither a user nor a channel');
@@ -207,6 +211,11 @@ export class SocketGateway
   @SubscribeMessage('channel:MuteUser')
   async muteUser(client: Socket, obj: any) {
     await this.channelMuteService.muteUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
+  }
+
+  @SubscribeMessage('channel:UnmuteUser')
+  async unmuteUser(client: Socket, obj: any) {
+    await this.channelMuteService.unmuteUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
   }
 
   @SubscribeMessage('startGameRequest')
