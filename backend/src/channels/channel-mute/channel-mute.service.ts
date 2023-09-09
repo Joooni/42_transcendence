@@ -1,15 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { ChannelsService } from '../channels.service';
 import { ChannelMute } from '../entities/channelMute.entity';
+import { Job, scheduleJob } from 'node-schedule';
+import { User } from 'src/users/entities/user.entity';
+import { Channel } from '../entities/channel.entity';
 
 @Injectable()
 export class ChannelMuteService {
 	private mutedUsers: ChannelMute[] = [];
+	private jobMap = new Map<Number, Job>();
 	constructor(
 		@InjectRepository(ChannelMute)
 		private readonly channelMuteRepository: Repository<ChannelMute>,
@@ -18,9 +21,6 @@ export class ChannelMuteService {
 	) {
 		this.atStart();
 	}
-
-	@WebSocketServer()
-	server: Server;
 
 	async atStart() {
 		this.mutedUsers = await this.findAll();
@@ -46,7 +46,7 @@ export class ChannelMuteService {
 				user: user,
 				mutedUntil: mutedUntil,
 			});
-			this.channelMuteRepository.save(channelMute);
+			await this.channelMuteRepository.save(channelMute);
 		} catch(error) {
 			console.log(error);
 		}
@@ -61,100 +61,88 @@ export class ChannelMuteService {
 			throw new NotFoundException('Channel or Users not found');
 		  }
 	
-		  if (channel.admins.find(user => user.id === activeUser.id) == undefined && channel.owner.id !== activeUser.id) {
+		  if (channel.admins.find(user => user.id == activeUser.id) == undefined && channel.owner.id != activeUser.id) {
 			throw new Error('User is not admin');
 		  }
-		  if (channel.admins.find(user => user.id === selectedUser.id) != undefined && channel.owner.id !== activeUser.id) {
+		  if (channel.admins.find(user => user.id == selectedUser.id) != undefined && channel.owner.id != activeUser.id) {
 			throw new Error('Selected User is admin');
 		  }
 
-		  const foundMutedUser = this.mutedUsers.find(mutedUser => {
-			if (mutedUser.user.id === selectedUser.id && mutedUser.channel.id === channel.id) {
-			  return mutedUser;
+		  this.mutedUsers.find(mutedUser => {
+			if (mutedUser.user.id == selectedUser.id && mutedUser.channel.id == channel.id) {
+			  throw new Error('User is already muted');
 			}
 		  });
 		  const current = new Date();
 		  current.setMinutes(current.getMinutes() + time);
-		  if (foundMutedUser) {
-			foundMutedUser.mutedUntil = current;
-			await this.channelMuteRepository.save(foundMutedUser);
-		  } else {
-			await this.create(channel.id, selectedUser.id, current);
+		  await this.create(channel.id, selectedUser.id, current).then(() => {
 			
-			this.mutedUsers = await this.findAll();
-			// const mUserDB = await this.channelMuteRepository
-			// .createQueryBuilder('channelMute')
-			// .where('channelMute.channel = :channelId', { channelId: channel.id })
-			// .andWhere('channelMute.user = :userId', { userId: selectedUser.id })
-			// .leftJoinAndSelect('channelMute.user', 'user')
-			// .leftJoinAndSelect('channelMute.channel', 'channel')
-			// .getOne();
-			// if (!mUserDB) {
-			//   throw new Error('Muted User not found');
-			// }
-			// this.mutedUsers.push(mUserDB);
-		  }
-		 
-		  console.log(this.mutedUsers);
+		  });
+		  this.mutedUsers = await this.findAll();
+		  const mUser = this.mutedUsers.find(mutedUser => {
+			if (mutedUser.user.id == selectedUser.id && mutedUser.channel.id == channel.id)
+			  return mutedUser;
+		  });
+		  if (!mUser)
+			throw new Error('Created Muted User not found');
+		  this.scheduleUnmute(server, mUser.id, channel, selectedUser, current);
 		  server.to(channelId).emit('updateChannel', {});
-	
+
 		} catch (error) {
 		  console.log(error);
 		}
 	}
 
-	async unmuteUser(server: Server, activeUserId: number, selectedUserId: number, channelId: string) {
-		const channel = await this.channelService.getChannelById(channelId);
-		const selectedUser = await this.usersService.findOne(selectedUserId);
-		const activeUser = await this.usersService.findOne(activeUserId);
-		if (!channel || !selectedUser || !activeUser) {
-		throw new NotFoundException('Channel or Users not found');
-		}
+	async unmuteUser(server: Server, user: User, channel: Channel, id?: Number) {
+		try {
+			await this.channelMuteRepository
+			.createQueryBuilder()
+			.delete()
+			.where('channel = :channelId', { channelId: channel.id })
+			.andWhere('user = :userId', { userId: user.id })
+			.execute();
+			if (!id) {
+				//Unmuted by admin
+				const mUser = this.mutedUsers.find(mutedUser => {
+					if (mutedUser.user.id == user.id && mutedUser.channel.id == channel.id)
+						return mutedUser;
+				});
+				if (!mUser) {
+					throw new Error('Muted User not found');
+				}
+				id = mUser.id;
+				const job = this.jobMap.get(id);
+				if (job) {
+					console.log('schedule job ' + id + ' cancelled');
+					job.cancel();
+				}
+			}
+			this.jobMap.delete(id);
+			this.mutedUsers = await this.findAll();
+			server.to(channel.id).emit('updateChannel', {});
 
-		if (channel.admins.find(user => user.id === activeUser.id) == undefined && channel.owner.id !== activeUser.id) {
-		throw new Error('User is not admin');
+		} catch(error) {
+			console.log(error);
 		}
-		if (channel.admins.find(user => user.id === selectedUser.id) != undefined && channel.owner.id !== activeUser.id) {
-		throw new Error('Selected User is admin');
-		}
-
-		await this.channelMuteRepository
-		.createQueryBuilder()
-		.delete()
-		.where('channel = :channelId', { channelId: channelId })
-		.andWhere('user = :userId', { userId: selectedUserId })
-		.execute();
-		this.mutedUsers = await this.findAll();
 	}
 
 	async isMuted(channelId: string, userId: number): Promise<boolean> {
-		console.log(this.mutedUsers);
 		const user = this.mutedUsers.find(mutedUser => {
-			if (mutedUser.user.id === userId && mutedUser.channel.id === channelId) {
+			if (mutedUser.user.id == userId && mutedUser.channel.id == channelId) {
 				return mutedUser;
 			}
 		});
 		if (user) {
-			console.log('user is in muted list');
-			if (user.mutedUntil > new Date()) {
-				console.log('user is muted until:' + user.mutedUntil);
-				console.log('current time: ' + new Date());
-				return true;
-			}
-			else {
-				console.log('time is over, user will be removed from muted list');
-				
-				await this.channelMuteRepository
-				.createQueryBuilder()
-				.delete()
-				.where('channel = :channelId', { channelId: channelId })
-				.andWhere('user = :userId', { userId: userId })
-				.execute();
-				this.mutedUsers = await this.findAll();
-				
-				return false;
-			}
+			return true;
 		}
 		return false;
+	}
+
+	scheduleUnmute(server: Server, id: Number, channel: Channel, user: User, date: Date) {
+		const job = scheduleJob(date, () => {
+			console.log('scheduled Task unmute called');
+			this.unmuteUser(server, user, channel, id);
+		});
+		this.jobMap.set(id, job);
 	}
 }
