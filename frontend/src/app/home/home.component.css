@@ -26,6 +26,11 @@
 	width: 85vmin;
 }
 
+.home_medium_button {
+	width: 25vmin;
+	font-size: 20px;
+}
+
 .home_game_box {
 	width: 80vmin;
 

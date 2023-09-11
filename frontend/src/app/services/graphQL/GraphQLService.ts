@@ -23,7 +23,43 @@ const apolloClient = new ApolloClient({
 class GraphQLService {
   constructor(
     private readonly apolloClient: ApolloClient<NormalizedCacheObject>
-  ) {}
+  ) {
+    const cache = new InMemoryCache({
+      typePolicies: {
+        User: {
+          fields: {
+            invitedInChannel: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            channelList: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            friends: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+            blockedUsers: {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+          },
+        },
+      },
+    });
+    this.apolloClient = new ApolloClient({
+      link: createHttpLink({
+        uri: 'http://localhost:3000/graphql',
+        credentials: 'include',
+      }),
+      cache,
+    });
+  }
 
   getApolloClient(): ApolloClient<NormalizedCacheObject> {
     return this.apolloClient;

@@ -178,8 +178,8 @@ export class ChannelsService {
       }
 
       if (channel.type === 'private') {
-        if (channel.invitedUsers.includes(user)) {
-          // Remove user from invitedUsers and go on...
+        const foundUser = channel.invitedUsers.find((u) => u.id === userid);
+        if (foundUser) {
           channel.invitedUsers = channel.invitedUsers.filter(
             (user) => user.id !== userid,
           );
@@ -194,7 +194,6 @@ export class ChannelsService {
           throw new Error('Wrong password');
         }
       }
-
       channel.users.push(user);
       await this.channelRepository.save(channel);
       client.join(channelId);
@@ -237,7 +236,7 @@ export class ChannelsService {
     inviteThisUserId: number,
     activeUser: number,
     channelid: string,
-  ) {
+  ): Promise<User | undefined> {
     console.log('user invited to channel', inviteThisUserId);
     try {
       const channel = await this.getChannelById(channelid);
@@ -248,7 +247,7 @@ export class ChannelsService {
 
       channel.invitedUsers.push(invitedUser);
       await this.channelRepository.save(channel);
-      return;
+      return invitedUser;
     } catch (error) {
       console.log(error);
     }

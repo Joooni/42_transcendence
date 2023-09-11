@@ -1,0 +1,53 @@
+<div class="popup" id="popup-got-game-request" [ngClass]="{'show-popup': gameInviteService.showGotGameRequestPopup}">
+	<div class="popup-content">
+		<h1>GAME INVITE</h1>
+		<div class="game-invite-content">
+			<div class="profile_picture">
+				<img src="{{gameInviteService.gameRequestSender?.picture}}">
+			</div>
+			<h2 class="game-invite-message">{{gameInviteService.gameRequestSender?.username}}</h2>
+			<h4 class="game-invite-message message-last"> challenges you to a game of Pong!</h4>
+		</div>		
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="gameInviteService.acceptGameRequest()">ACCEPT</button>
+			<button class="button_medium" (click)="gameInviteService.declineGameRequest()">DECLINE</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-send-game-request" [ngClass]="{'show-popup': gameInviteService.showSendGameRequestPopup}">
+	<div class="popup-content">
+		<h1>PENDING GAME REQUEST</h1>
+		<div class="game-invite-content">
+			<h4 class="game-invite-message message-first">You have send a game request to</h4>
+			<div class="game-invite-opponent">
+				<div class="profile_picture">
+					<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
+				</div>
+				<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+			</div>
+			<h4 class="game-invite-message message-first message-last">Waiting for their reply ...</h4>
+		</div>
+		<iframe src="https://giphy.com/embed/5gI26pnkkbfcSbyXlb" width="240" height="100" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+		<div class="popup-buttons">
+			<button class="button_medium button_reverse" (click)="gameInviteService.cancelGameRequest()">CANCEL</button>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="popup-game-request-declined" [ngClass]="{'show-popup': gameInviteService.showDeclinedGameRequestPopup}">
+	<div class="popup-content">
+		<h1>DECLINED GAME REQUEST</h1>
+		<div class="game-invite-content">
+			<h4 class="game-invite-message message-first message-last">Your game request to</h4>
+			<div class="profile_picture">
+				<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
+			</div>
+			<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+			<h4 class="game-invite-message message-first message-last">has been declined.</h4>
+		</div>
+		<div class="popup-buttons">
+			<button class="button_medium ok-button" (click)="gameInviteService.closeDeclinedGameRequestPopup()">OK</button>
+		</div>
+	</div>
+</div>

@@ -13,6 +13,7 @@ import { MatchService } from 'src/game/match/match.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { Channel } from 'src/channels/entities/channel.entity';
 import { JwtService } from '@nestjs/jwt';
+import { SocketController } from './socket.controller';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtService } from '@nestjs/jwt';
     JwtService,
   ],
   exports: [SocketGateway],
+  controllers: [SocketController],
 })
 export class SocketModule {
   constructor(

@@ -31,16 +31,20 @@ export class UserDataService {
     });
   }
 
-  async login(code: string, bypassId?: string): Promise<void> {
+  async login(code: string, bypassId?: string): Promise<boolean> {
     try {
       const { require2FAVerify } = await this.fetchJwt(code, bypassId);
       if (require2FAVerify) {
-				// await this.verify2FA(code);
-        return;
+        return new Promise((resolve) => {
+					resolve(false);
+				});
       }
       const user: User = await this.findSelf();
       this.updateStatus('online');
       this.router.navigate(['/home']);
+			return new Promise((resolve) => {
+				resolve(true);
+			})
     } catch (error: any) {
       await this.logout();
       if (typeof error.response === 'undefined') throw error;
@@ -152,6 +156,24 @@ export class UserDataService {
             id
             name
           }
+          friends {
+            id
+            username
+            status
+            picture
+          }
+          blockedUsers {
+            id
+            username
+            status
+            picture
+          }
+          blockedFromOther {
+            id
+            username
+            status
+            picture
+          }
         }
       }
       `,
@@ -251,6 +273,7 @@ export class UserDataService {
       }
       `,
       { id },
+      { fetchPolicy: 'network-only' },
     );
 		if (typeof userById === 'undefined') throw new Error('Empty user data');
     console.log('findUserById called:', userById)
@@ -274,11 +297,13 @@ export class UserDataService {
           wins
           losses
           xp
+          rank
           achievements
         }
       }
       `,
       { username },
+      { fetchPolicy: 'network-only' },
     );
     if (typeof userByName === 'undefined') throw new Error('Empty user data');
     return userByName;

@@ -1,5 +1,6 @@
 import { Field, GraphQLTimestamp, Int, ObjectType } from '@nestjs/graphql';
 import { Channel } from 'src/channels/entities/channel.entity';
+import { Match } from 'src/game/entitites/match.entity';
 import {
   Entity,
   Column,
@@ -75,6 +76,10 @@ export class User {
   xp: number;
 
   @Field()
+  @Column({ default: 0 })
+  rank: number;
+
+  @Field()
   @Column({ default: 1 })
   map: number;
 
@@ -124,10 +129,27 @@ export class User {
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.incomingFriendRequests)
-  @JoinTable() //?
+  @JoinTable()
   sendFriendRequests: User[];
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.sendFriendRequests)
   incomingFriendRequests: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.blockedFromOther)
+  @JoinTable()
+  blockedUsers: User[];
+
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.blockedUsers)
+  blockedFromOther: User[];
+
+  @Field(() => [Match], { nullable: true })
+  @OneToMany(() => Match, (match) => match.firstPlayer)
+  matchesAsFirstPlayer: Match[];
+
+  @Field(() => [Match], { nullable: true })
+  @OneToMany(() => Match, (match) => match.secondPlayer)
+  matchesAsSecondPlayer: Match[];
 }

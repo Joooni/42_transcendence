@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { UserDataService } from '../services/user-data/user-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
@@ -6,19 +6,21 @@ import { ChannelDataService } from '../services/channel-data/channel-data.servic
 import { User } from '../models/user';
 import { Channel } from '../models/channel';
 import { MessageService } from '../services/message/message.service';
+// import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { SocketService } from '../services/socket/socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 	activeUser?: User;
 
-	friends?: number[];
-	blocked?: number[];
-	allUsers?: User[];
+	friends?: User[];
+	blocked?: User[];
+	otherUsers?: User[];
 
 	memberChannels?: Channel[];
 	otherVisibleChannels?: Channel[];
@@ -54,54 +56,31 @@ export class ChatComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			//to be updated when Channel and Relations are fully implemented? Maybe even define services differently...
-			this.userRelationService.getFriendsOf(this.activeUser.id).subscribe(friends => this.friends = friends);
-			this.userRelationService.getBlockedOf(this.activeUser.id).subscribe(blocked => this.blocked = blocked);
-			
-			
+
+		await this.updateUserList();
+		if (this.activeUser) {
 			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
-			
-			//This should work now:
 			this.memberChannels = this.activeUser.channelList;
 			this.invitedInChannel = this.activeUser.invitedInChannel;
-			//this.channelDataService.getChannelsOf(this.activeUser.id).subscribe(member => this.memberChannels = member);
-		});
+		}
 
-		this.userDataService.findAllExceptMyself().then(users => this.allUsers = users);
-
-		this.socket.listen('identify').subscribe(() => {
-			this.socket.emit('identify', this.activeUser?.id);
-		});
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
 		});
-		//Will update username & status & profilepic of specific user
+		//Will update username & status & profile picture of specific user
 		this.socket.listen('updateUser').subscribe((user: any) => {
-			if (!user.id || user.id === this.activeUser?.id || !this.allUsers)
-				return;
-			const userIndex = this.allUsers?.findIndex(elem => elem.id === user.id);
-			if (userIndex !== undefined) {
-				if (userIndex !== -1) {
-					if (user.username)
-						this.allUsers![userIndex].username = user.username;
-					if (user.status)
-						this.allUsers![userIndex].status = user.status;
-					if (user.picture)
-						this.allUsers![userIndex].picture = user.picture;
-				}
-				else {
-					console.log('user will be added');
-					this.userDataService.findUserById(user.id).then(dbuser => {
-						this.allUsers!.push(dbuser);
-					});
-				}
-			}
+			this.updateSpecificUser(user.id, user.username, user.status, user.picture);
+		});
+		this.socket.listen('updateUserList').subscribe(() => {
+			this.updateUserList();
 		});
 		this.socket.listen('updateChannelList').subscribe(() => {
 			this.updateChannelList();
 		});
+	}
+
+	ngOnDestroy() {
+		this.socket.stopListen('gotGameRequest');
 	}
 
 	changeShowFriends() {
@@ -152,6 +131,44 @@ export class ChatComponent implements OnInit {
 		if (!findChannel)
 			return;
 		this.selectedChannel = findChannel;
+	}
+
+	async updateSpecificUser(id: number, username: string, status: string, picture: string) {
+		if (!id || id === this.activeUser?.id)
+			return;
+		
+		let reference = undefined;
+		let userIndex = this.otherUsers?.findIndex(elem => elem.id === id);
+		if (userIndex !== -1) {
+			reference = this.otherUsers;
+		}
+		if (reference === undefined) {
+			userIndex = this.friends?.findIndex(elem => elem.id === id);
+			if (userIndex !== -1) {
+				reference = this.friends;
+			}
+		}
+		if (reference === undefined) {
+			userIndex = this.blocked?.findIndex(elem => elem.id === id);
+			if (userIndex !== -1) {
+				reference = this.blocked;
+			}
+		}
+
+		if (userIndex !== -1 && reference !== undefined) {
+			if (username)
+				reference[userIndex!].username = username;
+			if (status)
+				reference[userIndex!].status = status;
+			if (picture)
+				reference[userIndex!].picture = picture;
+		}
+		else {
+			console.log('user will be added');
+			this.userDataService.findUserById(id).then(dbuser => {
+				this.otherUsers!.push(dbuser);
+			});
+		}
 	}
 
 	selectUser(user: User) {
@@ -244,6 +261,7 @@ export class ChatComponent implements OnInit {
 		//TO-DO: update list of all visible channels
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
+			this.invitedInChannel = this.activeUser.invitedInChannel;
 			this.memberChannels = this.activeUser.channelList;
 			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
 				other => this.otherVisibleChannels = other
@@ -254,5 +272,31 @@ export class ChatComponent implements OnInit {
 					this.selectedChannel = undefined;
 			}
 		});
+	}
+
+	async updateUserList() {
+		await this.userDataService.findSelf().then(user => {
+			this.activeUser = user;
+			console.log('update UserList')
+			if (!user) {
+				console.log('no active user, userlist cannot be updated');
+				return;
+			}
+			this.friends = user.friends.map(friend => ({...friend}));
+			this.blocked = user.blockedUsers.concat(user.blockedFromOther).map(blocked => ({...blocked}));
+		});
+		await this.userDataService.findAllExceptMyself().then(users => {
+			this.otherUsers = users.filter(user => {
+				return !this.friends?.some(friend => friend.id === user.id) && !this.blocked?.some(blocked => blocked.id === user.id);
+			});
+		});
+
+		if (this.selectedUser) {
+			const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
+			const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
+			if (!oUser && !fUser) {
+				this.selectedUser = undefined;
+			}
+		}
 	}
 }

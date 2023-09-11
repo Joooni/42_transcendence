@@ -5,7 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
-import { Match } from './game/match.entity';
+import { Match } from './game/entitites/match.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersController } from './users/users.controller';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -21,6 +21,7 @@ import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { SocketController } from './socket/socket.controller';
 
 @Module({
   imports: [
@@ -61,7 +62,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     SocketModule,
     ChannelsModule,
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController, UsersController, SocketController],
   providers: [AppService, PasswordService],
 })
 export class AppModule {}

@@ -27,8 +27,8 @@ export const mockUser1: User = createMockUser({
   username: 'LoveBarrelsHateMario',
   email: 'redtiesrule@kongs.com',
   picture: 'https://mario.wiki.gallery/images/8/84/MPS_Donkey_Kong_Artwork.png',
-  wins: 69,
-  losses: 42,
+  wins: 0,
+  losses: 0,
 });
 
 export const mockUsers: User[] = [

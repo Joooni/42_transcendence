@@ -1,4 +1,4 @@
-import { Timestamp } from "rxjs";
+import { User } from "./user";
 
 export interface Game {
 	id: number;
@@ -24,4 +24,15 @@ export interface GameHistory {
 	result: string; //win or loose
 	xp: number;
 	//time / date
+}
+
+export interface Match {
+	gameID: number;
+	firstPlayer: User;
+	secondPlayer: User;
+	goalsFirstPlayer: number;
+	goalsSecondPlayer: number;
+	xpFirstPlayer: number;
+    xpSecondPlayer: number;
+	timestamp: Date;
 }

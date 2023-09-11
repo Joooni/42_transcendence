@@ -31,6 +31,17 @@ type Channel {
   bannedUsers: [User!]
 }
 
+type Match {
+  gameID: Int!
+  firstPlayer: User!
+  secondPlayer: User!
+  goalsFirstPlayer: Int!
+  goalsSecondPlayer: Int!
+  xpFirstPlayer: Int!
+  xpSecondPlayer: Int!
+  timestamp: DateTime!
+}
+
 type User {
   id: Int!
   intra: String!
@@ -46,6 +57,7 @@ type User {
   losses: Float!
   socketid: String!
   xp: Float!
+  rank: Float!
   map: Float!
   achievements: [Int!]!
   selectedMap: Float!
@@ -59,6 +71,10 @@ type User {
   friends: [User!]
   sendFriendRequests: [User!]
   incomingFriendRequests: [User!]
+  blockedUsers: [User!]
+  blockedFromOther: [User!]
+  matchesAsFirstPlayer: [Match!]
+  matchesAsSecondPlayer: [Match!]
 }
 
 """
@@ -66,20 +82,13 @@ type User {
 """
 scalar Timestamp
 
-type Match {
-  gameID: Int!
-  firstPlayer: String!
-  secondPlayer: String!
-  goalsFirstPlayer: Int!
-  goalsSecondPlayer: Int!
-  date: DateTime!
-}
-
 type Query {
   allUsers: [User!]!
   allUsersExceptMyself: [User!]!
+  allUsersSortedRanks: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
+  updateRank: User!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   messagesChannel(id: String): [Message!]!
@@ -89,6 +98,7 @@ type Query {
   visibleChannelsWithoutUser(id: Int): [Channel!]!
   matches: [Match!]!
   match(id: Int): Match!
+  findMatchesByPlayerId(id: Int): [Match!]!
 }
 
 type Mutation {
