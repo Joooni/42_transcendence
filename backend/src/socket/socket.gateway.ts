@@ -13,7 +13,7 @@ import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
 
-@WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
+@WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

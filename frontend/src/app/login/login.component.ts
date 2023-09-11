@@ -3,8 +3,8 @@ import { Component, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { AuthService } from '../services/auth/auth.service';
-import { loginPageGuard } from '../guard/login-page.guard';
-
+// import { loginPageGuard } from '../guard/login-page.guard';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -50,7 +50,8 @@ export class LoginComponent {
   }
 
   onLogin() {
-    window.location.href = 'http://localhost:3000/auth/login';
+
+    window.location.href = `http://${environment.DOMAIN}:3000/auth/login`;
   };
 
 	async popUpConfirm() {

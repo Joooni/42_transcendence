@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build -c development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "sheesh": "ng serve --open --host 0.0.0.0 --port 80"
+    "sheesh": "ng serve --open --host 0.0.0.0 --port 80",
+    "local": "ng serve -c local --port 80"
   },
   "private": true,
   "dependencies": {
@@ -31,11 +32,14 @@
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^16.0.0",
     "@angular-devkit/build-angular": "^16.0.0",
     "@angular/cli": "~16.0.0",
     "@angular/compiler-cli": "^16.0.0",
     "@types/jasmine": "~4.3.0",
+    "@types/node": "^20.4.2",
     "cli-spinners": "^2.9.0",
+    "dotenv-webpack": "^8.0.1",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

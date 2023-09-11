@@ -20,11 +20,16 @@ import { MatchModule } from './game/match/match.module';
 import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { SocketController } from './socket/socket.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads/profile_pictures'),
+      serveRoot: '/uploads/profile_pictures',
+    }),
     UsersModule,
     MessagesModule,
     GameModule,

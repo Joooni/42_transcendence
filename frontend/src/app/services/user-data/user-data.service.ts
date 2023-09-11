@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 // for FE-testing - to be deleted when BE provides test data
 import { USERS } from '../../mock-data/mock_users';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class UserDataService {
   constructor(private router: Router) {}
 
   async fetchJwt(code: string, bypassId?: string) {
-    return axios.get('http://localhost:3000/auth/callback', { params: { code, id: bypassId }, withCredentials: true })
+    return axios.get(`http://${environment.DOMAIN}:3000/auth/callback`, { params: { code, id: bypassId }, withCredentials: true })
     .then((res) => {
       if (typeof res.data.isAuthenticated === 'undefined')
         throw new Error('Empty user authentication');
@@ -51,43 +52,49 @@ export class UserDataService {
     }
   }
 
-	twoFACodeIsValid(code: string | undefined): boolean {
-		if (!code)
-			return false;
-		return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
-	}
-
   async generate2FA(): Promise<any> {
-    return axios.get('http://localhost:3000/2fa/generate', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/generate`, {
       withCredentials: true,
     });
   }
 
+  twoFACodeIsValid(code: string | undefined): boolean {
+    if (!code)
+      return false;
+    return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
+  }
+
   async verify2FA(code: string): Promise<void> {
-		return axios.get('http://localhost:3000/2fa/verify', {
+    console.log('UserDataService verify2FA with code: ', code);
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/verify`, {
       params: { code },
       withCredentials: true,
     });
   }
 
   async enable2FA(code: string): Promise<void> {
-    return axios.get('http://localhost:3000/2fa/enable', {
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/enable`, {
       params: { code },
       withCredentials: true,
     });
   }
 
   async disable2FA(code: string): Promise<void> {
-    return axios.get('http://localhost:3000/2fa/disable', {
-			params: { code },  
-			withCredentials: true,
+    return axios.get(`http://${environment.DOMAIN}:3000/2fa/disable`, {
+      params: { code },
+      withCredentials: true,
+    }).then(() => {
+      return ;
+    }).catch((error) => {
+      if (typeof error.response === 'undefined') throw error;
+      throw new Error(error.response.data.message);
     });
   }
 
   async logout(): Promise<void> {
     const user: User = await this.findSelf();
     if (user.status !== "offline" || user.id > 0) {
-      await axios.get('http://localhost:3000/auth/logout', {withCredentials: true}).then(() => {
+      await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
         this.updateStatus('offline');
         return;
       }).catch((error) => {
@@ -95,6 +102,29 @@ export class UserDataService {
         throw new Error(error.response.data.message);
       })
     }
+  }
+
+  async uploadPicture(uploadedPicture: File): Promise<void> {
+    const userID: number = (await this.findSelf()).id;
+    const formData = new FormData();
+    formData.append('picture', uploadedPicture);
+    try {
+      return axios.post(
+        `http://${environment.DOMAIN}:3000/users/upload/${userID}`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      ).then((res) => {
+        if (typeof res.data.url === 'undefined')
+          throw new Error('Picture url is empty.');
+      }).catch((error) => {
+        if (typeof error.response === 'undefined') throw error;
+        throw new Error(error.response.data.message);
+      });
+   } catch {
+    throw new Error("Error uploading picture");
+   }
   }
 
   async findSelf(): Promise<User> {

@@ -291,6 +291,18 @@ export class UsersService {
     await this.userRepository.save(user);
   }
 
+  async updatePicture(id: number, newPicture: string): Promise<void> {
+    const result: UpdateResult = await this.userRepository.update(id, {
+      picture: newPicture
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+  /*
+  wollen wir hier ein resetPicture einbauen, damit man auf das default (aka intra) Bild zurückswitchen kann?
+  */
+
   async updateRanksByXP(): Promise<User[]> {
     const sortedUsers = await this.userRepository
       .createQueryBuilder('user')
