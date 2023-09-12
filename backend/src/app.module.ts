@@ -16,13 +16,13 @@ import { SocketModule } from './socket/socket.module';
 import { Message } from './messages/entities/message.entity';
 import { MessagesModule } from './messages/messages.module';
 import { GameModule } from './game/game.module';
-import { MatchModule } from './game/match/match.module';
 import { ChannelsModule } from './channels/channels.module';
 import { PasswordService } from './password/password.service';
 import { Channel } from './channels/entities/channel.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SocketController } from './socket/socket.controller';
 import { ChannelMute } from './channels/entities/channelMute.entity';
+import { ChannelMuteModule } from './channels/channel-mute/channel-mute.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { ChannelMute } from './channels/entities/channelMute.entity';
     UsersModule,
     MessagesModule,
     GameModule,
-    MatchModule,
+    SocketModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -60,7 +60,7 @@ import { ChannelMute } from './channels/entities/channelMute.entity';
     }),
     AuthModule,
     PassportModule,
-    SocketModule,
+    ChannelMuteModule,
     ChannelsModule,
   ],
   controllers: [AppController, UsersController, SocketController],

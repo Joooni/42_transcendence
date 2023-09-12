@@ -319,21 +319,12 @@ export class UsersService {
   }
 
   async calcXP(
-    player1id: number,
+    player1: User,
     player1score: number,
-    player2id: number,
+    player2: User,
     player2score: number,
   ): Promise<any> {
     try {
-      const player1 = await this.userRepository
-        .createQueryBuilder('user')
-        .where({ id: player1id })
-        .getOneOrFail();
-      const player2 = await this.userRepository
-        .createQueryBuilder('user')
-        .where({ id: player2id })
-        .getOneOrFail();
-
       let player1xp = 0;
       let player2xp = 0;
       let xpDiff = 0;
@@ -344,15 +335,11 @@ export class UsersService {
         if (xpDiff < 0) xpDiff = 0;
         if (xpDiff > 100) xpDiff = 100;
         player1xp = player1xp + Math.trunc(player1xp * (xpDiff / 100));
-        player1.xp += player1xp;
-        await this.userRepository.save(player1);
       } else {
         player2xp = 5 + (player2score - player1score);
         xpDiff = player1.xp - player2.xp;
         if (xpDiff < 0) xpDiff = 0;
         player2xp = player2xp + Math.trunc(player2xp * (xpDiff / 100));
-        player2.xp += player2xp;
-        await this.userRepository.save(player2);
       }
       return { player1xp: player1xp, player2xp: player2xp };
     } catch (error) {

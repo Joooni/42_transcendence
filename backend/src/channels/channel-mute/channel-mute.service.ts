@@ -8,22 +8,30 @@ import { ChannelMute } from '../entities/channelMute.entity';
 import { Job, scheduleJob } from 'node-schedule';
 import { User } from 'src/users/entities/user.entity';
 import { Channel } from '../entities/channel.entity';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 @Injectable()
 export class ChannelMuteService {
 	private mutedUsers: ChannelMute[] = [];
 	private jobMap = new Map<Number, Job>();
+	private server: Server;
 	constructor(
 		@InjectRepository(ChannelMute)
 		private readonly channelMuteRepository: Repository<ChannelMute>,
+		// private readonly socketGateway: SocketGateway,
 		private readonly usersService: UsersService,
 		private readonly channelService: ChannelsService,
 	) {
+		// this.server = this.socketGateway.server;
 		this.atStart();
 	}
 
 	async atStart() {
 		this.mutedUsers = await this.findAll();
+		this.jobMap.clear();
+		// this.mutedUsers.forEach((mUser) => {
+		// 	// this.scheduleUnmute
+		// });
 	}
 
 	async findAll(): Promise<ChannelMute[]> {
