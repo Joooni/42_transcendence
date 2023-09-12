@@ -9,29 +9,37 @@ import { Job, scheduleJob } from 'node-schedule';
 import { User } from 'src/users/entities/user.entity';
 import { Channel } from '../entities/channel.entity';
 import { SocketGateway } from 'src/socket/socket.gateway';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 
 @Injectable()
+@WebSocketGateway({ cors: ['http://localhost:80', 'http://localhost:3000'] })
 export class ChannelMuteService {
 	private mutedUsers: ChannelMute[] = [];
 	private jobMap = new Map<Number, Job>();
-	private server: Server;
+	
+	@WebSocketServer()
+	server: Server;
+
 	constructor(
 		@InjectRepository(ChannelMute)
 		private readonly channelMuteRepository: Repository<ChannelMute>,
-		// private readonly socketGateway: SocketGateway,
 		private readonly usersService: UsersService,
 		private readonly channelService: ChannelsService,
 	) {
-		// this.server = this.socketGateway.server;
 		this.atStart();
 	}
 
 	async atStart() {
 		this.mutedUsers = await this.findAll();
 		this.jobMap.clear();
-		// this.mutedUsers.forEach((mUser) => {
-		// 	// this.scheduleUnmute
-		// });
+		this.mutedUsers.forEach(async (channelMute) => {
+			if (channelMute.mutedUntil < new Date()) {
+				await this.channelMuteRepository.delete(channelMute.id);
+			} else {
+				this.scheduleUnmute(channelMute.id, channelMute.channel, channelMute.user, channelMute.mutedUntil);
+			}
+		});
+		this.mutedUsers = await this.findAll();
 	}
 
 	async findAll(): Promise<ChannelMute[]> {
@@ -42,7 +50,7 @@ export class ChannelMuteService {
 		.getMany();
 	}
 
-	async create(channelid: string, userid: number, mutedUntil: Date) {
+	async addToDB(channelid: string, userid: number, mutedUntil: Date) {
 		try {
 			const user = await this.usersService.findOne(userid);
 			const channel = await this.channelService.getChannelById(channelid);
@@ -60,7 +68,7 @@ export class ChannelMuteService {
 		}
 	}
 
-	async muteUser(server: Server, activeUserId: number, selectedUserId: number, channelId: string, time: number) {
+	async muteUser(activeUserId: number, selectedUserId: number, channelId: string, time: number) {
 		try {	
 		  const channel = await this.channelService.getChannelById(channelId);
 		  const selectedUser = await this.usersService.findOne(selectedUserId);
@@ -83,9 +91,8 @@ export class ChannelMuteService {
 		  });
 		  const current = new Date();
 		  current.setMinutes(current.getMinutes() + time);
-		  await this.create(channel.id, selectedUser.id, current).then(() => {
-			
-		  });
+		  await this.addToDB(channel.id, selectedUser.id, current);
+
 		  this.mutedUsers = await this.findAll();
 		  const mUser = this.mutedUsers.find(mutedUser => {
 			if (mutedUser.user.id == selectedUser.id && mutedUser.channel.id == channel.id)
@@ -93,15 +100,15 @@ export class ChannelMuteService {
 		  });
 		  if (!mUser)
 			throw new Error('Created Muted User not found');
-		  this.scheduleUnmute(server, mUser.id, channel, selectedUser, current);
-		  server.to(channelId).emit('updateChannel', {});
+		  this.scheduleUnmute(mUser.id, channel, selectedUser, current);
+		  this.server.to(channelId).emit('updateChannel', {});
 
 		} catch (error) {
 		  console.log(error);
 		}
 	}
 
-	async unmuteUser(server: Server, user: User, channel: Channel, id?: Number) {
+	async unmuteUser(user: User, channel: Channel, id?: Number) {
 		try {
 			await this.channelMuteRepository
 			.createQueryBuilder()
@@ -127,7 +134,8 @@ export class ChannelMuteService {
 			}
 			this.jobMap.delete(id);
 			this.mutedUsers = await this.findAll();
-			server.to(channel.id).emit('updateChannel', {});
+			// server.to(channel.id).emit('updateChannel', {});
+			this.server.to(channel.id).emit('updateChannel', {});
 
 		} catch(error) {
 			console.log(error);
@@ -146,10 +154,10 @@ export class ChannelMuteService {
 		return false;
 	}
 
-	scheduleUnmute(server: Server, id: Number, channel: Channel, user: User, date: Date) {
+	scheduleUnmute(id: Number, channel: Channel, user: User, date: Date) {
 		const job = scheduleJob(date, () => {
 			console.log('scheduled Task unmute called');
-			this.unmuteUser(server, user, channel, id);
+			this.unmuteUser(user, channel, id);
 		});
 		this.jobMap.set(id, job);
 	}

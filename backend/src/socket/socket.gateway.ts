@@ -13,7 +13,7 @@ import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
@@ -211,7 +211,7 @@ export class SocketGateway
 
   @SubscribeMessage('channel:MuteUser')
   async muteUser(client: Socket, obj: any) {
-    await this.channelMuteService.muteUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
+    await this.channelMuteService.muteUser(obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
   }
 
   @SubscribeMessage('channel:UnmuteUser')
@@ -226,7 +226,7 @@ export class SocketGateway
         throw new Error('User is not admin');
       if (channel.admins.find(user => user.id == selectedUser.id) != undefined && channel.owner.id != activeUser.id)
         throw new Error('Selected User is admin');
-      await this.channelMuteService.unmuteUser(this.server, selectedUser, channel);
+      await this.channelMuteService.unmuteUser(selectedUser, channel);
     } catch (error) {
       console.log(error);
     }

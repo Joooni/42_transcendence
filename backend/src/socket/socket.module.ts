@@ -21,7 +21,6 @@ import { Match } from 'src/game/entitites/match.entity';
   imports: [
     TypeOrmModule.forFeature([Message, User, Channel, ChannelMute, Match]),
     HttpModule,
-    // GameModule,
   ],
   providers: [
     SocketGateway,
