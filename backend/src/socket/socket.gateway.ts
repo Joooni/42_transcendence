@@ -12,6 +12,8 @@ import { UsersService } from 'src/users/users.service';
 import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
+import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
 export class SocketGateway
@@ -24,6 +26,7 @@ export class SocketGateway
     private gameService: GameService,
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
+    private readonly channelMuteService: ChannelMuteService,
   ) {}
 
   @WebSocketServer()
@@ -49,7 +52,7 @@ export class SocketGateway
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: Socket, message: MessageObj): void {
+  async handleMessage(client: Socket, message: MessageObj) {
     console.log('Message received');
     this.messagesService.receiveMessage(client, message);
 
@@ -62,6 +65,10 @@ export class SocketGateway
       });
     } else if (message.receiverChannel !== undefined) {
       //Channel message
+      if (await this.channelMuteService.isMuted(message.receiverChannel.id, message.sender.id)) {
+        console.log('User is muted in this channel');
+        return;
+      }
       this.server.to(message.receiverChannel.id).emit('message', message);
     } else {
       console.log('Error: Receiver is neither a user nor a channel');
@@ -99,7 +106,6 @@ export class SocketGateway
   async leaveChannel(client: Socket, obj: any) {
     await this.channelsService.removeUserFromChannel(
       this.server,
-      client,
       obj.channelid,
       obj.userid,
     );
@@ -173,6 +179,57 @@ export class SocketGateway
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, obj: any) {
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('channel:SetUserAsAdmin')
+  async setAsAdmin(client: Socket, obj: any) {
+    await this.channelsService.setUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('channel:RemoveUserAsAdmin')
+  async RemoveUserAsAdmin(client: Socket, obj: any) {
+    await this.channelsService.removeUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('channel:BanUser')
+  async banUser(client: Socket, obj: any) {
+    await this.channelsService.banUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+  }
+
+  @SubscribeMessage('channel:UnbanUser')
+  async unbanUser(client: Socket, obj: any) {
+    await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
+    this.server.to(obj.channelId).emit('updateChannel', {});
+  }
+
+  @SubscribeMessage('channel:KickUser')
+  async kickUser(client: Socket, obj: any) {
+    await this.channelsService.kickUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+  }
+
+  @SubscribeMessage('channel:MuteUser')
+  async muteUser(client: Socket, obj: any) {
+    await this.channelMuteService.muteUser(obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
+  }
+
+  @SubscribeMessage('channel:UnmuteUser')
+  async unmuteUser(client: Socket, obj: any) {
+    try {
+      const channel = await this.channelsService.getChannelById(obj.channelId);
+      const selectedUser = await this.usersService.findOne(obj.selectedUser);
+      const activeUser = await this.usersService.findOne(obj.activeUser);
+      if (!channel || !selectedUser || !activeUser)
+        throw new NotFoundException('Channel or Users not found');
+      if (channel.admins.find(user => user.id == activeUser.id) == undefined && channel.owner.id != activeUser.id)
+        throw new Error('User is not admin');
+      if (channel.admins.find(user => user.id == selectedUser.id) != undefined && channel.owner.id != activeUser.id)
+        throw new Error('Selected User is admin');
+      await this.channelMuteService.unmuteUser(selectedUser, channel);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @SubscribeMessage('startGameRequest')

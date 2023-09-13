@@ -228,36 +228,40 @@ export class GameService {
   }
 
   async createMatchDB(
-    firstPlayer: number,
-    secondPlayer: number,
+    firstPlayerId: number,
+    secondPlayerId: number,
     goalsFirstPlayer: number,
     goalsSecondPlayer: number,
   ): Promise<void> {
     try {
       const match = new Match();
-      match.firstPlayer = await this.usersService.findOne(firstPlayer);
-      match.secondPlayer = await this.usersService.findOne(secondPlayer);
+      const firstPlayer = await this.usersService.findOne(firstPlayerId);
+      const secondPlayer = await this.usersService.findOne(secondPlayerId);
       match.goalsFirstPlayer = goalsFirstPlayer;
       match.goalsSecondPlayer = goalsSecondPlayer;
       const obj = await this.usersService.calcXP(
-        match.firstPlayer.id,
+        firstPlayer,
         match.goalsFirstPlayer,
-        match.secondPlayer.id,
+        secondPlayer,
         match.goalsSecondPlayer,
-      );
-      match.xpFirstPlayer = obj.player1xp;
-      match.xpSecondPlayer = obj.player2xp;
-      if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
-        match.firstPlayer.wins += 1;
-        match.secondPlayer.losses += 1;
-      }
-      else {
-        match.secondPlayer.wins += 1;
-        match.firstPlayer.losses += 1;
-      }
-      await this.matchRepository.insert(match);
-      await this.userRepository.save(match.firstPlayer);
-      await this.userRepository.save(match.secondPlayer);
+        );
+        match.xpFirstPlayer = obj.player1xp;
+        match.xpSecondPlayer = obj.player2xp;
+        firstPlayer.xp += obj.player1xp;
+        secondPlayer.xp += obj.player2xp;
+        if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
+          firstPlayer.wins += 1;
+          secondPlayer.losses += 1;
+        }
+        else {
+          secondPlayer.wins += 1;
+          firstPlayer.losses += 1;
+        }
+      match.firstPlayer = firstPlayer;
+      match.secondPlayer = secondPlayer;
+      await this.userRepository.save(firstPlayer);
+      await this.userRepository.save(secondPlayer);
+      await this.matchRepository.save(match);
       await this.usersService.updateRanksByXP();
     } catch (error) {
       console.log('Error while pushing match in Database', error);

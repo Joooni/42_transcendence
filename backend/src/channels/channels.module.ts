@@ -9,6 +9,8 @@ import { UsersService } from 'src/users/users.service';
 import { ChannelsResolver } from './channels.resolver';
 import { ChannelsService } from './channels.service';
 import { Channel } from './entities/channel.entity';
+import { ChannelMute } from './entities/channelMute.entity';
+import { ChannelMuteModule } from './channel-mute/channel-mute.module';
 
 @Module({
   providers: [
@@ -19,9 +21,10 @@ import { Channel } from './entities/channel.entity';
     PasswordService,
   ],
   imports: [
-    TypeOrmModule.forFeature([Channel, User]),
+    TypeOrmModule.forFeature([Channel, User, ChannelMute]),
     ConfigModule,
     HttpModule,
+    ChannelMuteModule,
   ],
   exports: [ChannelsService],
 })

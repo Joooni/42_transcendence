@@ -1,13 +1,18 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { ChannelMuteService } from './channel-mute/channel-mute.service';
 import { ChannelsService } from './channels.service';
 import { Channel } from './entities/channel.entity';
+import { ChannelMute } from './entities/channelMute.entity';
 
 @Resolver('Channel')
 @UseGuards(JwtAuthGuard)
 export class ChannelsResolver {
-  constructor(private readonly channelsService: ChannelsService) {}
+  constructor(
+    private readonly channelsService: ChannelsService,
+    private readonly channelMuteService: ChannelMuteService,
+    ) {}
 
   @Query(() => [Channel], { name: 'channels' })
   async findAll(): Promise<Channel[]> {
@@ -33,5 +38,10 @@ export class ChannelsResolver {
     @Args('id', { type: () => Int, nullable: true }) id: number,
   ) {
     return this.channelsService.findVisibleChannelsWithoutUser(id);
+  }
+
+  @Query(() => [ChannelMute], { name: 'channelMutes' })
+  async findAllChannelMutes(): Promise<ChannelMute[]> {
+    return this.channelMuteService.findAll();
   }
 }

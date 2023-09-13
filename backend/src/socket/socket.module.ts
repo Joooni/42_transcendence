@@ -8,34 +8,33 @@ import { UsersService } from 'src/users/users.service';
 import { SocketGateway } from './socket.gateway';
 import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
-import { MatchModule } from 'src/game/match/match.module';
 import { MatchService } from 'src/game/match/match.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { Channel } from 'src/channels/entities/channel.entity';
 import { JwtService } from '@nestjs/jwt';
 import { SocketController } from './socket.controller';
+import { ChannelMute } from 'src/channels/entities/channelMute.entity';
+import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
+import { Match } from 'src/game/entitites/match.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message, User, Channel]),
+    TypeOrmModule.forFeature([Message, User, Channel, ChannelMute, Match]),
     HttpModule,
-    MatchModule,
-    GameModule,
   ],
   providers: [
     SocketGateway,
     UsersService,
     MatchService,
+    GameService,
     MessagesService,
     ChannelsService,
+    ChannelMuteService,
     JwtService,
   ],
   exports: [SocketGateway],
   controllers: [SocketController],
 })
 export class SocketModule {
-  constructor(
-    private matchService: MatchService,
-    private gameService: GameService,
-  ) {}
+  constructor(private readonly socketGateway: SocketGateway) {}
 }

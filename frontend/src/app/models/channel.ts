@@ -1,3 +1,4 @@
+import { ChannelMute } from "./channelMute";
 import { User } from "./user";
 
 export interface Channel {
@@ -8,7 +9,7 @@ export interface Channel {
 	type: string;
 	users: User[];
 	admins: User[];
-	mutedUsers: User[];
+	mutedUsers: ChannelMute[];
 	invitedUsers: User[];
 	bannedUsers: User[];
 }
