@@ -3,11 +3,41 @@
 	<h2 class="title-notifications-text">NOTIFICATION CENTER</h2>
 </div>
 <div class="notification-container">
-	<h4>HALLO</h4>
-	<div class="notification">
-		<!-- img: type (friend or channel invite)
-		title: New Friend Request / Open Friend Request / New Channel invite
-		text: XYZ has send you a friend request / has not answered your friend request yet / has confirmed your friend request / has send you a channel invite to channel ABC -->
-	</div>
-	<div class="notification"></div>
+	<ng-container *ngFor="let notification of notifications">
+		<div class="notification" *ngIf="notification.type === 'incomingFriendRequest'">
+			<img src="../../assets/add_friend_icon_yellow.png" class="notification-type">
+			<div class="notification-content">
+				<h2>NEW FRIEND REQUEST</h2>
+				<h6><span class="red">{{notification.sender!.username}}</span> has send you a friend request!</h6>
+			</div>
+			<div class="notification-buttons">
+				<button class="button_small" (click)="acceptFriendRequest(notification)">ACCEPT</button>
+				<button class="button_small button_reverse" (click)="declineFriendRequest(notification)">DECLINE</button>
+			</div>
+		</div>
+		<div class="notification" *ngIf="notification.type === 'sendFriendRequest'">
+			<img src="../../assets/add_friend_icon_yellow.png" class="notification-type">
+			<div class="notification-content">
+				<h2>OPEN FRIEND REQUEST</h2>
+				<h6><span class="red">{{notification.recipient!.username}}</span> has not answered your friend request yet!</h6>
+			</div>
+			<div class="notification-buttons">
+				<button class="button_small button_reverse" (click)="withdrawFriendRequest(notification)">WITHDRAW</button>
+			</div>
+		</div>
+		<div class="notification" *ngIf="notification.type === 'channelInvite'">
+			<img src="../../assets/channel_invite_icon.png" class="notification-type">
+			<div class="notification-content">
+				<h2>CHANNEL INVITE</h2>
+				<h6>You have been invited to the channel <span class="red">{{notification.subject!.name}}</span></h6>
+			</div>
+			<div class="notification-buttons">
+				<button class="button_small" (click)="acceptChannelInvite(notification)">ACCEPT</button>
+				<button class="button_small button_reverse" (click)="declineChannelInvite(notification)">DECLINE</button>
+			</div>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="notifications.length === 0" class="notification no-notifications">
+		<h4>CURRENTLY NO NOTIFICATIONS</h4>
+	</ng-container>
 </div>

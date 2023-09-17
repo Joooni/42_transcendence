@@ -15,29 +15,58 @@ export class NotificationComponent implements OnInit {
 	
 	constructor(private userDataService: UserDataService) {}
 
-	ngOnInit() {
-		this.userDataService.findSelf().then(user => this.activeUser = user);
+	async ngOnInit() {
+		await this.userDataService.findSelf().then(user => this.activeUser = user);
 		this.updateNotifications();
+	}
+
+	acceptFriendRequest(notification: Notification) {
+		//remove sender from incomingFriendRequest
+		//remove recipient from senders sendFriendRequests
+		//add sender to recipients friend list
+		//add recipient to senders friend list
+	}
+
+	declineFriendRequest(notification: Notification) {
+		//remove sender from incomingFriendRequest
+		//remove recipient from senders sendFriendRequests
+	}
+
+	acceptChannelInvite(notification: Notification) {
+		//remove recipient from channels invite list
+		//remove channel from recipients channel list
+		//add recipient to channel member list
+		//add channel to recipients channel list
+	}
+
+	declineChannelInvite(notification: Notification) {
+		//remove recipient from channels invite list - or maybe not??
+		//remove channel from recipients channel list
+	}
+
+	withdrawFriendRequest(notification: Notification) {
+		//remove sender from incomingFriendRequest
+		//remove recipient from senders sendFriendRequests
 	}
 
 	private updateNotifications() {
 		this.notifications = [];
-		for (let channel of this.activeUser?.invitedInChannel!) {
-			this.notifications.push({
-				type: "channelInvite",
-				sender: channel
-			});
-		}
 		for (let user of this.activeUser?.incomingFriendRequests!) {
 			this.notifications.push({
 				type: "incomingFriendRequest",
 				sender: user
 			});
 		}
+		for (let channel of this.activeUser?.invitedInChannel!) {
+			this.notifications.push({
+				type: "channelInvite",
+				subject: channel
+			});
+		}
 		for (let user of this.activeUser?.sendFriendRequests!) {
 			this.notifications.push({
 				type: "sendFriendRequest",
-				sender: user
+				recipient: user
 			});
 		}
 	}

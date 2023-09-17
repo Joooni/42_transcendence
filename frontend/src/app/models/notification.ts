@@ -3,5 +3,7 @@ import { User } from "./user";
 
 export interface Notification {
 	type: string;
-	sender: User | Channel;
+	sender?: User;
+	recipient?: User;
+	subject?: Channel;
 }
