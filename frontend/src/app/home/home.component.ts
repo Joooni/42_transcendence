@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-=======
-import { Component } from '@angular/core';
->>>>>>> 10c4bd2a (First steps Notifications)
 import { GAMES } from '../mock-data/mock_games';
 import { Game } from "../models/game";
 import { GameDataService } from '../services/game-data/game-data.service';

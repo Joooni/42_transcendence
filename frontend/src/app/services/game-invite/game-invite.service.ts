@@ -102,6 +102,8 @@ export class GameInviteService {
 			console.log("got gamerequest accepted");
 			this.showWaitForGameRequestAnswerPopup = false;
 			this.router.navigate(['/game']);
+			this.showSendGameRequestPopup = false;
+			this.gameRequestRecipient = undefined;
 		})
 	}
 

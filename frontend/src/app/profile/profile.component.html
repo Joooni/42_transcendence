@@ -27,7 +27,7 @@
 
 		</div>
 		<div class="box_column profile_box_column">
-			<h1> - ACHIEVEMENTS - </h1>
+			<h1>-&nbsp;ACHIEVEMENTS&nbsp;-</h1>
 			<div class="achievements_box">
 				<div *ngIf="archivementIsUnlocked(7)" class="achievement">
 					<img class="achievement_icon" src="../../assets/achievements.png">
@@ -61,8 +61,8 @@
 		</div>
 	</div>
 	<h1> - GAME HISTORY - </h1>
-	<div class="profile_flex_column">
-		<div *ngFor="let history of gameHistory" [class.red]= " getOwnScore(history) < getOtherScore(history) " class="box_row profile_box_games">
+	<div class="profile_flex_column game-history">
+		<div *ngFor="let history of gameHistory" [class.red]= "getOwnScore(history) < getOtherScore(history)" class="box_row profile_box_games">
 			<h4>{{ getOwnScore(history) }} : {{ getOtherScore(history) }}</h4>
 			<div class="profile_box_opponent">
 				<img class="profile_picture" src= "{{ getOtherPlayer(history).picture }}">
@@ -75,5 +75,4 @@
 </div>
 <div *ngIf="!hasSelectedUser">
 	<h1>NO SUCH USER</h1>
-	<h3>(WORK IN PROGRESS)</h3>
 </div>

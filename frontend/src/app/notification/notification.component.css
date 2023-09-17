@@ -27,7 +27,7 @@ h2, h4, h6 {
 	background-color: rgba(1, 47, 1, 0.552);
 	display: flex;
 	flex-direction: column;
-	row-gap: 3%;
+	row-gap: 0.8rem;
 	overflow-y: auto;
 	padding: 0.5rem;
 }
