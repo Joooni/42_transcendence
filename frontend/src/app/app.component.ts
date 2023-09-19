@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -7,7 +8,9 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-	constructor(private cookie: CookieService) {}
+	constructor(private cookie: CookieService,
+				public router: Router
+		) {}
 
 	setCookie() {
 		this.cookie.set("userid", "1");//has to be set to the active user after authentication

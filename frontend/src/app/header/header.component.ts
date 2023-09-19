@@ -5,6 +5,7 @@ import { SocketService } from '../services/socket/socket.service';
 import { AuthService } from '../services/auth/auth.service';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { GameInviteService } from '../services/game-invite/game-invite.service';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-header',
@@ -19,12 +20,14 @@ export class HeaderComponent implements OnInit {
 	constructor(
 		private authService: AuthService,
 		private userDataService: UserDataService,
-		private gameInviteService: GameInviteService
+		private gameInviteService: GameInviteService,
+		private errorService: ErrorService
 		) {}
 
 	ngOnInit() {
 		this.checkAuthentication();
 		this.gameInviteService.initGameInviteService();
+		this.errorService.initErrorService();
 	}
 
 	checkAuthentication() {

@@ -15,6 +15,7 @@ export interface gameData {
   leftUserID: number;
   rightUserID: number;
   gameEnds: boolean;
+  userQuit?: number;
 }
 
 export interface gameDataBE {
@@ -32,3 +33,5 @@ export interface onGoingGamesData {
   goalsLeft: number;
   goalsRight: number;
 }
+
+
