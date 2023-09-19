@@ -6,6 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { setTimeout } from 'timers/promises';
 import { Server, Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
@@ -40,16 +41,29 @@ export class SocketGateway
     console.log('SocketClient connected:', socket.id);
   }
 
+  async handleAlreadyConnected(socketId: string) {
+	this.server.to(socketId).emit('alreadyConnected', {});
+	this.server.to(socketId).disconnectSockets();
+
+	//   (async () => {
+	// 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
+	// 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);
+	//   })()
+  }
+
   async handleDisconnect(client: Socket) {
     console.log('SocketClient disconnected:', client.id);
     try {
-      const user = await this.usersService.findOnebySocketId(client.id);
+      var user = await this.usersService.findOnebySocketId(client.id);
+	  this.gameService.exitRoomsAfterSocketDiscon(user);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
       this.updateStatusAndEmit(user.id, 'offline');
+
     } catch (error) {
       console.log('Error Socket: User not found');
     }
   }
+
 
   @SubscribeMessage('message')
   async handleMessage(client: Socket, message: MessageObj) {
@@ -352,12 +366,16 @@ export class SocketGateway
 
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
-    this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
+	if (this.gameService.gameDataMap.get(data[1])!) {
+    	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
+	}
   }
 
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
-    this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+	if (this.gameService.gameDataMap.get(data[1])!) {
+   		 this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+	}
   }
 
   @SubscribeMessage('requestOngoingGames')
@@ -367,7 +385,7 @@ export class SocketGateway
 
   @SubscribeMessage('userLeftGame')
   userLeftGame(client: Socket, data: number[]) {
-    this.gameService.userLeftGame(this.server, data[0], data[1]);
+    this.gameService.userLeftGame(data[0], data[1]);
   }
 
   @SubscribeMessage('watchGame')

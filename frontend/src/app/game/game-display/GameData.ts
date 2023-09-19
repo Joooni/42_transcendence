@@ -13,6 +13,7 @@ export interface gameData {
 	leftUserID: number;
 	rightUserID: number;
 	gameEnds: boolean
+	userQuit?: number;
 }
 
   

@@ -1,0 +1,17 @@
+.message1 {
+	height: 50%;
+    width: 75%;
+    position: absolute;
+    margin-left: -25%;
+    left: 50%;
+	top: 25%;
+}
+
+.message2 {
+	height: 50%;
+    width: 75%;
+    position: absolute;
+    margin-left: -23%;
+    left: 50%;
+	top: 35%;
+}

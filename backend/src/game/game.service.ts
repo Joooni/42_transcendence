@@ -10,6 +10,7 @@ import { gameData, gameDataBE, onGoingGamesData } from './match/GameData';
 import { UsersService } from 'src/users/users.service';
 import { matches } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
+import { valueFromAST } from 'graphql';
 
 @Injectable()
 export class GameService {
@@ -217,15 +218,32 @@ export class GameService {
     server.emit('sendOngoingGames', oGGData);
   }
 
-  userLeftGame(server: Server, activeUserID: number, roomNbr: number) {
+  
+	exitRoomsAfterSocketDiscon(user: User) {
+		var key: number;
+		var value: gameData;
+		for([key, value] of this.gameDataMap.entries()){
+			if (value.leftUserID == user.id) {
+				// console.log("The socket was in room", key, value);
+				this.userLeftGame(user.id, key);
+			}
+			if (value.rightUserID == user.id) {
+				// console.log("The socket was in room", key, value);
+				this.userLeftGame(user.id, key);
+			}
+		}
+	}
+
+  userLeftGame(activeUserID: number, roomNbr: number) {
     console.log(
       'user with id:   ',
       activeUserID,
       '    leaved the game in room:   ',
       roomNbr,
-      '   . We have to add the behaviour here.',
     );
+	this.gameDataMap.get(roomNbr)!.userQuit = activeUserID;
   }
+  
 
   async createMatchDB(
     firstPlayerId: number,

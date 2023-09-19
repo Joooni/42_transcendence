@@ -15,7 +15,6 @@ export class GameDisplayService {
 	background = {
 		width: 1024,
 		height: 768,
-		src : '../../../../assets/gameObjects/hintergrund1.png',
 		img: new Image
 	}
 
@@ -26,22 +25,20 @@ export class GameDisplayService {
 		racketLeftX: 20,
 		width: 60,
 		height: 160,
-		src : '../../../../assets/gameObjects/banane_links.png',
 		img: new Image
 	}
+
 
 	racketRight = { 
 		racketRightX: 944,
 		width: 60,
 		height: 160,
-		src : '../../../../assets/gameObjects/banane_rechts.png',
 		img: new Image
 	}
 
 	ball = {
 		width: 100,
 		height: 100,
-		src : '../../../../assets/gameObjects/DK_Fass1.png',
 		img: new Image
 	}
 
@@ -91,6 +88,16 @@ export class GameDisplayService {
 		img: new Image
 	}
 
+	oppQuit = {
+		x: 160,
+		y: 524,
+		width: 705,
+		height: 41,
+		src : '../../../../assets/gameObjects/oppQuit.png',
+		img: new Image
+	}
+
+
 	countdown = {
 		x: 462,
 		y: 324,
@@ -116,6 +123,7 @@ export class GameDisplayService {
 		this.goalsRight.width = 101;
 		this.countdown.width = 101;
 	}
+
 
 	imageControl(data: gameData) {
 		if (data.goalTriggerLeft == true || data.goalTriggerRight == true) {
@@ -145,7 +153,7 @@ export class GameDisplayService {
 				}
 				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + data.goalsLeft + '.png' ;
 			}
-			if (data.goalsLeft >= 3 || data.goalsRight >= 3)
+			if (data.goalsLeft >= 5 || data.goalsRight >= 5)
 				this.gameEnds = true;
 			setTimeout(() => {
 				this.racketPositionY = this.racketPositionStartY;
@@ -159,14 +167,25 @@ export class GameDisplayService {
 	}
 
 	loadImages() {
-		this.background.img.src = this.background.src;
+		var check = this.activeUser?.selectedMap;
+
+
+		if (check == 1) {
+			this.background.img.src = '../../../../assets/gameObjects/look1/hintergrund1.png';
+			this.racketLeft.img.src = '../../../../assets/gameObjects/look1/banane_links.png';
+			this.racketRight.img.src = '../../../../assets/gameObjects/look1/banane_rechts.png';
+			this.ball.img.src = '../../../../assets/gameObjects/look1/DK_Fass1.png';
+		} else {
+			this.background.img.src = '../../../../assets/gameObjects/look2/hintergrund.png';
+			this.racketLeft.img.src = '../../../../assets/gameObjects/look2/racket2_left.png';
+			this.racketRight.img.src = '../../../../assets/gameObjects/look2/racket2_right.png';
+			this.ball.img.src = '../../../../assets/gameObjects/look2/ball2.png';
+		}
+
 		this.countdown.img1.src = '../../../../assets/gameObjects/nbr1.png';
 		this.countdown.img2.src = '../../../../assets/gameObjects/nbr2.png';
 		this.countdown.img3.src = '../../../../assets/gameObjects/nbr3.png';
 		
-		this.ball.img.src = this.ball.src;
-		this.racketLeft.img.src = this.racketLeft.src;
-		this.racketRight.img.src = this.racketRight.src;
 
 		this.goal.img.src = this.goal.src;	
 		this.explosion.img.src = this.explosion.src;
@@ -175,6 +194,7 @@ export class GameDisplayService {
 		this.goalsRight.img.src = '../../../../assets/gameObjects/nbr0.png';
 	
 		this.result.img.src = this.result.src;
+		this.oppQuit.img.src = this.oppQuit.src;
 	}
 
 

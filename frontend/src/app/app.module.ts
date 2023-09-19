@@ -27,6 +27,7 @@ import { ChatChannelDropdownComponent } from './chat/chat-channel/chat-channel-d
 import { ChatDropdownComponent } from './chat/chat-dropdown/chat-dropdown.component';
 import { GameWatchComponent } from './game/game-watch/game-watch.component';
 import { GameInviteComponent } from './game-invite/game-invite.component';
+import { AlreadyConnectedComponent } from './already-connected/already-connected.component';
 
 const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, options: {} };
 
@@ -49,6 +50,7 @@ const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, optio
     ErrorComponent,
     GameWatchComponent,
     GameInviteComponent,
+    AlreadyConnectedComponent,
   ],
   imports: [
     BrowserModule,

@@ -25,6 +25,7 @@ export class UsersService {
     private readonly httpService: HttpService,
   ) {}
 
+
   async create(createUserInput: CreateUserInput): Promise<void> {
     console.log('This action adds a new user');
     //repository.insert method is used to insert a new entity or an array of entities into the database.
@@ -272,6 +273,16 @@ export class UsersService {
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
   }
+
+  async resetAllSocketidAndStatus() {
+	var users: User[] = await this.findAll();
+	users.forEach(async user => {
+		await this.updateSocketid(user.id, '');
+		await this.updateStatus(user.id, 'offline')
+	});
+  }
+
+
 
   async addToOwnedChannel(userid: number, channelId: string) {
     const user = await this.findOne(userid);

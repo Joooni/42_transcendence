@@ -148,15 +148,18 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		this.context.drawImage(this.gameDisplayService.goalsRight.img, this.gameDisplayService.goalsRight.x, this.gameDisplayService.goalsRight.y, this.gameDisplayService.goalsRight.width, this.gameDisplayService.goalsRight.height);
 		this.context.drawImage(this.gameDisplayService.ball.img, data.ballX, data.ballY, this.gameDisplayService.ball.width, this.gameDisplayService.ball.height);
 
-		if (this.gameDisplayService.goalTrigger == true) {
+		if (this.gameDisplayService.goalTrigger == true && data.userQuit == undefined) {
 			this.context.drawImage(this.gameDisplayService.goal.img, this.gameDisplayService.goal.x, this.gameDisplayService.goal.y, this.gameDisplayService.goal.width, this.gameDisplayService.goal.height);
 			this.context.drawImage(this.gameDisplayService.explosion.img, this.gameDisplayService.explosion.x, this.gameDisplayService.explosion.y, this.gameDisplayService.explosion.width, this.gameDisplayService.explosion.height);
 		}
 		
-		if (data.goalsLeft >= 3 || data.goalsRight >= 3) {
+		if (data.goalsLeft >= 5 || data.goalsRight >= 5) {
 			this.roomNbr = undefined;
 			setTimeout(() => {
 				this.context.drawImage(this.gameDisplayService.result.img, this.gameDisplayService.result.x, this.gameDisplayService.result.y, this.gameDisplayService.result.width, this.gameDisplayService.result.height);
+				if (data.userQuit != undefined) {
+					this.context.drawImage(this.gameDisplayService.oppQuit.img, this.gameDisplayService.oppQuit.x, this.gameDisplayService.oppQuit.y, this.gameDisplayService.oppQuit.width, this.gameDisplayService.oppQuit.height);
+				}
 			}, 3000);
 			
 		}
