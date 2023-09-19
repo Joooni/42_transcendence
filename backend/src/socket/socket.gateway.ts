@@ -45,8 +45,6 @@ export class SocketGateway
 	this.server.to(socketId).emit('alreadyConnected', {});
 	this.server.to(socketId).disconnectSockets();
 
-
-
 	//   (async () => {
 	// 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
 	// 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);

@@ -1,5 +1,6 @@
 <div id="donkey-pong">
-	<app-header></app-header>
+	<app-header *ngIf="router.url !== '/alreadyConnected' "></app-header>
+	<!-- <app-header></app-header> -->
 	<router-outlet></router-outlet>
 	<app-game-invite></app-game-invite>
 	<app-error></app-error>

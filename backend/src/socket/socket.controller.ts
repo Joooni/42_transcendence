@@ -28,28 +28,26 @@ export class SocketController {
     );
 
 
-
 	var user: User = await this.usersService.findOne(jwtPayload.id);
 	console.log("The socketID of the user BEFORE changing is :  ", user.socketid);
 
-	// if (user.socketid !== '') {
-	// 	console.log('The user is already connected. The new connection will be closed');
-	// 	this.socketGateway.handleAlreadyConnected(socketId);
-	// }
-	// else {
-	// 	await this.usersService.updateSocketid(jwtPayload.id, socketId);
-	// 	this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
-	// }
+	if (user.socketid !== '' && socketId != user.socketid) {
+		console.log('The user is already connected. The new connection will be closed');
+		this.socketGateway.handleAlreadyConnected(socketId);
+	}
+	else {
+		await this.usersService.updateSocketid(jwtPayload.id, socketId);
+		this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+	}
 
 	// next 2 lines only for for development
-	await this.usersService.updateSocketid(jwtPayload.id, socketId);
-	this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+	// await this.usersService.updateSocketid(jwtPayload.id, socketId);
+	// this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
 
 
 	user = await this.usersService.findOne(jwtPayload.id);
 	console.log("The socketID of the user AFTER changing is :  ", user.socketid);
 
 	return { verified: true };
-
   }
 }
