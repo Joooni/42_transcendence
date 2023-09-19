@@ -242,6 +242,8 @@ export class GameService {
       roomNbr,
     );
 	this.gameDataMap.get(roomNbr)!.userQuit = activeUserID;
+  // Achievement: Ragequit
+  this.usersService.updateAchievements(activeUserID, 6);
   }
   
 
@@ -267,13 +269,31 @@ export class GameService {
         match.xpSecondPlayer = obj.player2xp;
         firstPlayer.xp += obj.player1xp;
         secondPlayer.xp += obj.player2xp;
+        // First player wins
         if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
+          // Achievement: Destroyed the enemy
+          if (match.goalsSecondPlayer == 0 && !firstPlayer.achievements.includes(2)) {
+            firstPlayer.achievements.push(2);
+          }
           firstPlayer.wins += 1;
           secondPlayer.losses += 1;
+          // Achievement: won 5 games
+          if(firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
+            firstPlayer.achievements.push(3);
+          }
         }
+        // Second player wins
         else {
+          // Achievement: Destroyed the enemy
+          if (match.goalsFirstPlayer == 0 && !secondPlayer.achievements.includes(2)) {
+            secondPlayer.achievements.push(2);
+          }
           secondPlayer.wins += 1;
           firstPlayer.losses += 1;
+          // Achievement: won 5 games
+          if(firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
+            firstPlayer.achievements.push(3);
+          }
         }
       match.firstPlayer = firstPlayer;
       match.secondPlayer = secondPlayer;
