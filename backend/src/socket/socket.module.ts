@@ -6,7 +6,6 @@ import { MessagesService } from 'src/messages/messages.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { SocketGateway } from './socket.gateway';
-import { GameModule } from '../game/game.module';
 import { GameService } from 'src/game/game.service';
 import { MatchService } from 'src/game/match/match.service';
 import { ChannelsService } from 'src/channels/channels.service';

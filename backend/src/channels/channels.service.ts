@@ -14,8 +14,7 @@ export class ChannelsService {
     @InjectRepository(Channel)
     private readonly channelRepository: Repository<Channel>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly userService: UsersService,
-    // private readonly channelMuteService: ChannelMuteService,
+    private readonly userService: UsersService, // private readonly channelMuteService: ChannelMuteService,
   ) {}
 
   async findAll(): Promise<Channel[]> {
@@ -255,7 +254,7 @@ export class ChannelsService {
         throw new NotFoundException('Channel or User not found');
       }
 
-      if (channel.bannedUsers.find(user => user.id === invitedUser.id)) {
+      if (channel.bannedUsers.find((user) => user.id === invitedUser.id)) {
         throw new Error('User is banned');
       }
       channel.invitedUsers.push(invitedUser);
@@ -266,7 +265,11 @@ export class ChannelsService {
     }
   }
 
-  async setUserAsAdmin(activeUserId: number, selectedUserId: number, channelId: string) {
+  async setUserAsAdmin(
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);
@@ -275,7 +278,10 @@ export class ChannelsService {
         throw new NotFoundException('Channel or Users not found');
       }
 
-      if (channel.admins.includes(activeUser) == false && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.includes(activeUser) == false &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error('User is not admin');
       }
       channel.admins.push(selectedUser);
@@ -285,7 +291,11 @@ export class ChannelsService {
     }
   }
 
-  async removeUserAsAdmin(activeUserId: number, selectedUserId: number, channelId: string) {
+  async removeUserAsAdmin(
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);
@@ -297,14 +307,21 @@ export class ChannelsService {
       if (channel.owner.id !== activeUser.id) {
         throw new Error('User is not owner');
       }
-      channel.admins = channel.admins.filter((user) => user.id !== selectedUser.id);
+      channel.admins = channel.admins.filter(
+        (user) => user.id !== selectedUser.id,
+      );
       await this.channelRepository.save(channel);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async banUser(server: Server, activeUserId: number, selectedUserId: number, channelId: string) {
+  async banUser(
+    server: Server,
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);
@@ -315,14 +332,25 @@ export class ChannelsService {
       if (channel.owner.id === selectedUser.id) {
         throw new Error("You can't ban the owner");
       }
-      if (channel.admins.find(user => user.id === activeUser.id) == undefined && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.find((user) => user.id === activeUser.id) == undefined &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error('You are not a admin');
       }
-      if (channel.admins.find(user => user.id === selectedUser.id) != undefined && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.find((user) => user.id === selectedUser.id) !=
+          undefined &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error("You can't ban an admin");
       }
-      channel.admins = channel.admins.filter((user) => user.id !== selectedUser.id);
-      channel.users = channel.users.filter((user) => user.id !== selectedUser.id);
+      channel.admins = channel.admins.filter(
+        (user) => user.id !== selectedUser.id,
+      );
+      channel.users = channel.users.filter(
+        (user) => user.id !== selectedUser.id,
+      );
       channel.bannedUsers.push(selectedUser);
       await this.channelRepository.save(channel);
       server.to(channelId).emit('updateChannel', {});
@@ -333,7 +361,11 @@ export class ChannelsService {
     }
   }
 
-  async unbanUser(activeUserId: number, selectedUserId: number, channelId: string) {
+  async unbanUser(
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);
@@ -342,17 +374,27 @@ export class ChannelsService {
         throw new NotFoundException('Channel or Users not found');
       }
 
-      if (channel.admins.find(user => user.id === activeUser.id) == undefined && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.find((user) => user.id === activeUser.id) == undefined &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error('User is not admin');
       }
-      channel.bannedUsers = channel.bannedUsers.filter((user) => user.id !== selectedUser.id);
+      channel.bannedUsers = channel.bannedUsers.filter(
+        (user) => user.id !== selectedUser.id,
+      );
       await this.channelRepository.save(channel);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async kickUser(server: Server, activeUserId: number, selectedUserId: number, channelId: string) {
+  async kickUser(
+    server: Server,
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);
@@ -361,14 +403,25 @@ export class ChannelsService {
         throw new NotFoundException('Channel or Users not found');
       }
 
-      if (channel.admins.find(user => user.id === activeUser.id) == undefined && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.find((user) => user.id === activeUser.id) == undefined &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error('User is not admin');
       }
-      if (channel.admins.find(user => user.id === selectedUser.id) != undefined && channel.owner.id !== activeUser.id) {
+      if (
+        channel.admins.find((user) => user.id === selectedUser.id) !=
+          undefined &&
+        channel.owner.id !== activeUser.id
+      ) {
         throw new Error('Selected User is admin');
       }
-      channel.admins = channel.admins.filter((user) => user.id !== selectedUser.id);
-      channel.users = channel.users.filter((user) => user.id !== selectedUser.id);
+      channel.admins = channel.admins.filter(
+        (user) => user.id !== selectedUser.id,
+      );
+      channel.users = channel.users.filter(
+        (user) => user.id !== selectedUser.id,
+      );
       await this.channelRepository.save(channel);
       server.to(channelId).emit('updateChannel', {});
       server.to(selectedUser.socketid).socketsLeave(channelId);

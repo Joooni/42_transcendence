@@ -12,7 +12,7 @@ export class ChannelsResolver {
   constructor(
     private readonly channelsService: ChannelsService,
     private readonly channelMuteService: ChannelMuteService,
-    ) {}
+  ) {}
 
   @Query(() => [Channel], { name: 'channels' })
   async findAll(): Promise<Channel[]> {

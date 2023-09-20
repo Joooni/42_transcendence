@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -8,9 +8,7 @@ import { Match } from './entitites/match.entity';
 import { MatchService } from './match/match.service';
 import { gameData, gameDataBE, onGoingGamesData } from './match/GameData';
 import { UsersService } from 'src/users/users.service';
-import { matches } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
-import { valueFromAST } from 'graphql';
 
 @Injectable()
 export class GameService {
@@ -218,21 +216,20 @@ export class GameService {
     server.emit('sendOngoingGames', oGGData);
   }
 
-  
-	exitRoomsAfterSocketDiscon(user: User) {
-		var key: number;
-		var value: gameData;
-		for([key, value] of this.gameDataMap.entries()){
-			if (value.leftUserID == user.id) {
-				// console.log("The socket was in room", key, value);
-				this.userLeftGame(user.id, key);
-			}
-			if (value.rightUserID == user.id) {
-				// console.log("The socket was in room", key, value);
-				this.userLeftGame(user.id, key);
-			}
-		}
-	}
+  exitRoomsAfterSocketDiscon(user: User) {
+    let key: number;
+    let value: gameData;
+    for ([key, value] of this.gameDataMap.entries()) {
+      if (value.leftUserID == user.id) {
+        // console.log("The socket was in room", key, value);
+        this.userLeftGame(user.id, key);
+      }
+      if (value.rightUserID == user.id) {
+        // console.log("The socket was in room", key, value);
+        this.userLeftGame(user.id, key);
+      }
+    }
+  }
 
   userLeftGame(activeUserID: number, roomNbr: number) {
     console.log(
@@ -241,11 +238,10 @@ export class GameService {
       '    leaved the game in room:   ',
       roomNbr,
     );
-	this.gameDataMap.get(roomNbr)!.userQuit = activeUserID;
-  // Achievement: Ragequit
-  this.usersService.updateAchievements(activeUserID, 6);
+    this.gameDataMap.get(roomNbr)!.userQuit = activeUserID;
+    // Achievement: Ragequit
+    this.usersService.updateAchievements(activeUserID, 6);
   }
-  
 
   async createMatchDB(
     firstPlayerId: number,
@@ -264,37 +260,43 @@ export class GameService {
         match.goalsFirstPlayer,
         secondPlayer,
         match.goalsSecondPlayer,
-        );
-        match.xpFirstPlayer = obj.player1xp;
-        match.xpSecondPlayer = obj.player2xp;
-        firstPlayer.xp += obj.player1xp;
-        secondPlayer.xp += obj.player2xp;
-        // First player wins
-        if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
-          // Achievement: Destroyed the enemy
-          if (match.goalsSecondPlayer == 0 && !firstPlayer.achievements.includes(2)) {
-            firstPlayer.achievements.push(2);
-          }
-          firstPlayer.wins += 1;
-          secondPlayer.losses += 1;
-          // Achievement: won 5 games
-          if(firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
-            firstPlayer.achievements.push(3);
-          }
+      );
+      match.xpFirstPlayer = obj.player1xp;
+      match.xpSecondPlayer = obj.player2xp;
+      firstPlayer.xp += obj.player1xp;
+      secondPlayer.xp += obj.player2xp;
+      // First player wins
+      if (match.goalsFirstPlayer > match.goalsSecondPlayer) {
+        // Achievement: Destroyed the enemy
+        if (
+          match.goalsSecondPlayer == 0 &&
+          !firstPlayer.achievements.includes(2)
+        ) {
+          firstPlayer.achievements.push(2);
         }
-        // Second player wins
-        else {
-          // Achievement: Destroyed the enemy
-          if (match.goalsFirstPlayer == 0 && !secondPlayer.achievements.includes(2)) {
-            secondPlayer.achievements.push(2);
-          }
-          secondPlayer.wins += 1;
-          firstPlayer.losses += 1;
-          // Achievement: won 5 games
-          if(firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
-            firstPlayer.achievements.push(3);
-          }
+        firstPlayer.wins += 1;
+        secondPlayer.losses += 1;
+        // Achievement: won 5 games
+        if (firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
+          firstPlayer.achievements.push(3);
         }
+      }
+      // Second player wins
+      else {
+        // Achievement: Destroyed the enemy
+        if (
+          match.goalsFirstPlayer == 0 &&
+          !secondPlayer.achievements.includes(2)
+        ) {
+          secondPlayer.achievements.push(2);
+        }
+        secondPlayer.wins += 1;
+        firstPlayer.losses += 1;
+        // Achievement: won 5 games
+        if (firstPlayer.wins >= 5 && !firstPlayer.achievements.includes(3)) {
+          firstPlayer.achievements.push(3);
+        }
+      }
       match.firstPlayer = firstPlayer;
       match.secondPlayer = secondPlayer;
       await this.userRepository.save(firstPlayer);

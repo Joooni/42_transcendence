@@ -20,20 +20,17 @@ export class MatchService {
 
   //constructor() {}
 
-
   runGame(gameData: gameData): gameData {
-	if (gameData.userQuit != undefined) {
-		gameData = this.userLeft(gameData);
-	} else {
-		gameData = this.prepareAfterGoal(gameData);
-		gameData = this.ballMovement(gameData);
-	}
-	gameData = this.goalControl(gameData);
+    if (gameData.userQuit != undefined) {
+      gameData = this.userLeft(gameData);
+    } else {
+      gameData = this.prepareAfterGoal(gameData);
+      gameData = this.ballMovement(gameData);
+    }
+    gameData = this.goalControl(gameData);
 
     return gameData;
   }
-
-
 
   ballMovement(gameData: gameData): gameData {
     const ballPosY: number = gameData.ballY + 100 / 2; /* 100 == ball.height */
@@ -176,14 +173,14 @@ export class MatchService {
   }
 
   userLeft(gameData: gameData): gameData {
-	if (gameData.userQuit === gameData.rightUserID) {
-		gameData.goalsLeft = 4;
-		gameData.goalTriggerRight = true;
-	} else {
-		gameData.goalsRight = 4;
-		gameData.goalTriggerLeft = true;
-	}
-	return gameData;	
+    if (gameData.userQuit === gameData.rightUserID) {
+      gameData.goalsLeft = 4;
+      gameData.goalTriggerRight = true;
+    } else {
+      gameData.goalsRight = 4;
+      gameData.goalTriggerLeft = true;
+    }
+    return gameData;
   }
 
   goalControl(gameData: gameData): gameData {
