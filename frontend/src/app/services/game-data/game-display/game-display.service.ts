@@ -152,12 +152,19 @@ export class GameDisplayService {
 				}
 				this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr' + data.goalsLeft + '.png' ;
 			}
-			if (data.goalsLeft >= 5 || data.goalsRight >= 5)
+			
+			if (data.goalsLeft >= 5 || data.goalsRight >= 5) {
 				this.gameEnds = true;
+				setTimeout(() => {
+					this.racketPositionY = this.racketPositionStartY;
+					this.goalTrigger = false;
+				}, 900);
+			} else {
 			setTimeout(() => {
-				this.racketPositionY = this.racketPositionStartY;
-				this.goalTrigger = false;
-			}, 2900);
+					this.racketPositionY = this.racketPositionStartY;
+					this.goalTrigger = false;
+				}, 2900);
+			}
 		}
 	}
 

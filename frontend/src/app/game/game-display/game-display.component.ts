@@ -162,7 +162,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 				if (data.userQuit != undefined) {
 					this.context.drawImage(this.gameDisplayService.oppQuit.img, this.gameDisplayService.oppQuit.x, this.gameDisplayService.oppQuit.y, this.gameDisplayService.oppQuit.width, this.gameDisplayService.oppQuit.height);
 				}
-			}, 3000);
+			}, 1000);
 			
 		}
 	}

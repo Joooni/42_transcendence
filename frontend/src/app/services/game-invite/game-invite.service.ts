@@ -70,9 +70,11 @@ export class GameInviteService {
 		await this.getActiveUser();
 		this.socket.emit2('sendGameRequest', this.activeUser?.id, selectedUser.id);
 		this.socket.listen('gameRequestDecliend').subscribe(() => {
+			this.showSendGameRequestPopup = false;
 			this.sendGameRequestWasDeclined();
 		})
 		this.socket.listen('gameRequestAccepted').subscribe((data) => {
+			this.showSendGameRequestPopup = false;
 			this.router.navigate(['/game']);
 		})		
 	}
@@ -97,5 +99,6 @@ export class GameInviteService {
 
 	ngOnDestroy() {
 		this.socket.stopListen('gotGameRequest');
+		console.log("GAME_INVITE DESTROYED");
 	}
 }

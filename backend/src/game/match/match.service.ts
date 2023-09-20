@@ -209,13 +209,16 @@ export class MatchService {
         gameData.goalsLeft++;
         gameData.ballMoveDegree = 90;
       }
-      setTimeout(() => {
-        if (gameData.goalsLeft < 5 && gameData.goalsRight < 5) {
+
+      if (gameData.goalsLeft < 5 && gameData.goalsRight < 5) {
+        setTimeout(() => {
           gameData.ballMoveSpeed = 10;
-        } else {
+        }, 3000);
+      } else {
+        setTimeout(() => {
           gameData.gameEnds = true;
-        }
-      }, 3000);
+        }, 1000);
+      }
     }
     return gameData;
   }

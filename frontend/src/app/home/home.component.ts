@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit {
 		})
 		this.requestOngoingGames();	
 	}
+	
 
 	async connectSocket() {
 		for (let i = 0; i < 20; i++) {

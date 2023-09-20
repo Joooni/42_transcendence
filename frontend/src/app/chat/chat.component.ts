@@ -79,9 +79,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	ngOnDestroy() {
-		this.socket.stopListen('gotGameRequest');
-	}
+	ngOnDestroy() {}
 
 	changeShowFriends() {
 		if (this.showFriends == true)

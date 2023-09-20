@@ -21,10 +21,12 @@ export class HeaderComponent implements OnInit {
 		private authService: AuthService,
 		private userDataService: UserDataService,
 		private gameInviteService: GameInviteService,
-		private errorService: ErrorService
+		private errorService: ErrorService,
+		private socketService: SocketService,
 		) {}
 
 	ngOnInit() {
+		// this.connectSocket();
 		this.checkAuthentication();
 		this.gameInviteService.initGameInviteService();
 		this.errorService.initErrorService();
@@ -36,5 +38,15 @@ export class HeaderComponent implements OnInit {
 			if (this.isAuthenticated)
 				this.userDataService.findSelf().then(user => this.activeUser = user);
 		}, 500);
+	}
+
+	async connectSocket() {
+		for (let i = 0; i < 20; i++) {
+			await new Promise(resolve => setTimeout(resolve, 500));
+			if (this.socketService.connected == false)
+				await this.socketService.connectSocket();
+			else
+				break;
+		}
 	}
 }
