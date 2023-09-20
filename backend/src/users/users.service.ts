@@ -167,7 +167,6 @@ export class UsersService {
       await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});
       server.to(friend.socketid).emit('updateUserList', {});
-      //To-do: Send a update message to both users
     } catch (error) {
       console.log(error);
     }
