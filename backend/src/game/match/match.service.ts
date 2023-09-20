@@ -38,8 +38,24 @@ export class MatchService {
     const racketRightPosY =
       gameData.racketRightY + 160 / 2; /* 160 == racketRight.height*/
 
-    if (gameData.ballY <= 5 || gameData.ballY >= 663)
-      gameData.ballMoveDegree = 180 - gameData.ballMoveDegree;
+	var gameModus: number = 2; 
+	if (gameModus == 1) {
+		if (gameData.ballY <= 5 || gameData.ballY >= 663)
+			gameData.ballMoveDegree = 180 - gameData.ballMoveDegree;
+	} else {
+		if (gameData.ballY <= 5)
+			gameData.ballY = 663;
+		else if (gameData.ballY >= 663)
+			gameData.ballY = 5
+	}
+
+
+
+
+
+
+
+
     if (gameData.ballX <= 70) {
       if (ballPosY >= racketLeftPosY - 100 && ballPosY < racketLeftPosY - 82)
         gameData.ballMoveDegree = 160;
@@ -154,7 +170,7 @@ export class MatchService {
       else if (gameData.ballMoveDegree > 0) {
         gameData.goalTriggerRight = true;
       }
-      if (gameData.ballMoveSpeed < 70) gameData.ballMoveSpeed += 1;
+      if (gameData.ballMoveSpeed < 50) gameData.ballMoveSpeed += 1;
     }
     if (gameData.ballX >= 0 && gameData.ballX <= 924) {
       gameData.ballX +=

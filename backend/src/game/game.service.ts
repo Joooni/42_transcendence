@@ -172,17 +172,6 @@ export class GameService {
   }
 
   async startCountdown(roomNbr: number, server: Server) {
-	await this.usersService.updateStatus(this.gameDataMap.get(roomNbr)?.leftUserID!, "gaming");
-	server.emit('updateUser', {
-		id: this.gameDataMap.get(roomNbr!)!.leftUserID,
-		status: "gaming",
-	  });
-	await this.usersService.updateStatus(this.gameDataMap.get(roomNbr)?.rightUserID!, "gaming");
-	server.emit('updateUser', {
-		id: this.gameDataMap.get(roomNbr!)!.rightUserID,
-		status: "gaming",
-	  });
-
     this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
     this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
     console.log('The game with id:  ', roomNbr, '   is running');
