@@ -163,8 +163,8 @@ export class UsersService {
       if (!num2)
         friend.achievements.push(5);
 
-      await this.userRepository.save(user);
       await this.userRepository.save(friend);
+      await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});
       server.to(friend.socketid).emit('updateUserList', {});
       //To-do: Send a update message to both users
