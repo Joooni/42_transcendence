@@ -18,17 +18,16 @@ export class MatchService {
     startY: 298,
   };
 
-  //constructor() {}
+  constructor() {}
 
   runGame(gameData: gameData): gameData {
-    if (gameData.userQuit != undefined) {
-      gameData = this.userLeft(gameData);
-    } else {
-      gameData = this.prepareAfterGoal(gameData);
-      gameData = this.ballMovement(gameData);
-    }
-    gameData = this.goalControl(gameData);
-
+	if (gameData.userQuit != undefined) {
+		gameData = this.userLeft(gameData);
+	} else {
+		gameData = this.prepareAfterGoal(gameData);
+		gameData = this.ballMovement(gameData);
+	}
+	gameData = this.goalControl(gameData);
     return gameData;
   }
 

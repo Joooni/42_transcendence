@@ -426,6 +426,12 @@ export class SocketGateway
 
   @SubscribeMessage('userLeftGame')
   userLeftGame(client: Socket, data: number[]) {
+	
+	this.usersService.updateStatus(data[0], "online");
+	this.server.emit('updateUser', {
+		id: data[0],
+		status: "online",
+		});
     this.gameService.userLeftGame(data[0], data[1]);
   }
 

@@ -32,19 +32,14 @@ export class SocketController {
       user.socketid,
     );
 
-    if (user.socketid !== '' && socketId != user.socketid) {
-      console.log(
-        'The user is already connected. The new connection will be closed',
-      );
+    if (user.socketid !== '' && socketId != user.socketid && user.socketid !== undefined) {
+      console.log('The user is already connected. The new connection will be closed');
       this.socketGateway.handleAlreadyConnected(socketId);
-    } else {
+    }
+    else {
       await this.usersService.updateSocketid(jwtPayload.id, socketId);
       this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
     }
-
-    // next 2 lines only for for development
-    // await this.usersService.updateSocketid(jwtPayload.id, socketId);
-    // this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
 
     user = await this.usersService.findOne(jwtPayload.id);
     console.log(

@@ -113,7 +113,6 @@ export class GameDisplayService {
 		this.gameEnds = false;
 		this.racketPositionStartY = 298;
 		this.racketPositionY = this.racketPositionStartY
-		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
 	restartService() {
@@ -125,7 +124,7 @@ export class GameDisplayService {
 	}
 
 
-	imageControl(data: gameData) {
+	async imageControl(data: gameData) {
 		if (data.goalTriggerLeft == true || data.goalTriggerRight == true) {
 			this.goalTrigger = true;
 			this.explosion.y = data.ballY - 55;
@@ -166,11 +165,11 @@ export class GameDisplayService {
 		return (degrees * Math.PI / 180);
 	}
 
-	loadImages() {
+	async loadImages() {
+		await this.userDataService.findSelf().then(async user => this.activeUser = user);
 		var check = this.activeUser?.selectedMap;
 
-
-		if (check == 1) {
+		if (check == 2) {
 			this.background.img.src = '../../../../assets/gameObjects/look1/hintergrund1.png';
 			this.racketLeft.img.src = '../../../../assets/gameObjects/look1/banane_links.png';
 			this.racketRight.img.src = '../../../../assets/gameObjects/look1/banane_rechts.png';

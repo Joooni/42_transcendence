@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, Host
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
+import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { gameData } from './GameData';
 
 @Component({
@@ -24,13 +25,13 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
 
-	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService) {
+	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService) {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.search = true;
 		this.stopSearch = false;
-		this.gameDisplayService.loadImages();
 		this.countdown = 3;
+		this.gameDisplayService.loadImages();
 	}
 
 	ngAfterViewInit() {
@@ -47,6 +48,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.runGame(data as gameData)
 		})
 		this.gameDisplayService.restartService();
+
 
 		// window.addEventListener('beforeunload', (event) => {
 		// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
