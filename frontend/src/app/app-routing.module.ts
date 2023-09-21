@@ -9,6 +9,7 @@ import { LoginGuard } from './guard/login.guard';
 import { ChatComponent } from './chat/chat.component';
 import { loginPageGuard } from './guard/login-page.guard';
 import { GameComponent } from './game/game.component';
+import { GameSearchComponent } from './game/game-search/game-search.component';
 import { GameWatchComponent } from './game/game-watch/game-watch.component';
 import { AlreadyConnectedComponent } from './already-connected/already-connected.component';
 
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent, canActivate: [LoginGuard] },
   { path: 'chat', component: ChatComponent, canActivate: [LoginGuard] },
 	{ path: 'game', component: GameComponent, canActivate: [LoginGuard] }, //TO-DO: instead, route to matchmaking and then automaticall to game
+	{ path: 'gameSearch', component: GameSearchComponent, canActivate: [LoginGuard] },
 	{ path: 'gameWatch', component: GameWatchComponent, canActivate: [LoginGuard] },
   { path: 'alreadyConnected', component: AlreadyConnectedComponent},
   { path: '**', redirectTo: '/home', pathMatch: 'full'}

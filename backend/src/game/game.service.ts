@@ -175,6 +175,9 @@ export class GameService {
     this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
     this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
     console.log('The game with id:  ', roomNbr, '   is running');
+	server
+	.to(roomNbr!.toString())
+	.emit('gameFound', 0);
     server
       .to(roomNbr!.toString())
       .emit('getGameData', this.gameDataMap.get(roomNbr!)!);

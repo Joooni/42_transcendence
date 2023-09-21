@@ -48,14 +48,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.runGame(data as gameData)
 		})
 		this.gameDisplayService.restartService();
-
-
-		// window.addEventListener('beforeunload', (event) => {
-		// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
-		// 	event.preventDefault();
-		// 	event.stopImmediatePropagation();
-		// 	event.returnValue = '';
-		// });
 	}
 
 	ngOnDestroy() {

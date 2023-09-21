@@ -182,9 +182,7 @@ export class MatchService {
   radInDegrees(degrees: number): number {
     return (degrees * Math.PI) / 180;
   }
-
   
-
   userLeft(gameData: gameData): gameData {
     if (gameData.userQuit === gameData.rightUserID) {
       gameData.goalsLeft = 4;

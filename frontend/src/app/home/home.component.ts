@@ -67,8 +67,7 @@ export class HomeComponent implements OnInit {
 	
 
 	joinGame() {
-		// this.gameDisplayComponent.search = true;
-		this.router.navigate(['/game']);
+		this.router.navigate(['/gameSearch']);
 	}
 
 	watchThisMatch(roomNbr: number) {
