@@ -16,8 +16,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 
 	moveUp: boolean;
 	moveDown: boolean;
-	search: boolean;
-	stopSearch: boolean;
 	countdown: number;
 	roomNbr?: number;
 
@@ -28,8 +26,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService) {
 		this.moveUp = false;
 		this.moveDown = false;
-		this.search = false;
-		this.stopSearch = false;
 		this.countdown = 3;
 		this.gameDisplayService.loadImages();
 	}
@@ -56,33 +52,13 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		}
 	}
 
-	// @HostListener('window:onbeforeunload', [ '$event' ])
-	// beforeUnload(event: any) {
-	// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
-	// 	event.preventDefault();
-	// 	event.stopImmediatePropagation();
-	// 	event.returnValue = '';
-	// }
-
-	startGame() {
-		this.search = false;
-		this.stopSearch = true;
-		this.socketService.emit('startGameSearching', this.gameDisplayService.activeUser?.id);
-	}
-
-	stopSearching() {
-		this.stopSearch = false;
-		this.search = true;
-		this.socketService.emit('stopSearching', undefined);
-	}
-
 	runGame(data: gameData) {
-		if (this.stopSearch === true) {
-			this.stopSearch = false
-		}
-		if (this.search === true) {
-			this.search = false
-		}
+		// if (this.stopSearch === true) {
+		// 	this.stopSearch = false
+		// }
+		// if (this.search === true) {
+		// 	this.search = false
+		// }
 		if (this.countdown > 0) {
 			this.handleCountdown(data);
 		} else {

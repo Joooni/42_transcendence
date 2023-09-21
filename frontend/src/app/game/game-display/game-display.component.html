@@ -1,13 +1,5 @@
 <div class="game-display">
-	
-	<div align="center">
-		<button class="buttonSearch" *ngIf="search == true"
-			(click)="startGame()">Search for opponent</button>
-	
-		<button class="buttonStopSearch" *ngIf="stopSearch == true"
-			(click)="stopSearching()">Stop Searching</button>
-	</div>
-	
+		
 	<canvas #canvasEle
 		(window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" (window:blur)="moveDown = false" (window:blur)="moveUp = false"></canvas>
 	
