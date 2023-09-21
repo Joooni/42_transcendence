@@ -20,26 +20,28 @@ export class MatchService {
 
   constructor() {}
 
-  runGame(gameData: gameData): gameData {
+
+  runGame(gameData: gameData, gameMode: number): gameData {
 	if (gameData.userQuit != undefined) {
 		gameData = this.userLeft(gameData);
 	} else {
 		gameData = this.prepareAfterGoal(gameData);
-		gameData = this.ballMovement(gameData);
+		gameData = this.ballMovement(gameData, gameMode);
 	}
 	gameData = this.goalControl(gameData);
     return gameData;
   }
 
-  ballMovement(gameData: gameData): gameData {
+
+
+  ballMovement(gameData: gameData, gameMode: number): gameData {
     const ballPosY: number = gameData.ballY + 100 / 2; /* 100 == ball.height */
     const racketLeftPosY: number =
       gameData.racketLeftY + 160 / 2; /* 160 == racketLeft.height*/
     const racketRightPosY =
       gameData.racketRightY + 160 / 2; /* 160 == racketRight.height*/
 
-	var gameModus: number = 2; 
-	if (gameModus == 1) {
+	if (gameMode == 0) {
 		if (gameData.ballY <= 5 || gameData.ballY >= 663)
 			gameData.ballMoveDegree = 180 - gameData.ballMoveDegree;
 	} else {
@@ -48,12 +50,6 @@ export class MatchService {
 		else if (gameData.ballY >= 663)
 			gameData.ballY = 5
 	}
-
-
-
-
-
-
 
 
     if (gameData.ballX <= 70) {
@@ -186,6 +182,8 @@ export class MatchService {
   radInDegrees(degrees: number): number {
     return (degrees * Math.PI) / 180;
   }
+
+  
 
   userLeft(gameData: gameData): gameData {
     if (gameData.userQuit === gameData.rightUserID) {

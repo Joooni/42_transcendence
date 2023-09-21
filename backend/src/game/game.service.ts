@@ -105,9 +105,9 @@ export class GameService {
     return room;
   }
 
-  startMatch(roomNbr: number, server: Server) {
+  startMatch(roomNbr: number, server: Server, gameMode: number) {
     this.intervalRunGame = setInterval(() => {
-      this.matchService.runGame(this.gameDataMap.get(roomNbr!)!);
+      this.matchService.runGame(this.gameDataMap.get(roomNbr!)!, gameMode);
       server
         .to(roomNbr!.toString())
         .emit('getGameData', this.gameDataMap.get(roomNbr!)!);
@@ -171,7 +171,7 @@ export class GameService {
     }, 1000 / 25);
   }
 
-  async startCountdown(roomNbr: number, server: Server) {
+  async startCountdown(roomNbr: number, server: Server, gameMode: number) {
     this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
     this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
     console.log('The game with id:  ', roomNbr, '   is running');
@@ -187,7 +187,7 @@ export class GameService {
           .to(roomNbr!.toString())
           .emit('getGameData', this.gameDataMap.get(roomNbr!)!);
         setTimeout(() => {
-          this.startMatch(roomNbr, server);
+          this.startMatch(roomNbr, server, gameMode);
         }, 1000);
       }, 1000);
     }, 1000);

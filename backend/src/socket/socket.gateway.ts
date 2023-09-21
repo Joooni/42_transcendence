@@ -38,7 +38,6 @@ export class SocketGateway
   ) {
     this.openPopupSender = new Map();
     this.openPopupReceiver = new Map();
-
   }
 
   @WebSocketServer()
@@ -321,10 +320,11 @@ export class SocketGateway
     }
   }
 
-  @SubscribeMessage('startGameRequest')
+  @SubscribeMessage('startGameWithRequest')
   async startGameRequest(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[1];
     const gameRequestRecipientID: number = data[0];
+	const gameMode = data[2];
 	this.updateStatusAndEmit(gameRequestRecipientID, "gaming");
     console.log(
       'The GameRequest from User with ID:  ',
@@ -348,7 +348,7 @@ export class SocketGateway
     // gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
     // const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
 
-    this.gameService.startCountdown(roomNbr, this.server);
+    this.gameService.startCountdown(roomNbr, this.server, gameMode);
   }
 
   @SubscribeMessage('startGameSearching')
@@ -366,7 +366,7 @@ export class SocketGateway
     );
     if (roomNbr !== undefined) {
       this.gameService.room = 0;
-      this.gameService.startCountdown(roomNbr, this.server);
+      this.gameService.startCountdown(roomNbr, this.server, 0);
     }
   }
 
@@ -384,10 +384,12 @@ export class SocketGateway
     this.gameService.room = 0;
   }
 
+
   @SubscribeMessage('sendGameRequest')
   async sendGameRequest(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[0];
     const gameRequestRecipientID: number = data[1];
+	const gameMode: number = data[2];
 	this.updateStatusAndEmit(gameRequestSenderID, "gaming");
 	this.updateStatusAndEmit(gameRequestRecipientID , "gaming");
   this.openPopupSender.set(gameRequestSenderID, gameRequestRecipientID);
@@ -395,12 +397,16 @@ export class SocketGateway
     console.log(
       'User with ID:  ',
       gameRequestSenderID,
-      '  sent a game requested to User with ID:   ',
+      '  sent a game requested in mode:  ',
+	  gameMode,
+	  '  to User with ID:   ',
       gameRequestRecipientID,
     );
     const user = await this.usersService.findOne(gameRequestRecipientID);
-    this.server.to(user.socketid).emit('gotGameRequest', gameRequestSenderID);
+    this.server.to(user.socketid).emit('gotGameRequest', { senderID: gameRequestSenderID, gameMode: gameMode });
   }
+
+
 
   @SubscribeMessage('gameRequestWithdrawn')
   async gameRequestWithdrawn(client: Socket, data: number[]) {

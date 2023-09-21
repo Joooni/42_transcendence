@@ -28,7 +28,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService) {
 		this.moveUp = false;
 		this.moveDown = false;
-		this.search = true;
+		this.search = false;
 		this.stopSearch = false;
 		this.countdown = 3;
 		this.gameDisplayService.loadImages();
@@ -128,10 +128,10 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 
 	racketMovement() {
 		if (this.gameDisplayService.gameEnds == false && this.moveUp == true && this.gameDisplayService.racketPositionY > 8) {
-			this.gameDisplayService.racketPositionY -= 10;
+			this.gameDisplayService.racketPositionY -= 14;
 		}
 		if (this.gameDisplayService.gameEnds == false && this.moveDown == true && this.gameDisplayService.racketPositionY < 600) {
-			this.gameDisplayService.racketPositionY += 10;
+			this.gameDisplayService.racketPositionY += 14;
 		}
 	}
 

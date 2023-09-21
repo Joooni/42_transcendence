@@ -6,7 +6,8 @@
 				<img src="{{gameInviteService.gameRequestSender?.picture}}">
 			</div>
 			<h2 class="game-invite-message">{{gameInviteService.gameRequestSender?.username}}</h2>
-			<h4 class="game-invite-message message-last"> challenges you to a game of Pong!</h4>
+			<h4 class="game-invite-message message-last"> challenges you to a game in</h4>
+			<h2>{{gameInviteService.gameModeString}}</h2>
 		</div>		
 		<div class="popup-buttons">
 			<button class="button_medium" (click)="gameInviteService.acceptGameRequest()">ACCEPT</button>
@@ -16,6 +17,27 @@
 </div>
 
 <div class="popup" id="popup-send-game-request" [ngClass]="{'show-popup': gameInviteService.showSendGameRequestPopup}">
+	<div class="popup-content">
+		<h1>CHOOSE GAME MODE</h1>
+		<div class="game-invite-content">
+			<h4 class="game-invite-message message-first">You want to send a game request to</h4>
+			<div class="game-invite-opponent">
+				<div class="profile_picture">
+					<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
+				</div>
+				<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+			</div>
+			<h4 class="game-invite-message message-first message-last">Please choose the game mode</h4>
+		</div>
+		<div class="popup-buttons">
+			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(0)">Normal</button>
+			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(1)">Alternative</button>
+		</div>
+	</div>
+</div>
+
+
+<div class="popup" id="popup-wait-for-game-request-answer" [ngClass]="{'show-popup': gameInviteService.showWaitForGameRequestAnswerPopup}">
 	<div class="popup-content">
 		<h1>PENDING GAME REQUEST</h1>
 		<div class="game-invite-content">
@@ -34,6 +56,8 @@
 		</div>
 	</div>
 </div>
+
+
 
 <div class="popup" id="popup-game-request-declined" [ngClass]="{'show-popup': gameInviteService.showDeclinedGameRequestPopup}">
 	<div class="popup-content">

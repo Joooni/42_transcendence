@@ -49,6 +49,7 @@ export class SocketController {
 		this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
 	}
 
+	
 	// if (user.socketid !== '' && socketId != user.socketid && user.socketid !== 'undefined') {
 	// 	console.log('The user is already connected. The new connection will be closed');
 	// 	this.socketGateway.handleAlreadyConnected(socketId);

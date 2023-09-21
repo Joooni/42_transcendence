@@ -23,7 +23,19 @@ export class HeaderComponent implements OnInit {
 		private gameInviteService: GameInviteService,
 		private errorService: ErrorService,
 		private socketService: SocketService,
-		) {}
+		) {
+
+			window.addEventListener('pageshow', function (event) {
+				if (event.persisted) {
+					window.location.reload();
+				}
+			});
+
+			if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type  === 'back_forward'){
+				window.location.reload();
+				}
+
+		}
 
 	ngOnInit() {
 		// this.connectSocket();

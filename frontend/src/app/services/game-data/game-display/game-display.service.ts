@@ -108,7 +108,8 @@ export class GameDisplayService {
 		img3: new Image
 	}
 
-	constructor(private userDataService: UserDataService) {
+	constructor(private userDataService: UserDataService,
+	) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
 		this.racketPositionStartY = 298;
@@ -120,6 +121,7 @@ export class GameDisplayService {
 		this.gameEnds = false;
 		this.racketPositionY = this.racketPositionStartY
 		this.goalsRight.width = 101;
+		this.goalsLeft.width = 101;
 		this.countdown.width = 101;
 	}
 
