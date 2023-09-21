@@ -105,13 +105,13 @@ export class SettingsComponent {
 				hasError = true;
 			})
 			.catch(() => {});
-			if (!hasError) {
-				this.userService.updateUsername(this.newUsername!)
-				.catch(() => {
-					this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
-					hasError = true;
-				})
-			}
+		if (!hasError && this.newUsername) {
+			this.userService.updateUsername(this.newUsername!)
+			.catch(() => {
+				this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
+				hasError = true;
+			})
+		}
 		if (this.selectedMap != this.activeUser?.selectedMap)
 			await this.userService.updateSelectedMap(Number(this.selectedMap!))
 			.catch(() => {

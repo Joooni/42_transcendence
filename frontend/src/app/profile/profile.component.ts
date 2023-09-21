@@ -28,7 +28,6 @@ export class ProfileComponent {
     await this.userService.findUserByUsername(username).then(user => {
       this.selectedUser = user;
     }).catch((e) => this.hasSelectedUser = false);
-		console.log(this.selectedUser);
 		await this.userService.findSelf().then(user => this.activeUser = user)
     this.gameHistory = await this.gameservice.getMatchesOfUser(this.selectedUser?.id);
     for (let game of this.gameHistory) {
