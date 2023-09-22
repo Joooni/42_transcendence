@@ -322,8 +322,10 @@ export class SocketGateway
 
   @SubscribeMessage('startGameWithRequest')
   async startGameRequest(client: Socket, data: number[]) {
-    const gameRequestSenderID: number = data[1];
+	    const gameRequestSenderID: number = data[1];
     const gameRequestRecipientID: number = data[0];
+	this.openPopupSender.delete(gameRequestSenderID);
+	this.openPopupReceiver.delete(gameRequestRecipientID);
 	const gameMode = data[2];
 	this.updateStatusAndEmit(gameRequestRecipientID, "gaming");
     console.log(
