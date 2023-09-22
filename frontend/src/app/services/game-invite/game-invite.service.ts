@@ -80,8 +80,10 @@ export class GameInviteService {
 	}
 
 	async sendGameRequest(selectedUser: User) {
+		await this.getActiveUser();
 		this.showSendGameRequestPopup = true;
 		this.gameRequestRecipient = selectedUser;
+		this.socket.emit2('setStatusToGaming', this.activeUser?.id, this.gameRequestRecipient!.id);
 	}
 
 	async waitForGameRequestAnswer(gameMode: number) {

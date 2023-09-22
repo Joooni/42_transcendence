@@ -384,15 +384,18 @@ export class SocketGateway
     this.gameService.room = 0;
   }
 
+  @SubscribeMessage('setStatusToGaming')
+  async setStatusToGaming(client: Socket, data: number[]) {
+    this.updateStatusAndEmit(data[0], "gaming");
+    this.openPopupSender.set(data[0], data[1]);
+  }
 
   @SubscribeMessage('sendGameRequest')
   async sendGameRequest(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[0];
     const gameRequestRecipientID: number = data[1];
 	const gameMode: number = data[2];
-	this.updateStatusAndEmit(gameRequestSenderID, "gaming");
 	this.updateStatusAndEmit(gameRequestRecipientID , "gaming");
-  this.openPopupSender.set(gameRequestSenderID, gameRequestRecipientID);
   this.openPopupReceiver.set(gameRequestRecipientID, gameRequestSenderID);
     console.log(
       'User with ID:  ',
