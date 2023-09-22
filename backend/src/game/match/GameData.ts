@@ -33,5 +33,3 @@ export interface onGoingGamesData {
   goalsLeft: number;
   goalsRight: number;
 }
-
-

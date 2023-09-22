@@ -25,7 +25,6 @@ export class UsersService {
     private readonly httpService: HttpService,
   ) {}
 
-
   async create(createUserInput: CreateUserInput): Promise<void> {
     console.log('This action adds a new user');
     //repository.insert method is used to insert a new entity or an array of entities into the database.
@@ -94,7 +93,10 @@ export class UsersService {
         .leftJoinAndSelect('user.blockedUsers', 'blockedUsers')
         .leftJoinAndSelect('user.blockedFromOther', 'blockedFromOther')
         .leftJoinAndSelect('user.matchesAsFirstPlayer', 'matchesAsFirstPlayer')
-        .leftJoinAndSelect('user.matchesAsSecondPlayer', 'matchesAsSecondPlayer')
+        .leftJoinAndSelect(
+          'user.matchesAsSecondPlayer',
+          'matchesAsSecondPlayer',
+        )
         .getOneOrFail();
     } else if (typeof identifier === 'string') {
       return await this.userRepository
@@ -155,11 +157,16 @@ export class UsersService {
       );
       user.friends.push(friend);
       friend.friends.push(user);
-      await this.userRepository.save(user);
+      // Achivment: found a friend
+      const num1 = user.achievements.find((i) => i == 5);
+      if (!num1) user.achievements.push(5);
+      const num2 = friend.achievements.find((i) => i == 5);
+      if (!num2) friend.achievements.push(5);
+
       await this.userRepository.save(friend);
+      await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});
       server.to(friend.socketid).emit('updateUserList', {});
-      //To-do: Send a update message to both users
     } catch (error) {
       console.log(error);
     }
@@ -275,14 +282,12 @@ export class UsersService {
   }
 
   async resetAllSocketidAndStatus() {
-	var users: User[] = await this.findAll();
-	users.forEach(async user => {
-		await this.updateSocketid(user.id, '');
-		await this.updateStatus(user.id, 'offline')
-	});
+    const users: User[] = await this.findAll();
+    users.forEach(async (user) => {
+      await this.updateSocketid(user.id, '');
+      await this.updateStatus(user.id, 'offline');
+    });
   }
-
-
 
   async addToOwnedChannel(userid: number, channelId: string) {
     const user = await this.findOne(userid);
@@ -304,7 +309,7 @@ export class UsersService {
 
   async updatePicture(id: number, newPicture: string): Promise<void> {
     const result: UpdateResult = await this.userRepository.update(id, {
-      picture: newPicture
+      picture: newPicture,
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });
@@ -321,9 +326,22 @@ export class UsersService {
       .addOrderBy('user.id')
       .getMany();
     for (let i = 0; i < sortedUsers.length; i++) {
-      if (sortedUsers[i].rank === i + 1) continue;
-      sortedUsers[i].rank = i + 1;
-      await this.userRepository.save(sortedUsers[i]);
+      //Archivment: King of the Jungle
+      let achievementChanged = false;
+      if (i == 0) {
+        const archiv = sortedUsers[0].achievements.find((num) => num == 7);
+        if (!archiv) {
+          sortedUsers[0].achievements.push(7);
+          achievementChanged = true;
+        }
+      }
+
+      if (sortedUsers[i].rank !== i + 1) {
+        sortedUsers[i].rank = i + 1;
+        await this.userRepository.save(sortedUsers[i]);
+      } else if (achievementChanged) {
+        await this.userRepository.save(sortedUsers[i]);
+      }
     }
     console.log('User Ranks updated');
     return sortedUsers;

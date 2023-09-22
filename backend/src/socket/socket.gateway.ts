@@ -6,7 +6,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { setTimeout } from 'timers/promises';
 import { Server, Socket } from 'socket.io';
 import { MessageObj } from 'src/objects/message';
 import { UsersService } from 'src/users/users.service';
@@ -14,9 +13,14 @@ import { MessagesService } from 'src/messages/messages.service';
 import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
-@WebSocketGateway({ cors: [`http://${process.env.DOMAIN}:80`, `http://${process.env.DOMAIN}:3000`] })
+@WebSocketGateway({
+  cors: [
+    `http://${process.env.DOMAIN}:80`,
+    `http://${process.env.DOMAIN}:3000`,
+  ],
+})
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -42,28 +46,26 @@ export class SocketGateway
   }
 
   async handleAlreadyConnected(socketId: string) {
-	this.server.to(socketId).emit('alreadyConnected', {});
-	this.server.to(socketId).disconnectSockets();
+    this.server.to(socketId).emit('alreadyConnected', {});
+    this.server.to(socketId).disconnectSockets();
 
-	//   (async () => {
-	// 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
-	// 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);
-	//   })()
+    //   (async () => {
+    // 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
+    // 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);
+    //   })()
   }
 
   async handleDisconnect(client: Socket) {
     console.log('SocketClient disconnected:', client.id);
     try {
-      var user = await this.usersService.findOnebySocketId(client.id);
-	  this.gameService.exitRoomsAfterSocketDiscon(user);
+      const user = await this.usersService.findOnebySocketId(client.id);
+      this.gameService.exitRoomsAfterSocketDiscon(user);
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
       this.updateStatusAndEmit(user.id, 'offline');
-
     } catch (error) {
       console.log('Error Socket: User not found');
     }
   }
-
 
   @SubscribeMessage('message')
   async handleMessage(client: Socket, message: MessageObj) {
@@ -79,7 +81,12 @@ export class SocketGateway
       });
     } else if (message.receiverChannel !== undefined) {
       //Channel message
-      if (await this.channelMuteService.isMuted(message.receiverChannel.id, message.sender.id)) {
+      if (
+        await this.channelMuteService.isMuted(
+          message.receiverChannel.id,
+          message.sender.id,
+        )
+      ) {
         console.log('User is muted in this channel');
         return;
       }
@@ -197,35 +204,62 @@ export class SocketGateway
 
   @SubscribeMessage('channel:SetUserAsAdmin')
   async setAsAdmin(client: Socket, obj: any) {
-    await this.channelsService.setUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    await this.channelsService.setUserAsAdmin(
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+    );
     this.server.to(obj.channelId).emit('updateChannel', {});
   }
 
   @SubscribeMessage('channel:RemoveUserAsAdmin')
   async RemoveUserAsAdmin(client: Socket, obj: any) {
-    await this.channelsService.removeUserAsAdmin(obj.activeUser, obj.selectedUser, obj.channelId);
+    await this.channelsService.removeUserAsAdmin(
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+    );
     this.server.to(obj.channelId).emit('updateChannel', {});
   }
 
   @SubscribeMessage('channel:BanUser')
   async banUser(client: Socket, obj: any) {
-    await this.channelsService.banUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+    await this.channelsService.banUser(
+      this.server,
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+    );
   }
 
   @SubscribeMessage('channel:UnbanUser')
   async unbanUser(client: Socket, obj: any) {
-    await this.channelsService.unbanUser (obj.activeUser, obj.selectedUser, obj.channelId);
+    await this.channelsService.unbanUser(
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+    );
     this.server.to(obj.channelId).emit('updateChannel', {});
   }
 
   @SubscribeMessage('channel:KickUser')
   async kickUser(client: Socket, obj: any) {
-    await this.channelsService.kickUser(this.server, obj.activeUser, obj.selectedUser, obj.channelId);
+    await this.channelsService.kickUser(
+      this.server,
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+    );
   }
 
   @SubscribeMessage('channel:MuteUser')
   async muteUser(client: Socket, obj: any) {
-    await this.channelMuteService.muteUser(obj.activeUser, obj.selectedUser, obj.channelId, obj.time);
+    await this.channelMuteService.muteUser(
+      obj.activeUser,
+      obj.selectedUser,
+      obj.channelId,
+      obj.time,
+    );
   }
 
   @SubscribeMessage('channel:UnmuteUser')
@@ -236,9 +270,16 @@ export class SocketGateway
       const activeUser = await this.usersService.findOne(obj.activeUser);
       if (!channel || !selectedUser || !activeUser)
         throw new NotFoundException('Channel or Users not found');
-      if (channel.admins.find(user => user.id == activeUser.id) == undefined && channel.owner.id != activeUser.id)
+      if (
+        channel.admins.find((user) => user.id == activeUser.id) == undefined &&
+        channel.owner.id != activeUser.id
+      )
         throw new Error('User is not admin');
-      if (channel.admins.find(user => user.id == selectedUser.id) != undefined && channel.owner.id != activeUser.id)
+      if (
+        channel.admins.find((user) => user.id == selectedUser.id) !=
+          undefined &&
+        channel.owner.id != activeUser.id
+      )
         throw new Error('Selected User is admin');
       await this.channelMuteService.unmuteUser(selectedUser, channel);
     } catch (error) {
@@ -366,16 +407,16 @@ export class SocketGateway
 
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
-	if (this.gameService.gameDataMap.get(data[1])!) {
-    	this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
-	}
+    if (this.gameService.gameDataMap.get(data[1])!) {
+      this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
+    }
   }
 
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
-	if (this.gameService.gameDataMap.get(data[1])!) {
-   		 this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
-	}
+    if (this.gameService.gameDataMap.get(data[1])!) {
+      this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+    }
   }
 
   @SubscribeMessage('requestOngoingGames')
