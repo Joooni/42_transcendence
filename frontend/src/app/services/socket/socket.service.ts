@@ -8,12 +8,12 @@ import { Observable } from 'rxjs';
 })
 export class SocketService {
   
-  constructor(private socket: Socket) {
+  constructor(public socket: Socket) {
     this.socket.on('connect', async () => {
       this.connectSocket();
     });
   }
-  
+    
   connected = false;
 
   async connectSocket() {
@@ -31,6 +31,8 @@ export class SocketService {
       }
     });
   }
+
+
 
   listen(eventName: string) {
     return new Observable((subscriber) => {
@@ -55,5 +57,9 @@ export class SocketService {
 
   emit2(eventName: string, data1: any, data2: any) {
     this.socket.emit(eventName, data1, data2);
+  }
+
+  emit3(eventName: string, data1: any, data2: any, data3: any) {
+    this.socket.emit(eventName, data1, data2, data3);
   }
 }

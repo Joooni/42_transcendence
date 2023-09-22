@@ -14,6 +14,7 @@ import { GameService } from 'src/game/game.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
 import { NotFoundException } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 
 @WebSocketGateway({
   cors: [
@@ -25,6 +26,8 @@ export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   intervalSearchOpp: any;
+  openPopupSender: Map<number, number>;
+  openPopupReceiver: Map<number, number>;
 
   constructor(
     private readonly usersService: UsersService,
@@ -32,7 +35,10 @@ export class SocketGateway
     private readonly messagesService: MessagesService,
     private readonly channelsService: ChannelsService,
     private readonly channelMuteService: ChannelMuteService,
-  ) {}
+  ) {
+    this.openPopupSender = new Map();
+    this.openPopupReceiver = new Map();
+  }
 
   @WebSocketServer()
   server: Server;
@@ -58,12 +64,39 @@ export class SocketGateway
   async handleDisconnect(client: Socket) {
     console.log('SocketClient disconnected:', client.id);
     try {
-      const user = await this.usersService.findOnebySocketId(client.id);
+      var user = await this.usersService.findOnebySocketId(client.id);
+      console.log("the user:" + user);
       this.gameService.exitRoomsAfterSocketDiscon(user);
-      this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
+      this.closePopups(user);
       this.updateStatusAndEmit(user.id, 'offline');
+      this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
+      
     } catch (error) {
       console.log('Error Socket: User not found');
+      console.log(error);
+    }
+    
+  }
+
+  // user: User who closed the popup
+  async closePopups(user: User) {
+    const receiverID = this.openPopupSender.get(user.id);
+    if (receiverID) {
+      var receiverUser = await this.usersService.findOne(receiverID);
+      this.server
+      .to(receiverUser.socketid)
+      .emit('withdrawnGameRequest', user.id);
+      this.updateStatusAndEmit(receiverID, "online");
+      this.openPopupSender.delete(user.id);
+    }
+    const senderID = this.openPopupReceiver.get(user.id);
+    if (senderID) {
+      var sender = await this.usersService.findOne(senderID);
+      this.server
+      .to(sender.socketid)
+      .emit('gameRequestDecliend', user.id);
+      this.updateStatusAndEmit(senderID, "online");
+      this.openPopupReceiver.delete(user.id);
     }
   }
 
@@ -287,10 +320,12 @@ export class SocketGateway
     }
   }
 
-  @SubscribeMessage('startGameRequest')
+  @SubscribeMessage('startGameWithRequest')
   async startGameRequest(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[1];
     const gameRequestRecipientID: number = data[0];
+	const gameMode = data[2];
+	this.updateStatusAndEmit(gameRequestRecipientID, "gaming");
     console.log(
       'The GameRequest from User with ID:  ',
       gameRequestSenderID,
@@ -313,7 +348,7 @@ export class SocketGateway
     // gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
     // const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
 
-    this.gameService.startCountdown(roomNbr, this.server);
+    this.gameService.startCountdown(roomNbr, this.server, gameMode);
   }
 
   @SubscribeMessage('startGameSearching')
@@ -321,6 +356,7 @@ export class SocketGateway
     if (userID === this.gameService.playerWaitingID) {
       return;
     }
+	this.updateStatusAndEmit(userID, "gaming");
     const roomNbr = this.gameService.checkForOpponent(userID, client);
     console.log(
       'User with ID:  ',
@@ -330,12 +366,13 @@ export class SocketGateway
     );
     if (roomNbr !== undefined) {
       this.gameService.room = 0;
-      this.gameService.startCountdown(roomNbr, this.server);
+      this.gameService.startCountdown(roomNbr, this.server, 0);
     }
   }
 
   @SubscribeMessage('stopSearching')
   stopSearching(client: Socket) {
+	this.updateStatusAndEmit(this.gameService.playerWaitingID!, "online");
     console.log(
       'User with ID:  ',
       this.gameService.playerWaitingID,
@@ -347,28 +384,39 @@ export class SocketGateway
     this.gameService.room = 0;
   }
 
+  @SubscribeMessage('setStatusToGaming')
+  async setStatusToGaming(client: Socket, data: number[]) {
+    this.updateStatusAndEmit(data[0], "gaming");
+    this.openPopupSender.set(data[0], data[1]);
+  }
+
   @SubscribeMessage('sendGameRequest')
   async sendGameRequest(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[0];
     const gameRequestRecipientID: number = data[1];
+	const gameMode: number = data[2];
+	this.updateStatusAndEmit(gameRequestRecipientID , "gaming");
+  this.openPopupReceiver.set(gameRequestRecipientID, gameRequestSenderID);
     console.log(
       'User with ID:  ',
       gameRequestSenderID,
-      '  sent a game requested to User with ID:   ',
+      '  sent a game requested in mode:  ',
+	  gameMode,
+	  '  to User with ID:   ',
       gameRequestRecipientID,
     );
-
     const user = await this.usersService.findOne(gameRequestRecipientID);
-    this.server.to(user.socketid).emit('gotGameRequest', gameRequestSenderID);
-
-    // const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
-    // gameRequestRecipientSocket?.emit("gotGameRequest", gameRequestSenderID);
+    this.server.to(user.socketid).emit('gotGameRequest', { senderID: gameRequestSenderID, gameMode: gameMode });
   }
+
+
 
   @SubscribeMessage('gameRequestWithdrawn')
   async gameRequestWithdrawn(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[0];
     const gameRequestRecipientID: number = data[1];
+	this.updateStatusAndEmit(gameRequestSenderID, "online");
+	this.updateStatusAndEmit(gameRequestRecipientID, "online");
     console.log(
       'User with ID:  ',
       gameRequestSenderID,
@@ -389,6 +437,8 @@ export class SocketGateway
   async gameRequestDecliend(client: Socket, data: number[]) {
     const gameRequestSenderID: number = data[1];
     const gameRequestRecipientID: number = data[0];
+	this.updateStatusAndEmit(gameRequestSenderID, "online");
+	this.updateStatusAndEmit(gameRequestRecipientID, "online");
     console.log(
       'The GameRequest from User with ID:  ',
       gameRequestSenderID,
@@ -418,6 +468,8 @@ export class SocketGateway
       this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
     }
   }
+  
+
 
   @SubscribeMessage('requestOngoingGames')
   requestOngoingGames(client: Socket, data: number[]) {
@@ -426,6 +478,7 @@ export class SocketGateway
 
   @SubscribeMessage('userLeftGame')
   userLeftGame(client: Socket, data: number[]) {
+	this.updateStatusAndEmit(data[0], "online");
     this.gameService.userLeftGame(data[0], data[1]);
   }
 

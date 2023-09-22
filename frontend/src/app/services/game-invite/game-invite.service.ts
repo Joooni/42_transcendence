@@ -12,10 +12,13 @@ export class GameInviteService {
 	gameRequestSender?: User;
 	gameRequestRecipient?: User;
 	activeUser?: User;
+	gameMode?: number;
+	gameModeString?: string;
 
 	showGotGameRequestPopup: boolean = false;
 	showSendGameRequestPopup: boolean = false;
 	showDeclinedGameRequestPopup: boolean = false;
+	showWaitForGameRequestAnswerPopup: boolean = false;
 
   constructor(
 		private socket: SocketService,
@@ -25,10 +28,15 @@ export class GameInviteService {
 
 	initGameInviteService() {
 		console.log('initGameInviteService()');
-		this.socket.listen('gotGameRequest').subscribe(data => {
-			console.log('game request');
-			this.gotGameRequest(data as number)
-		});
+
+		this.socket.socket.on('gotGameRequest', ({senderID, gameMode}: {senderID: number; gameMode: number}) => {
+			this.gotGameRequest(senderID as number, gameMode as number);
+		})
+
+		// this.socket.listen('gotGameRequest').subscribe(data => {
+		// 	console.log('game request... the sender is   ' + data);
+		// this.gotGameRequest(data as number[]);
+		// });
 	}
 
 	async getActiveUser() {
@@ -37,8 +45,13 @@ export class GameInviteService {
 		}
 	}
 
-	async gotGameRequest(senderID: number) {
+	async gotGameRequest(senderID: number, gameMode: number) {
 		this.gameRequestSender = await this.userService.findUserById(senderID);
+		this.gameMode = gameMode;
+		if (gameMode === 0)
+			this.gameModeString = "Normal Mode";
+		else
+			this.gameModeString = "Alternative Mode";
 		this.showGotGameRequestPopup = true;
 		this.socket.listen('withdrawnGameRequest').subscribe(() => {
 			this.socket.stopListen('withdrawnGameRequest');
@@ -48,8 +61,9 @@ export class GameInviteService {
 	}
 
 	async acceptGameRequest() {		
+		console.log("_______ TEST1 ________");
 		await this.getActiveUser();
-		this.socket.emit2('startGameRequest', this.activeUser?.id, this.gameRequestSender?.id)
+		this.socket.emit3('startGameWithRequest', this.activeUser?.id, this.gameRequestSender?.id, this.gameMode)
 		this.socket.stopListen('withdrawnGameRequest');
 		this.showGotGameRequestPopup = false;
 		this.gameRequestSender = undefined;
@@ -57,6 +71,7 @@ export class GameInviteService {
 	}
 
 	async declineGameRequest() {
+		console.log("_______ TEST1 ________");
 		await this.getActiveUser();
 		this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
 		this.socket.stopListen('withdrawnGameRequest');
@@ -65,28 +80,41 @@ export class GameInviteService {
 	}
 
 	async sendGameRequest(selectedUser: User) {
+		await this.getActiveUser();
 		this.showSendGameRequestPopup = true;
 		this.gameRequestRecipient = selectedUser;
+		this.socket.emit2('setStatusToGaming', this.activeUser?.id, this.gameRequestRecipient!.id);
+	}
+
+	async waitForGameRequestAnswer(gameMode: number) {
+		this.showSendGameRequestPopup = false;
+		this.showWaitForGameRequestAnswerPopup = true
 		await this.getActiveUser();
-		this.socket.emit2('sendGameRequest', this.activeUser?.id, selectedUser.id);
+		console.log("_______ TEST1 ________");
+		this.socket.emit3('sendGameRequest', this.activeUser?.id, this.gameRequestRecipient!.id, gameMode);
+		console.log("_______ TEST2 ________");
 		this.socket.listen('gameRequestDecliend').subscribe(() => {
+			console.log("got gamerequest decliend");
+			this.showWaitForGameRequestAnswerPopup = false;
 			this.sendGameRequestWasDeclined();
 		})
 		this.socket.listen('gameRequestAccepted').subscribe((data) => {
+			console.log("got gamerequest accepted");
+			this.showWaitForGameRequestAnswerPopup = false;
 			this.router.navigate(['/game']);
-		})		
+		})
 	}
 
 	async cancelGameRequest() {
 		await this.getActiveUser();
 		this.socket.emit2('gameRequestWithdrawn', this.activeUser?.id, this.gameRequestRecipient?.id);
 		this.gameRequestRecipient = undefined;
-		this.showSendGameRequestPopup = false;
+		this.showWaitForGameRequestAnswerPopup = false;
 	}
 
 	sendGameRequestWasDeclined() {
 		this.socket.stopListen('gameRequestDecliend');
-		this.showSendGameRequestPopup = false;
+		this.showWaitForGameRequestAnswerPopup = false;
 		this.showDeclinedGameRequestPopup = true;
 	}
 
@@ -97,5 +125,6 @@ export class GameInviteService {
 
 	ngOnDestroy() {
 		this.socket.stopListen('gotGameRequest');
+		console.log("GAME_INVITE DESTROYED");
 	}
 }

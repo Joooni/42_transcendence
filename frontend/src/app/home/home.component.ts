@@ -8,6 +8,8 @@ import { UserDataService } from '../services/user-data/user-data.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
+import { GameDisplayComponent } from '../game/game-display/game-display.component';
+import { GameDisplayService } from '../services/game-data/game-display/game-display.service';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +28,7 @@ export class HomeComponent implements OnInit {
 		private socketService: SocketService,
 		private router: Router,
 		private userService: UserDataService,
+		private gameDisplayService: GameDisplayService,
 	) {	}
 
 	ngOnInit() {
@@ -40,6 +43,7 @@ export class HomeComponent implements OnInit {
 		})
 		this.requestOngoingGames();	
 	}
+	
 
 	async connectSocket() {
 		for (let i = 0; i < 20; i++) {
@@ -59,6 +63,11 @@ export class HomeComponent implements OnInit {
 		this.intervalGetOngoingGames = setInterval(() => {
 			this.socketService.emit('requestOngoingGames', this.activeUser?.id)
 		}, 5000)
+	}
+	
+
+	joinGame() {
+		this.router.navigate(['/gameSearch']);
 	}
 
 	watchThisMatch(roomNbr: number) {

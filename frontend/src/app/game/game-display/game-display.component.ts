@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, Host
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
+import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { gameData } from './GameData';
 
 @Component({
@@ -15,8 +16,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 
 	moveUp: boolean;
 	moveDown: boolean;
-	search: boolean;
-	stopSearch: boolean;
 	countdown: number;
 	roomNbr?: number;
 
@@ -24,13 +23,11 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
 
-	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService) {
+	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService) {
 		this.moveUp = false;
 		this.moveDown = false;
-		this.search = true;
-		this.stopSearch = false;
-		this.gameDisplayService.loadImages();
 		this.countdown = 3;
+		this.gameDisplayService.loadImages();
 	}
 
 	ngAfterViewInit() {
@@ -47,13 +44,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.runGame(data as gameData)
 		})
 		this.gameDisplayService.restartService();
-
-		// window.addEventListener('beforeunload', (event) => {
-		// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
-		// 	event.preventDefault();
-		// 	event.stopImmediatePropagation();
-		// 	event.returnValue = '';
-		// });
 	}
 
 	ngOnDestroy() {
@@ -62,33 +52,13 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		}
 	}
 
-	// @HostListener('window:onbeforeunload', [ '$event' ])
-	// beforeUnload(event: any) {
-	// 	this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
-	// 	event.preventDefault();
-	// 	event.stopImmediatePropagation();
-	// 	event.returnValue = '';
-	// }
-
-	startGame() {
-		this.search = false;
-		this.stopSearch = true;
-		this.socketService.emit('startGameSearching', this.gameDisplayService.activeUser?.id);
-	}
-
-	stopSearching() {
-		this.stopSearch = false;
-		this.search = true;
-		this.socketService.emit('stopSearching', undefined);
-	}
-
 	runGame(data: gameData) {
-		if (this.stopSearch === true) {
-			this.stopSearch = false
-		}
-		if (this.search === true) {
-			this.search = false
-		}
+		// if (this.stopSearch === true) {
+		// 	this.stopSearch = false
+		// }
+		// if (this.search === true) {
+		// 	this.search = false
+		// }
 		if (this.countdown > 0) {
 			this.handleCountdown(data);
 		} else {
@@ -126,10 +96,10 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 
 	racketMovement() {
 		if (this.gameDisplayService.gameEnds == false && this.moveUp == true && this.gameDisplayService.racketPositionY > 8) {
-			this.gameDisplayService.racketPositionY -= 10;
+			this.gameDisplayService.racketPositionY -= 14;
 		}
 		if (this.gameDisplayService.gameEnds == false && this.moveDown == true && this.gameDisplayService.racketPositionY < 600) {
-			this.gameDisplayService.racketPositionY += 10;
+			this.gameDisplayService.racketPositionY += 14;
 		}
 	}
 
@@ -160,7 +130,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 				if (data.userQuit != undefined) {
 					this.context.drawImage(this.gameDisplayService.oppQuit.img, this.gameDisplayService.oppQuit.x, this.gameDisplayService.oppQuit.y, this.gameDisplayService.oppQuit.width, this.gameDisplayService.oppQuit.height);
 				}
-			}, 3000);
+			}, 1000);
 			
 		}
 	}
