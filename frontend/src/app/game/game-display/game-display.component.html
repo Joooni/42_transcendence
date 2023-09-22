@@ -3,5 +3,10 @@
 	<canvas #canvasEle
 		(window:keydown.arrowup)="moveUp = true" (window:keyup.arrowup)="moveUp = false" (window:keydown.arrowdown)="moveDown = true" (window:keyup.arrowdown)="moveDown = false" (window:blur)="moveDown = false" (window:blur)="moveUp = false"></canvas>
 	
+	<div align="center">
+			<button class="buttonLeave" *ngIf="leave == true"
+				(click)="leavePage()">LEAVE</button>
+	</div>
+	
 	
 </div>>

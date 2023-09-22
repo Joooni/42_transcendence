@@ -18,6 +18,7 @@ export class GameService {
   room: number;
   intervalRunGame: any;
 
+
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,

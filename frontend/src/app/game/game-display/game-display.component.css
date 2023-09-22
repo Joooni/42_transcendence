@@ -23,13 +23,10 @@ canvas {
 	margin-bottom:	2vmin;
 }
 
-.buttonSearch {
+.buttonLeave {
 	width:			570px;
-	margin-top: 	5vmin;
+	margin-top: 	auto;
 	/* margin-left:	auto;
 	margin-right: 	auto; */
 }
 
-.buttonStopSearch {
-	margin-top: 	5vmin;
-}
