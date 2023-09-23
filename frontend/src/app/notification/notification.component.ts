@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Notification } from '../models/notification';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { User } from '../models/user';
+import { SocketService } from '../services/socket/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notification',
@@ -10,64 +12,86 @@ import { User } from '../models/user';
 })
 export class NotificationComponent implements OnInit {
 	
+	subscriptions: Subscription[] = [];
 	notifications: Notification[] = [];
 	activeUser?: User;
 	
-	constructor(private userDataService: UserDataService) {}
+	constructor(
+		private userDataService: UserDataService,
+		private socket: SocketService
+	) {}
 
 	async ngOnInit() {
-		await this.userDataService.findSelf().then(user => this.activeUser = user);
-		this.updateNotifications();
+		await this.updateNotifications();
+		const subscription = this.socket.listen('updateNotifications').subscribe(() => {
+			this.updateNotifications();
+		})
+		this.subscriptions.push(subscription);
 	}
 
 	acceptFriendRequest(notification: Notification) {
-		//remove sender from incomingFriendRequest
-		//remove recipient from senders sendFriendRequests
-		//add sender to recipients friend list
-		//add recipient to senders friend list
+		this.socket.emit('acceptFriendRequest', {
+			ownid: this.activeUser?.id,
+			otherid: notification.sender?.id
+		});
 	}
 
 	declineFriendRequest(notification: Notification) {
-		//remove sender from incomingFriendRequest
-		//remove recipient from senders sendFriendRequests
+		this.socket.emit('declineFriendRequest', {
+			ownid: this.activeUser?.id,
+			otherid: notification.sender?.id
+		});
 	}
 
 	acceptChannelInvite(notification: Notification) {
-		//remove recipient from channels invite list
-		//remove channel from recipients channel list
-		//add recipient to channel member list
-		//add channel to recipients channel list
+		this.socket.emit('joinChannel', {
+			channelid: notification.subject?.id,
+			userid: this.activeUser?.id
+		});
 	}
 
 	declineChannelInvite(notification: Notification) {
-		//remove recipient from channels invite list - or maybe not??
-		//remove channel from recipients channel list
+		this.socket.emit('declineChannelInvite', {
+			channelid: notification.subject?.id,
+			userid: this.activeUser?.id
+		});
 	}
 
 	withdrawFriendRequest(notification: Notification) {
-		//remove sender from incomingFriendRequest
-		//remove recipient from senders sendFriendRequests
+		this.socket.emit('withdrawFriendRequest', {
+			ownid: this.activeUser?.id,
+			otherid: notification.recipient?.id
+		});
 	}
 
-	private updateNotifications() {
+	private async updateNotifications() {
+		await this.userDataService.findSelf().then(user => this.activeUser = user);
 		this.notifications = [];
 		for (let user of this.activeUser?.incomingFriendRequests!) {
 			this.notifications.push({
 				type: "incomingFriendRequest",
-				sender: user
+				sender: user,
+				recipient: this.activeUser
 			});
 		}
 		for (let channel of this.activeUser?.invitedInChannel!) {
 			this.notifications.push({
 				type: "channelInvite",
-				subject: channel
+				subject: channel,
+				recipient: this.activeUser
 			});
 		}
 		for (let user of this.activeUser?.sendFriendRequests!) {
 			this.notifications.push({
 				type: "sendFriendRequest",
-				recipient: user
+				recipient: user,
+				sender: this.activeUser
 			});
 		}
+	}
+
+	ngOnDestroy() {
+		while (this.subscriptions.length > 0)
+			this.subscriptions.pop()?.unsubscribe();
 	}
 }
