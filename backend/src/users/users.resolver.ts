@@ -49,11 +49,10 @@ export class UsersResolver {
     return this.usersService.findOne(username);
   }
 
-  //to-do delete this later
-  @Query(() => User, { name: 'updateRank' })
-  async updateRanksByXP() {
-    console.log('updateRanksByXP');
-    return await this.usersService.updateRanksByXP();
+  @Query(() => [User], { name: 'getUserSortedByRank' })
+  async getUserSortedByRank() {
+    console.log('getUserSortedByRank');
+    return await this.usersService.getUserSortedByRank();
   }
 
   @Mutation(() => User)

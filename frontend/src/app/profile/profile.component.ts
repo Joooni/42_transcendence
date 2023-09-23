@@ -21,9 +21,9 @@ export class ProfileComponent {
     private userService: UserDataService,
     private route: ActivatedRoute,
     private gameservice: GameDataService,
-    ) {
-    }
-    async ngOnInit(): Promise<void> {
+    ) {}
+
+  async ngOnInit(): Promise<void> {
     const username = String(this.route.snapshot.paramMap.get('username'));
     await this.userService.findUserByUsername(username).then(user => {
       this.selectedUser = user;

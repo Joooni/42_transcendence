@@ -1,0 +1,48 @@
+.red {
+	color: red;
+}
+
+.yellow {
+	color: yellowgreen;
+}
+
+.wins_losses {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.wins_losses h4 {
+	margin: 5px;
+}
+
+.leaderboard_picture {
+	height: 5vmin;
+	width: 5vmin;
+}
+
+.leaderboard_flex_column {
+	display: flex;
+	flex-direction: column; 
+	
+	border-style: solid;
+	border-width: 2px;
+	border-color: magenta;
+}
+
+.leaderboard_box_user {
+	justify-content: space-between;
+	align-items: center;
+	min-height: auto;
+	max-height: 80px;
+	margin: 5px 2vmin;
+	padding-left: 7vmin;
+	padding-right: 7vmin;
+}
+
+.leaderboard_user_box {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	align-items: center;
+}

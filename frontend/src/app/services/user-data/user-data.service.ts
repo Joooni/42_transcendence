@@ -315,6 +315,30 @@ export class UserDataService {
     return userByName;
   }
 
+  async getUsersSortedByRank(): Promise<User[]> {
+    const response = await graphQLService.query(
+      `
+      query usersSortedByRank {
+        getUserSortedByRank {
+          id
+          rank
+          xp
+          username
+          picture
+          wins
+          losses
+        }
+      }
+      `,
+      undefined,
+      { fetchPolicy: 'network-only' },
+    );
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    return response.getUserSortedByRank;
+  }
+
   async updateUsername(username: string) {
     const { updateUsername } = await graphQLService.mutation(
       `

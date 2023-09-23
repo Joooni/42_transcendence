@@ -1,0 +1,25 @@
+<h1>- Leaderboard -</h1>
+<div>
+	<div class="leaderboard_flex_column">
+		<div *ngFor="let user of userList" class="box_row leaderboard_box_user">
+			<div class="leaderboard_user_box">
+				<h4 class="red">#{{user.rank}}</h4>
+				<div class="leaderboard_user_box">
+					<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+					<h4>{{user.username}}</h4>
+				</div>
+			</div>
+			<div class="leaderboard_user_box">
+				<h4 class="yellow">{{user.xp}} XP</h4>
+				<div class="wins_losses">
+					<h4>WINS</h4>
+					<h4>{{user.wins}}</h4>	
+				</div>
+				<div class="wins_losses">
+					<h4 class="red">LOSSES</h4>
+					<h4 class="red">{{user.losses}}</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

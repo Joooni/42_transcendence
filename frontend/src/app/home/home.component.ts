@@ -70,6 +70,10 @@ export class HomeComponent implements OnInit {
 		this.router.navigate(['/gameSearch']);
 	}
 
+	leaderboard() {
+		this.router.navigate(['/leaderboard']);
+	}
+
 	watchThisMatch(roomNbr: number) {
 		this.socketService.emit('watchGame', roomNbr);
 		this.router.navigate(['/gameWatch']);

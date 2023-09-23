@@ -364,6 +364,14 @@ export class UsersService {
   wollen wir hier ein resetPicture einbauen, damit man auf das default (aka intra) Bild zurückswitchen kann?
   */
 
+  async getUserSortedByRank() {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .orderBy('user.rank', 'ASC')
+      .addOrderBy('user.id')
+      .getMany();
+  }
+
   async updateRanksByXP(): Promise<User[]> {
     const sortedUsers = await this.userRepository
       .createQueryBuilder('user')
