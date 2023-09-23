@@ -51,8 +51,12 @@ export class UsersResolver {
 
   @Query(() => [User], { name: 'getUserSortedByRank' })
   async getUserSortedByRank() {
-    console.log('getUserSortedByRank');
     return await this.usersService.getUserSortedByRank();
+  }
+
+  @Query(() => [User], { name: 'getTop3' })
+  async getTopThree() {
+    return await this.usersService.getTopThree();
   }
 
   @Mutation(() => User)

@@ -54,3 +54,34 @@ h2, h4 {
 	width: 100%;
 	height: 45%;
 }
+
+.top3Leaderboard {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.leaderboard_user_box {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	align-items: center;
+}
+
+.leaderboard_box_user {
+	justify-content: space-between;
+	align-items: center;
+	min-height: auto;
+	max-height: 80px;
+	margin: 5px 2vmin;
+	padding-left: 7vmin;
+	padding-right: 7vmin;
+}
+
+.red {
+	color: red;
+}
+
+.yellow {
+	color: yellowgreen;
+}

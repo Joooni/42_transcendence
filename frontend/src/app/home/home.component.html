@@ -23,8 +23,25 @@
 	</div>
 	<div class="home_flex_rows">
 		<app-notification class="notification-container"></app-notification>
+		<h1>
+			- TOP 3 Players-
+		</h1>
+		<div class="top3Leaderboard">
+			<div *ngFor="let user of top3" class="box_row leaderboard_box_user">
+				<div class="leaderboard_user_box">
+					<h4 class="red">#{{user.rank}}</h4>
+					<div class="leaderboard_user_box">
+						<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+						<h4>{{user.username}}</h4>
+					</div>
+				</div>
+				<div class="leaderboard_user_box">
+					<h4 class="yellow">{{user.xp}} XP</h4>
+				</div>
+			</div>
+		</div>
 		<button class="home_big_button" (click)="leaderboard()">
-			Leaderboard
+			View full leaderboard
 		</button>
 	</div>
 </div>

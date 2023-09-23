@@ -372,6 +372,15 @@ export class UsersService {
       .getMany();
   }
 
+  async getTopThree() {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .orderBy('user.rank', 'ASC')
+      .addOrderBy('user.id')
+      .take(3)
+      .getMany();
+  }
+
   async updateRanksByXP(): Promise<User[]> {
     const sortedUsers = await this.userRepository
       .createQueryBuilder('user')

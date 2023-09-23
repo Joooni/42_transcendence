@@ -94,6 +94,7 @@ type Query {
   userById(id: Int): User!
   userByName(username: String!): User!
   getUserSortedByRank: [User!]!
+  getTop3: [User!]!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   messagesChannel(id: String): [Message!]!
