@@ -6,6 +6,7 @@ h2, h4 {
 .home_flex_columns {
 	height: 80vh;
 	display: flex;
+	flex-wrap: wrap;
 	flex-direction: row;
 	text-align: center;
 	justify-content: space-evenly;
@@ -58,7 +59,7 @@ h2, h4 {
 .top3Leaderboard {
 	display: flex;
 	flex-direction: column;
-	width: 100%;
+	width: 90%;
 }
 
 .leaderboard_user_box {
