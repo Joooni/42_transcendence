@@ -272,17 +272,14 @@ export class ChannelsService {
     userid: number,
 	) {
 		try {
-			const channel = await this.channelRepository.findOneByOrFail({
-				id: channelId,
-			});
 			const user = await this.userService.findOne(userid);
-			if (!channel || !user) {
+			if (!user) {
 				throw new NotFoundException('Channel or User not found');
 			}
-			channel.invitedUsers = channel.invitedUsers.filter(
-				(user) => user.id !== userid,
+			user.invitedInChannel = user.invitedInChannel.filter(
+				(channel) => channel.id === channelId
 			);
-      await this.channelRepository.save(channel);
+			await this.userRepository.save(user);
 			server.to(user.socketid).emit('updateNotifications', {});
 		} catch (error) {
 			console.log(error);
