@@ -9,6 +9,7 @@ import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
 import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { GameDisplayService } from '../services/game-data/game-display/game-display.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
