@@ -1,10 +1,11 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, HostListener } from '@angular/core';
-// import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy,} from '@angular/core';
+import { Router } from '@angular/router';
 
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { gameData } from './GameData';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-game-display',
@@ -18,12 +19,15 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	moveDown: boolean;
 	countdown: number;
 	roomNbr?: number;
+	leave: boolean = false;
+	leftPlayer?: User;
+	rightPlayer?: User;
 
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
 
-	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService) {
+	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService, private router: Router) {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.countdown = 3;
@@ -50,16 +54,18 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		if (this.roomNbr != undefined) {
 			this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
 		}
+		this.leave = false;
+		this.leftPlayer = undefined;
+		this.rightPlayer = undefined;
+	}
+
+	leavePage() {
+		this.router.navigate(['/home']);
 	}
 
 	runGame(data: gameData) {
-		// if (this.stopSearch === true) {
-		// 	this.stopSearch = false
-		// }
-		// if (this.search === true) {
-		// 	this.search = false
-		// }
 		if (this.countdown > 0) {
+			this.getPlayerData(data);
 			this.handleCountdown(data);
 		} else {
 			this.racketMovement();
@@ -69,6 +75,11 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 			this.gameDisplayService.imageControl(data);
 			this.draw(data);
 		}
+	}
+
+	async getPlayerData(data: gameData) {
+		this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
+		this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
 	}
 
 	handleCountdown(data: gameData) {
@@ -130,6 +141,7 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 				if (data.userQuit != undefined) {
 					this.context.drawImage(this.gameDisplayService.oppQuit.img, this.gameDisplayService.oppQuit.x, this.gameDisplayService.oppQuit.y, this.gameDisplayService.oppQuit.width, this.gameDisplayService.oppQuit.height);
 				}
+				this.leave = true;
 			}, 1000);
 			
 		}
