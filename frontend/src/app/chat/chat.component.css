@@ -67,11 +67,15 @@ h4 {
 .offline, 
 .blocked {
 	background-color: rgb(65, 65, 65);
-	color: rgb(165, 165, 165);
-	filter: grayscale(100%);
+	z-index: 0;
 	border-style: solid;
 	border-width: 3px;
 	border-color: rgb(65, 65, 65);
+}
+
+.offline img, 
+.blocked img{
+	filter: grayscale(100%);
 }
 
 .profile_picture {
@@ -152,8 +156,4 @@ h4 {
 	column-gap: 2rem;
 	margin: 1rem 0;
 	width: 90%;
-}
-
-.dropdown-contact {
-	z-index: 100;
 }

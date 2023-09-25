@@ -168,7 +168,8 @@ export class ChannelsService {
   }
 
   async addUserToChannel(
-    client: Socket,
+    server: Server,
+		client: Socket,
     channelId: string,
     userid: number,
     password?: string,
@@ -187,11 +188,7 @@ export class ChannelsService {
       }
       if (channel.type === 'private') {
         const foundUser = channel.invitedUsers.find((u) => u.id === userid);
-        if (foundUser) {
-          channel.invitedUsers = channel.invitedUsers.filter(
-            (user) => user.id !== userid,
-          );
-        } else {
+        if (!foundUser) {
           throw new Error('User not invited');
         }
       } else if (channel.type === 'protected') {
@@ -203,8 +200,12 @@ export class ChannelsService {
         }
       }
       channel.users.push(user);
+			channel.invitedUsers = channel.invitedUsers.filter(
+				(user) => user.id !== userid,
+			);
       await this.channelRepository.save(channel);
       client.join(channelId);
+			server.to(user.socketid).emit('updateNotifications', {});
       return;
     } catch (error) {
       console.log(error);
@@ -241,9 +242,8 @@ export class ChannelsService {
   }
 
   async inviteUserToChannel(
-    client: Socket,
+    server: Server,
     inviteThisUserId: number,
-    activeUser: number,
     channelid: string,
   ): Promise<User | undefined> {
     console.log('user invited to channel', inviteThisUserId);
@@ -259,17 +259,34 @@ export class ChannelsService {
       }
       channel.invitedUsers.push(invitedUser);
       await this.channelRepository.save(channel);
+			server.to(invitedUser.socketid).emit('updateNotifications', {});
       return invitedUser;
     } catch (error) {
       console.log(error);
     }
   }
 
-  async setUserAsAdmin(
-    activeUserId: number,
-    selectedUserId: number,
-    channelId: string,
-  ) {
+	async declineChannelInvite(
+    server: Server,
+		channelId: string,
+    userid: number,
+	) {
+		try {
+			const user = await this.userService.findOne(userid);
+			if (!user) {
+				throw new NotFoundException('Channel or User not found');
+			}
+			user.invitedInChannel = user.invitedInChannel.filter(
+				(channel) => channel.id === channelId
+			);
+			await this.userRepository.save(user);
+			server.to(user.socketid).emit('updateNotifications', {});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+  async setUserAsAdmin(activeUserId: number, selectedUserId: number, channelId: string) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);

@@ -161,7 +161,7 @@ select {
 	color:rgb(4, 56, 18)
 }
 
-.box_row {
+/* .box_row {
 	background-color: rgb(2, 88, 2);
 	border-radius: 15px;
 	padding: 1vmin 3vmin;
@@ -178,7 +178,7 @@ select {
 
 	display: flex;
 	flex-direction: column;
-}
+} */
 
 .profile_picture {
 	border-radius: 50%;
@@ -355,6 +355,7 @@ input:checked + .toggle:after {
 	justify-content: center;
 	align-items: center;
 	visibility: hidden;
+	z-index: 1000;
 }
 
 .popup-content {

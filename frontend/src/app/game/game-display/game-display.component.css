@@ -1,32 +1,49 @@
-/* .game-display {
-	background-color: black;
+.game-display {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 2rem;
+}
+
+.game-canvas {
+	display: flex;
+	flex-direction:  column;
+	justify-content: flex-start;
+	align-items: center;
+	width: 40rem;
+	padding: 2rem;
+}
+
+.game-player-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	margin-top: 5rem;
+}
+
+.game-player-picture {
+	border-radius: 50%;
 	border-style: solid;
-	border-color: red;
 	border-width: 3px;
+	border-color: orange;
+	height: 7rem;
+	width: 7rem;
+}
 
-	width: 60%;
-	height: 30rem;
-
-	font-family: 'jumpman';
-	color: red;
-	text-align: center;
-
-	margin: auto;
-} */
+.game-player-picture img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
 
 canvas {
 	position: absolute;
-	display: block;
-	margin-left:	5vmin;
-	margin-right:	5vmin;
-	margin-top:		5vmin;
-	margin-bottom:	2vmin;
 }
 
-.buttonLeave {
+.leave-game-buttton {
 	width:			570px;
-	margin-top: 	auto;
-	/* margin-left:	auto;
-	margin-right: 	auto; */
+	margin-top: calc((40rem * 768 / 1024) + 2rem);
 }
 

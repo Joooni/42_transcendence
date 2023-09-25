@@ -1,29 +1,29 @@
+h2, h4 {
+	margin-block-start: 0;
+  margin-block-end: 0;
+}
+
 .home_flex_columns {
-	margin: 2vmin 2vmin;
+	height: 80vh;
 	display: flex;
 	flex-direction: row;
 	text-align: center;
 	justify-content: space-evenly;
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
 }
 
 .home_flex_rows {
 	display: flex;
 	flex-direction: column;
-	width: 100vmin;
+	padding: 0 2%;
+	width: 46%;
 	text-align: center;
 	justify-content: flex-start;
 	align-items: center;
-	border-style: solid;
-	border-width: 2px;
-	border-color: cyan;
 	row-gap: 2vmin;
 }
 
 .home_big_button {
-	width: 85vmin;
+	width: 100%;
 }
 
 .home_medium_button {
@@ -32,16 +32,25 @@
 }
 
 .home_game_box {
-	width: 80vmin;
+	width: 94%;
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	padding: 1rem;
 
+	display: flex;
+	align-items: center;
 	justify-content: space-between;
+	flex-direction: row;
+	cursor: pointer;
 }
 
-.home_game_box br {
-	margin-bottom: 10%;
+.player-info {
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.8rem;
 }
 
-.home_login_button {
-	margin: 25vmin;
-	width: 40vmin;
+.notification-container {
+	width: 100%;
+	height: 45%;
 }

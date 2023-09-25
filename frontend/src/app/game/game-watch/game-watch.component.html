@@ -1,9 +1,22 @@
 <div class="game-watch">
-	
-	<div align="center">	
-		<button class="buttonStopWatching" (click)="stopWatching()">Stop watching</button>
+
+	<div class="game-player-info" *ngIf="leftPlayer">
+		<div class="game-player-picture">
+			<img src="{{leftPlayer.picture}}">
+		</div>
+		<h1>{{leftPlayer.username.toUpperCase()}}</h1>
+	</div>
+
+	<div class="game-canvas">
+		<canvas #canvasEle></canvas>
+		<button class="stop-watching-button" (click)="stopWatching()">Stop watching</button>
+	</div>
+
+	<div class="game-player-info" *ngIf="rightPlayer">
+		<div class="game-player-picture">
+			<img src="{{rightPlayer.picture}}">
+		</div>
+		<h1>{{rightPlayer.username.toUpperCase()}}</h1>
 	</div>
 	
-	<canvas #canvasEle></canvas>
-	
-</div>>
+</div>

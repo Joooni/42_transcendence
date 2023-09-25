@@ -149,7 +149,8 @@ export class SocketGateway
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, obj: any) {
     await this.channelsService.addUserToChannel(
-      client,
+      this.server,
+			client,
       obj.channelid,
       obj.userid,
     );
@@ -169,9 +170,8 @@ export class SocketGateway
   async inviteUser(client: Socket, obj: any) {
     try {
       const invitedUser = await this.channelsService.inviteUserToChannel(
-        client,
+        this.server,
         obj.inviteThisUserId,
-        obj.activeUserid,
         obj.channelid,
       );
       if (!invitedUser) {
@@ -194,6 +194,15 @@ export class SocketGateway
     return;
   }
 
+	@SubscribeMessage('declineChannelInvite')
+	async declineChannelInvite(client: Socket, obj: any) {
+		await this.channelsService.declineChannelInvite(
+			this.server,
+			obj.channelId, 
+			obj.userid
+		);
+	}
+
   async updateStatusAndEmit(userid: number, status: string) {
     await this.usersService.updateStatus(userid, status);
     this.server.emit('updateUser', {
@@ -204,18 +213,36 @@ export class SocketGateway
 
   @SubscribeMessage('sendFriendRequest')
   async sendFriendRequest(client: Socket, obj: any) {
-    await this.usersService.sendFriendRequest(obj.ownid, obj.otherid);
-    this.acceptFriendRequest(client, {
-      ownid: obj.otherid,
-      otherid: obj.ownid,
-    });
+    await this.usersService.sendFriendRequest(
+			this.server,
+			obj.ownid, 
+			obj.otherid
+		);
   }
 
   @SubscribeMessage('acceptFriendRequest')
   async acceptFriendRequest(client: Socket, obj: any) {
-    await this.usersService.acceptFriendRequest(
+		await this.usersService.acceptFriendRequest(
       this.server,
       obj.ownid,
+      obj.otherid,
+    );
+  }
+
+	@SubscribeMessage('declineFriendRequest')
+  async declineFriendRequest(client: Socket, obj: any) {
+		await this.usersService.declineFriendRequest(
+      this.server,
+			obj.ownid,
+      obj.otherid,
+    );
+  }
+
+	@SubscribeMessage('withdrawFriendRequest')
+  async withdrawFriendRequest(client: Socket, obj: any) {
+		await this.usersService.withdrawFriendRequest(
+      this.server,
+			obj.ownid,
       obj.otherid,
     );
   }

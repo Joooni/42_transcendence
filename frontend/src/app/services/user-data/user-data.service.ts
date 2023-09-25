@@ -160,6 +160,18 @@ export class UserDataService {
             status
             picture
           }
+					sendFriendRequests {
+            id
+            username
+            status
+            picture
+          }
+					incomingFriendRequests {
+            id
+            username
+            status
+            picture
+          }
           blockedUsers {
             id
             username
@@ -289,6 +301,10 @@ export class UserDataService {
           xp
           rank
           achievements
+					channelList {
+            id
+            name
+          }
         }
       }
       `,
