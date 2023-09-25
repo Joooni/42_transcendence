@@ -5,6 +5,7 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile.dev
     depends_on:
       - backend
     volumes:
@@ -22,6 +23,7 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile.dev
     networks:
       - nw_database
       - nw_app

@@ -1,7 +1,6 @@
 export interface User {
   id: number;
   intra: string;
-  firstname: string;
   email: string;
   picture: string;
   twoFAEnabled: boolean;

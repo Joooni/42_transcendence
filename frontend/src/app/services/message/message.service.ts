@@ -53,8 +53,6 @@ export class MessageService implements OnInit {
 					sender {
 						id
 						intra
-						firstname
-						lastname
 						username
 						email
 						picture
@@ -67,8 +65,6 @@ export class MessageService implements OnInit {
 					receiverUser {
 						id
 						intra
-						firstname
-						lastname
 						username
 						email
 						picture
@@ -112,8 +108,6 @@ export class MessageService implements OnInit {
 					sender {
 						id
 						intra
-						firstname
-						lastname
 						username
 						email
 						picture
