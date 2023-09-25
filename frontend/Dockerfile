@@ -1,4 +1,8 @@
-FROM node:18-alpine
+###################
+# STAGE 1 - BUILD #
+###################
+
+FROM node:18-alpine as builder
 
 #sets working directory of image to /app
 WORKDIR /app
@@ -12,3 +16,13 @@ RUN npm install -g @angular/cli
 COPY . /app
 
 RUN npm run build
+
+####################
+# STAGE 2 - DEPLOY #
+####################
+
+FROM nginx:alpine
+COPY --from=builder /app/dist/frontend-angular /usr/share/nginx/html
+CMD [ "nginx", "-g", "daemon off;" ]
+
+

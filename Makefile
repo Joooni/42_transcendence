@@ -7,6 +7,7 @@ DEV			:= ./docker-compose.yaml
 all: up
 
 prod: $(PROD)
+	cp actual.env .env
 	docker compose -f $(PROD) up --build --remove-orphans -d
 
 dev: $(DEV)

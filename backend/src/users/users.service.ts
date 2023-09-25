@@ -37,6 +37,9 @@ export class UsersService {
       const existingUsers: User[] = await this.userRepository.find({
         where: { username: Like(`${createUserInput.username}%`) },
       });
+      if (existingUsers.length == 0) return Promise.reject(error);
+      createUserInput.username = createUserInput.username + "_copycat";
+      await this.userRepository.insert(createUserInput);
     }
     return Promise.resolve();
   }

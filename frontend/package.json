@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build -c development",
+    "start": "ng serve --host 0.0.0.0 --port 80",
+    "prod": "ng serve --prod --port 80",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "sheesh": "ng serve --open --host 0.0.0.0 --port 80",
     "local": "ng serve -c local --port 80"
   },
   "private": true,

@@ -4,8 +4,6 @@ export const createMockUser = (options: Partial<User> = {}): User => {
   const user = new User();
   user.id = 987654321;
   user.intra = 'logName';
-  user.firstname = 'firstname';
-  user.lastname = 'lastname';
   user.username = 'username';
   user.email = 'address@provider.com';
   user.picture = 'PictureLinkGoesHere.com';
@@ -22,8 +20,6 @@ export const createMockUser = (options: Partial<User> = {}): User => {
 export const mockUser1: User = createMockUser({
   id: 4269,
   intra: 'dokong',
-  firstname: 'Donkey',
-  lastname: 'Kong',
   username: 'LoveBarrelsHateMario',
   email: 'redtiesrule@kongs.com',
   picture: 'https://mario.wiki.gallery/images/8/84/MPS_Donkey_Kong_Artwork.png',
@@ -35,8 +31,6 @@ export const mockUsers: User[] = [
   createMockUser({
     id: 1,
     intra: 'dikong',
-    firstname: 'Diddy',
-    lastname: 'Kong',
     username: 'RedCapsRule',
     email: 'redcapsle@kongs.com',
     picture: 'https://www.mariowiki.com/Diddy_Kong#/media/File:DiddyKong2.png',
@@ -46,8 +40,6 @@ export const mockUsers: User[] = [
   createMockUser({
     id: 2,
     intra: 'lakong',
-    firstname: 'Lanky',
-    lastname: 'Kong',
     username: 'LongArmMaster',
     email: 'lanky@kongs.com',
     picture:
@@ -58,8 +50,6 @@ export const mockUsers: User[] = [
   createMockUser({
     id: 3,
     intra: 'tikong',
-    firstname: 'Tiny',
-    lastname: 'Kong',
     username: 'gurlpower',
     email: 'tiny@kongs.com',
     picture:
@@ -70,8 +60,6 @@ export const mockUsers: User[] = [
   createMockUser({
     id: 4,
     intra: 'chunkykong',
-    firstname: 'Chunky',
-    lastname: 'Kong',
     username: 'Afraidycat',
     email: 'chunky@kongs.com',
     picture:

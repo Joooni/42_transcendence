@@ -25,14 +25,6 @@ export class User {
   intra: string;
 
   @Field()
-  @Column()
-  firstname: string;
-
-  @Field()
-  @Column()
-  lastname: string;
-
-  @Field()
   @Index()
   @Column({ unique: true })
   username: string;
