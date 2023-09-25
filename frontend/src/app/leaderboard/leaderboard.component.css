@@ -16,21 +16,14 @@
 	margin: 5px;
 }
 
-.leaderboard_picture {
-	height: 5vmin;
-	width: 5vmin;
-}
+.leaderboard_box_row {
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	padding: 1vmin 3vmin;
 
-.leaderboard_flex_column {
 	display: flex;
-	flex-direction: column; 
-	
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
-}
-
-.leaderboard_box_user {
+	align-items: center;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	min-height: auto;
@@ -39,6 +32,17 @@
 	padding-left: 7vmin;
 	padding-right: 7vmin;
 }
+
+.leaderboard_picture {
+	height: 5vmin;
+	width: 5vmin;
+}
+
+.leaderboard_flex_column {
+	display: flex;
+	flex-direction: column; 
+}
+
 
 .leaderboard_user_box {
 	display: flex;

@@ -21,15 +21,6 @@ h2, h4 {
 	justify-content: flex-start;
 	align-items: center;
 	row-gap: 2vmin;
-
-	/* 
-	text-align: center;
-	justify-content: flex-start;
-	align-items: center;
-	border-style: solid;
-	border-width: 2px;
-	border-color: rgb(11, 233, 78);
-	 */
 }
 
 .home_big_button {
@@ -79,6 +70,8 @@ h2, h4 {
 }
 
 .leaderboard_box_user {
+	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	min-height: auto;
@@ -86,6 +79,14 @@ h2, h4 {
 	margin: 5px 2vmin;
 	padding-left: 7vmin;
 	padding-right: 7vmin;
+	
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+}
+
+.leaderboard_picture {
+	height: 5vmin;
+	width: 5vmin;
 }
 
 .red {
