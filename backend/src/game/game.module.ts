@@ -23,5 +23,3 @@ import { UsersService } from 'src/users/users.service';
 export class GameModule {
   constructor(private gameService: GameService) {}
 }
-
-

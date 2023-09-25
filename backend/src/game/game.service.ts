@@ -18,7 +18,6 @@ export class GameService {
   room: number;
   intervalRunGame: any;
 
-
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
@@ -114,7 +113,6 @@ export class GameService {
         .emit('getGameData', this.gameDataMap.get(roomNbr!)!);
       if (this.gameDataMap.get(roomNbr!)!.gameEnds === true) {
         clearInterval(this.intervalRunGame);
-        //console.log(this.gameDataMap.get(roomNbr!));
         this.createMatchDB(
           this.gameDataMap.get(roomNbr!)!.leftUserID!,
           this.gameDataMap.get(roomNbr!)!.rightUserID!,
@@ -122,20 +120,32 @@ export class GameService {
           this.gameDataMap.get(roomNbr!)!.goalsRight!,
         );
 
-		if (this.gameDataMap.get(roomNbr!)!.userQuit !== this.gameDataMap.get(roomNbr!)!.rightUserID) {
-			this.usersService.updateStatus(this.gameDataMap.get(roomNbr!)!.rightUserID, "online");
-			server.emit('updateUser', {
-				id: this.gameDataMap.get(roomNbr!)!.rightUserID,
-				status: "online",
-			  });
-		}
-		if (this.gameDataMap.get(roomNbr!)!.userQuit !== this.gameDataMap.get(roomNbr!)!.leftUserID) {
-			this.usersService.updateStatus(this.gameDataMap.get(roomNbr!)!.leftUserID, "online");
-			server.emit('updateUser', {
-				id: this.gameDataMap.get(roomNbr!)!.leftUserID,
-				status: "online",
-			  });
-		}
+        if (
+          this.gameDataMap.get(roomNbr!)!.userQuit !==
+          this.gameDataMap.get(roomNbr!)!.rightUserID
+        ) {
+          this.usersService.updateStatus(
+            this.gameDataMap.get(roomNbr!)!.rightUserID,
+            'online',
+          );
+          server.emit('updateUser', {
+            id: this.gameDataMap.get(roomNbr!)!.rightUserID,
+            status: 'online',
+          });
+        }
+        if (
+          this.gameDataMap.get(roomNbr!)!.userQuit !==
+          this.gameDataMap.get(roomNbr!)!.leftUserID
+        ) {
+          this.usersService.updateStatus(
+            this.gameDataMap.get(roomNbr!)!.leftUserID,
+            'online',
+          );
+          server.emit('updateUser', {
+            id: this.gameDataMap.get(roomNbr!)!.leftUserID,
+            status: 'online',
+          });
+        }
 
         this.gameDataBEMap
           .get(roomNbr!)!
@@ -163,23 +173,19 @@ export class GameService {
           'left.',
         );
 
-		setTimeout(() => {
-			this.gameDataBEMap.delete(roomNbr!);
-       		this.gameDataMap.delete(roomNbr!);
-		  }, 1000)
-
+        setTimeout(() => {
+          this.gameDataBEMap.delete(roomNbr!);
+          this.gameDataMap.delete(roomNbr!);
+        }, 1000);
       }
     }, 1000 / 25);
   }
-  
 
   async startCountdown(roomNbr: number, server: Server, gameMode: number) {
     this.gameDataBEMap.get(roomNbr)?.leftUserSocket.join(roomNbr.toString());
     this.gameDataBEMap.get(roomNbr)?.rightUserSocket!.join(roomNbr.toString());
     console.log('The game with id:  ', roomNbr, '   is running');
-	server
-	.to(roomNbr!.toString())
-	.emit('gameFound', 0);
+    server.to(roomNbr!.toString()).emit('gameFound', 0);
     server
       .to(roomNbr!.toString())
       .emit('getGameData', this.gameDataMap.get(roomNbr!)!);
@@ -209,7 +215,6 @@ export class GameService {
       .get(roomNbr)!
       .usersWatching.filter((item) => item != userSocket);
   }
-  
 
   async sendOngoingGames(server: Server) {
     let room = 0;
@@ -218,7 +223,7 @@ export class GameService {
       if (
         this.gameDataMap.has(room) &&
         this.gameDataMap.get(room)!.rightUserID != 0 &&
-		this.gameDataMap.get(room)!.gameEnds == false
+        this.gameDataMap.get(room)!.gameEnds == false
       ) {
         oGGData.push({
           roomNbr: this.gameDataMap.get(room)!.roomNbr,
@@ -248,11 +253,9 @@ export class GameService {
     let value: gameData;
     for ([key, value] of this.gameDataMap.entries()) {
       if (value.leftUserID == user.id) {
-        // console.log("The socket was in room", key, value);
         this.userLeftGame(user.id, key);
       }
       if (value.rightUserID == user.id) {
-        // console.log("The socket was in room", key, value);
         this.userLeftGame(user.id, key);
       }
     }
@@ -262,7 +265,7 @@ export class GameService {
     console.log(
       'user with id:   ',
       activeUserID,
-      '    leaved the game in room:   ',
+      '    left the game in room:   ',
       roomNbr,
     );
     this.gameDataMap.get(roomNbr)!.userQuit = activeUserID;

@@ -30,12 +30,6 @@ export class TwoFAController {
     try {
       const user: User = await this.usersService.findOne(req.user.id);
       const { otpAuthUrl } = await this.twoFAService.generate2FASecret(user);
-      // learn how to make QR code and/or secret passphrase for authenticator app here
-      // put DataURI/Filestream in response to get to frontend?
-      console.log(
-        'QRcode URI: ',
-        this.twoFAService.generateQRCodeDataURL(otpAuthUrl),
-      );
       return this.twoFAService.generateQRCodeDataURL(otpAuthUrl);
     } catch (error) {
       throw new BadRequestException(error.message);

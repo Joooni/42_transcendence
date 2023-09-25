@@ -1,16 +1,14 @@
 version: '3.8'
 
-# for prod and eval, we need to clean this up
 
 services:
 
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile.prod
     depends_on:
       - backend
-    volumes:
-      - ${PWD}/frontend:/app
     ports:
       - 80:80
     restart: unless-stopped
@@ -21,6 +19,7 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile.prod
     networks:
       - nw_database
       - nw_app
@@ -42,8 +41,6 @@ services:
       POSTGRES_HOST: postgresql_database
     networks:
       - nw_database
-    # ports:
-    #   - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
