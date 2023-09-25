@@ -31,6 +31,10 @@ export class ChatChannelDropdownComponent {
 		this.userDataService.findSelf().then(user => this.activeUser = user);
 	}
 
+	isBannedOrOffline(): boolean {
+		return this.channel.bannedUsers.some(user => user.id === this.selectedUser.id) || this.selectedUser.status === 'offline'
+	}
+
 	canBeSetAsAdmin(): boolean {
 		if (this.userIsAdmin(this.selectedUser) || this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;

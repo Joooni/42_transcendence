@@ -1,7 +1,7 @@
 <div class="icons">
 	<a class="dropdown">
 		<img class="icon" src="../../../assets/dots_icon_yellow.png">
-		<div class="dropdown-content">
+		<div class="dropdown-content" [ngClass]="isBlockedOrOffline() ? 'grey' : ''">
 			<div class="dropdown-content-items">
 				<a class="dropdown-content-item" routerLink="{{'/profile/' + selectedUser.username}}">
 					<img class="icon" src="../../../assets/profile_icon_yellow.png">

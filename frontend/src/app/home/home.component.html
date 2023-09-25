@@ -6,25 +6,22 @@
 		<h1>
 			- ONGOING GAMES -
 		</h1>
-		<div *ngFor="let onGoingGamesData of onGoingGames" class="box_row home_game_box">
+		<div *ngFor="let game of onGoingGames" class="home_game_box">
 			<!-- <img class="profile_picture" src="{{ game.player1_profile_pic }}"> -->
-			<h4>
-				{{ onGoingGamesData.leftUserName }}
-				<br> <br>
-				{{ onGoingGamesData.goalsLeft}}
-			</h4>
-			<h4>vs</h4>
-			<h4>
-				{{ onGoingGamesData.rightUserName }}
-				<br> <br>
-				{{ onGoingGamesData.goalsRight }}
-			</h4>
-			<br> <br> <br>
-			<button class="home_medium_button" (click)="watchThisMatch(onGoingGamesData.roomNbr)">Watch this match</button>
+			<div class="player-info">
+				<h4>{{ game.leftUserName }}</h4>
+				<h2>{{ game.goalsLeft}}</h2>
+			</div>
+			<h2>VS</h2>
+			<div class="player-info">
+				<h4>{{ game.rightUserName}}</h4>
+				<h2>{{ game.goalsRight}}</h2>
+			</div>
 			<!-- <img class="profile_picture" src="{{ game.player2_profile_pic }}"> -->
+			<button class="home_medium_button" (click)="watchThisMatch(game.roomNbr)">Watch this match</button>
 		</div>
 	</div>
 	<div class="home_flex_rows">
-		Placeholder
+		<app-notification class="notification-container"></app-notification>
 	</div>
 </div>

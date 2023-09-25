@@ -1,51 +1,60 @@
+h1 {
+	margin-block-end: 0.5rem;
+}
+
+h3 {
+	margin-block-start: 0.5rem;
+}
+
 .profile_flex_column {
 	display: flex;
 	flex-direction: column; 
-
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
 }
 
 .profile_flex_row {
 	display: flex;
 	flex-wrap: wrap;
-	/* flex-direction: row; */
 	justify-content: space-between;
 	margin: 2vmin 2vmin;
 	column-gap: 5vmin;
 	row-gap: 5vmin;
-
-	border-style: solid;
-	border-width: 2px;
-	border-color: cyan;
 }
 
 .profile_box_row {
-	flex: 45%;
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	padding: 2rem;
+	display: flex;
+	flex-direction: row;
+	flex: 20%;
 	justify-content: space-between;
 	align-items: flex-start;
 	min-height: auto;
-	column-gap: 4vmin;
-	padding-top: 3vmin;
+	column-gap: 2rem;
 }
 
 .profile_box_column {
-	flex: 37%;
-	justify-content: center;
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	padding: 1vmin 3vmin;
+	display: flex;
+	flex-direction: column;
+	flex: 20%;
+	justify-content: flex-start;
 	align-items: center;
 	min-height: auto;
-	
-	border-style: solid;
-	border-width: 2px;
-	border-color: magenta;
 }
 
 .profile_box_games {
+	background-color: rgb(2, 88, 2);
+	border-radius: 15px;
+	padding: 1vmin 3vmin;
+	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	min-height: auto;
-	margin: 2vmin 2vmin;
+	margin: 0.8rem 1rem;
 	padding-left: 7vmin;
 	padding-right: 7vmin;
 }
@@ -99,4 +108,11 @@ table {
 
 .red {
 	background-color: #ff0000;
+}
+
+.game-history {
+	max-height: 20rem;
+	overflow-y: auto;
+	margin: 0 1.5rem 1rem 1.5rem;
+	background-color: rgba(1, 47, 1, 0.552);
 }

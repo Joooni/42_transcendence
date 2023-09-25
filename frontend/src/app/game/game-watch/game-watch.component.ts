@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { gameData } from '../game-display/GameData';
+import { User } from 'src/app/models/user';
+import { UserDataService } from 'src/app/services/user-data/user-data.service';
 
 @Component({
   selector: 'app-game-watch',
@@ -15,6 +17,9 @@ export class GameWatchComponent implements AfterViewInit {
 	stopWatch: boolean;
 	watchingRoom?: number;
 
+	leftPlayer?: User;
+	rightPlayer?: User;
+
 	@ViewChild('canvasEle')
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
@@ -22,7 +27,9 @@ export class GameWatchComponent implements AfterViewInit {
 	constructor(
 		private gameDisplayService: GameDisplayService,
 		private socketService: SocketService,
-		private router: Router	)
+		private router: Router,
+		private userDataService: UserDataService
+	)
 	{
 		this.stopWatch = false;
 		this.gameDisplayService.loadImages();
@@ -52,8 +59,14 @@ export class GameWatchComponent implements AfterViewInit {
 	runGame(data: gameData) {
 		if (this.watchingRoom == undefined)
 			this.watchingRoom = data.roomNbr;
+		this.getPlayerData(data);
 		this.gameDisplayService.imageControl(data);
 		this.draw(data);
+	}
+
+	async getPlayerData(data: gameData) {
+		this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
+		this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
 	}
 
 	draw(data: gameData) {
