@@ -149,6 +149,7 @@ export class SocketGateway
       client,
       obj.channelid,
       obj.userid,
+      obj.password
     );
     this.server.to(obj.channelid).emit('updateChannel', {});
   }
@@ -256,6 +257,24 @@ export class SocketGateway
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, obj: any) {
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('channel:ChangeType')
+  async changeType(client: Socket, obj: any) {
+    console.log(
+      obj.activeUser,
+      obj.channelid,
+      obj.newType,
+      obj.password,
+      );
+    await this.channelsService.changeType(
+      obj.activeUser,
+      obj.channelid,
+      obj.newType,
+      obj.password,
+    );
+
+    this.server.to(obj.channelId).emit('updateChannel', {});
   }
 
   @SubscribeMessage('channel:SetUserAsAdmin')

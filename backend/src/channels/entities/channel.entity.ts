@@ -37,29 +37,9 @@ export class Channel {
   @Column('text')
   type: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @Column('text', { nullable: true })
   password?: string;
-
-  constructor(
-    @Inject(PasswordService) private readonly passwordService: PasswordService,
-  ) {}
-
-  @BeforeInsert()
-  async hashPW() {
-    if (typeof this.password === 'string')
-      this.password = await this.passwordService.hashPassword(this.password);
-  }
-
-  async comparePassword(password: string): Promise<boolean> {
-    if (!this.password) {
-      console.log('no password set for the channel:', this.name);
-      return false;
-    } else if (
-      await this.passwordService.comparePassword(password, this.password)
-    )
-      return true;
-    else return false;
-  }
 
   @Field()
   @CreateDateColumn()

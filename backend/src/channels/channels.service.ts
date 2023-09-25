@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Server, Socket } from 'socket.io';
+import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
@@ -14,7 +15,8 @@ export class ChannelsService {
     @InjectRepository(Channel)
     private readonly channelRepository: Repository<Channel>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly userService: UsersService, // private readonly channelMuteService: ChannelMuteService,
+    private readonly userService: UsersService,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async findAll(): Promise<Channel[]> {
@@ -111,7 +113,6 @@ export class ChannelsService {
     type: string,
     password?: string,
   ) {
-    console.log('got channel', channelname);
     const user = await this.userService.findOne(owner);
     if (!user) {
       console.log('cant find user', owner);
@@ -123,11 +124,14 @@ export class ChannelsService {
       return;
     }
 
+    let hasedPW = undefined;
+    if (password)
+      hasedPW = await this.passwordService.hashPassword(password);
     const chanEntity = this.channelRepository.create({
       name: channelname,
       owner: user,
       type: type,
-      password: password,
+      password: hasedPW,
       users: [user],
       admins: [user],
       mutedUsers: [],
@@ -146,7 +150,30 @@ export class ChannelsService {
       : [chanEntity];
 
     await this.channelRepository.save(chanEntity);
-    client.join(chanEntity.id); //Is the id set here?
+    client.join(chanEntity.id);
+  }
+
+  async changeType(userid: number, channelid: string, type: string, password: string) {
+    const channel = await this.getChannelById(channelid);
+    if (!channel) {
+      console.log('channel does not exist');
+      return;
+    }
+    if (channel.owner.id !== userid) {
+      console.log('user is not owner');
+      return;
+    }
+
+    let hasedPW = undefined;
+    if (password)
+      hasedPW = await this.passwordService.hashPassword(password);
+    if (type == 'protected' && !password) {
+      console.log('no password');
+      return;
+    }
+    channel.type = type;
+    channel.password = hasedPW;
+    await this.channelRepository.save(channel);
   }
 
   async joinChannelRoom(client: Socket, channelid: string, userid: number) {
@@ -188,14 +215,17 @@ export class ChannelsService {
       if (channel.type === 'private') {
         const foundUser = channel.invitedUsers.find((u) => u.id === userid);
         if (!foundUser) {
-          throw new Error('User not invited');
+          console.log(user.username + ' tried to join channel ' + channel.name + ' without invite');
+          return;
         }
       } else if (channel.type === 'protected') {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }
-        if ((await channel.comparePassword(password)) == false) {
-          throw new Error('Wrong password');
+        if ((await this.passwordService.comparePassword(password, channel.password!)) == false) {
+          console.log('User ' + user.username + ' used wrong password for channel ' + channel.name);
+          client.emit('wrongChannelPassword', {});
+          return;
         }
       }
       channel.users.push(user);

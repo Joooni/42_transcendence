@@ -108,7 +108,7 @@
 				</div>
 			</div>
 			<div *ngFor="let channel of invitedInChannel">
-				<div class="channel other">
+				<div *ngIf="channel.type == 'private'" class="channel other">
 					<h4>{{channel.name}}</h4>
 					<div class="icons">
 						<button class="button_reverse button_small" (click)="joinChannel(channel)">

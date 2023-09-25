@@ -3,7 +3,12 @@ import { hash, compare } from 'bcryptjs';
 
 @Injectable()
 export class PasswordService {
-  async hashPassword(password: string): Promise<string> {
+  async hashPassword(password: string | undefined): Promise<string | undefined> {
+    console.log('i was in the passwordService');
+    if (!password) {
+      console.log('no password given');
+      return undefined;
+    }
     const saltRounds = 10;
     const hashedPassword = await hash(password, saltRounds);
     return hashedPassword;

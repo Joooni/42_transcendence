@@ -102,6 +102,7 @@ export class ChatChannelComponent {
 
 	openChannelSettingsPopUp() {
 		this.newPassword = '';
+		console.log('selectedChannel: ' + this.chatComponent.selectedChannel);
 		this.selectedChannelType = this.chatComponent.selectedChannel?.type;
 		const popup = document.getElementById('popup-channel-settings');
 		popup?.classList.toggle('show-popup');
@@ -170,7 +171,13 @@ export class ChatChannelComponent {
 		console.log('The new channel type is: ' + this.selectedChannelType);
 		if (this.newPassword)
 			console.log('The new channel password is: ' + this.newPassword);
-		//TO-DO: BE call: update channel
+
+		this.socket.emit('channel:ChangeType', {
+			channelid: this.chatComponent.selectedChannel!.id,
+			activeUser: this.activeUser?.id,
+			newType: this.selectedChannelType,
+			password: this.newPassword,
+		});
 		this.closePopUp('popup-channel-settings');
 	}
 

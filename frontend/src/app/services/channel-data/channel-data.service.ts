@@ -117,6 +117,7 @@ export class ChannelDataService {
 							id
 							intra
 						}
+						type
 					}
 				}
 			`,
