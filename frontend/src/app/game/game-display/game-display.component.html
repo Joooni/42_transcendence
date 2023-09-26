@@ -1,28 +1,30 @@
-<div class="game-display">
-	
-	<div class="game-player-info" *ngIf="leftPlayer">
-		<div class="game-player-picture">
-			<img src="{{leftPlayer.picture}}">
+<div class="game-container">
+	<div class="game-display">
+		
+		<div class="game-player-info" *ngIf="leftPlayer">
+			<div class="game-player-picture">
+				<img src="{{leftPlayer.picture}}">
+			</div>
+			<h1>{{leftPlayer.username.toUpperCase()}}</h1>
 		</div>
-		<h1>{{leftPlayer.username.toUpperCase()}}</h1>
-	</div>
 
-	<div class="game-canvas">
-		<canvas #canvasEle
-			(window:keydown.arrowup)="moveUp = true" 
-			(window:keyup.arrowup)="moveUp = false" 
-			(window:keydown.arrowdown)="moveDown = true" 
-			(window:keyup.arrowdown)="moveDown = false" 
-			(window:blur)="moveDown = false" 
-			(window:blur)="moveUp = false"
-		></canvas>
-		<button class="leave-game-buttton" *ngIf="leave === true" (click)="leavePage()">LEAVE</button>
-	</div>
-
-	<div class="game-player-info" *ngIf="rightPlayer">
-		<div class="game-player-picture">
-			<img src="{{rightPlayer.picture}}">
+		<div class="game-canvas">
+			<canvas #canvasEle
+				(window:keydown.arrowup)="moveUp = true" 
+				(window:keyup.arrowup)="moveUp = false" 
+				(window:keydown.arrowdown)="moveDown = true" 
+				(window:keyup.arrowdown)="moveDown = false" 
+				(window:blur)="moveDown = false" 
+				(window:blur)="moveUp = false"
+			></canvas>
 		</div>
-		<h1>{{rightPlayer.username.toUpperCase()}}</h1>
+
+		<div class="game-player-info" *ngIf="rightPlayer">
+			<div class="game-player-picture">
+				<img src="{{rightPlayer.picture}}">
+			</div>
+			<h1>{{rightPlayer.username.toUpperCase()}}</h1>
+		</div>
 	</div>
+	<button class="leave-game-buttton" (click)="leavePage()">LEAVE</button>
 </div>
