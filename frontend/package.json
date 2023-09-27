@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 80",
-    "prod": "ng serve --prod --port 80",
-    "build": "ng build",
+    "prod": "ng serve --configuration production --port 80",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "local": "ng serve -c local --port 80"
