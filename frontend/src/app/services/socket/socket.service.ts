@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,6 @@ export class SocketService {
       this.connectSocket();
     });
   }
-    
   connected = false;
 
   async connectSocket() {
@@ -21,7 +21,7 @@ export class SocketService {
       const socketId = this.socket.ioSocket.id;
       console.log('socketid:', socketId);
       try {
-        await axios.get(`http://localhost:3000/socket/verify/${socketId}`, { withCredentials: true });
+        await axios.get(`http://${environment.DOMAIN}:3000/socket/verify/${socketId}`, { withCredentials: true });
         console.log('Socket verified');
         this.connected = true;
         resolve();

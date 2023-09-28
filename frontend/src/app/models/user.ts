@@ -3,8 +3,6 @@ import { Channel } from "./channel";
 export interface User {
 	id: number;
 	intra: string;
-	firstname: string;
-	lastname: string;
 	username: string;
 	email: string;
 	picture: string;

@@ -7,6 +7,7 @@ DEV			:= ./docker-compose.yaml
 all: up
 
 prod: $(PROD)
+	cp actual.env .env
 	docker compose -f $(PROD) up --build --remove-orphans -d
 
 dev: $(DEV)
@@ -29,10 +30,10 @@ database:
 #
 
 down:
-	docker compose -f docker-compose.yaml down
+	docker compose down
 
 ps:
-	docker compose -f docker-compose.yaml ps
+	docker compose ps
 
 clean:
 	docker volume rm $(FOLDER_NAME)_postgres-data

@@ -28,8 +28,6 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'intra42') {
     const user: CreateUserInput = {
       id: +profile.id,
       intra: profile.username,
-      firstname: profile.name.givenName,
-      lastname: profile.name.familyName,
       username: profile.username,
       twoFAEnabled: false,
       email: profile.emails[0].value,

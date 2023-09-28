@@ -10,12 +10,6 @@ export class CreateUserInput {
   intra: string;
 
   @Field()
-  firstname: string;
-
-  @Field()
-  lastname: string;
-
-  @Field()
   @IsNotEmpty()
   username: string;
 

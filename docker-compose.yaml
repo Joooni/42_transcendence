@@ -5,6 +5,7 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile.dev
     depends_on:
       - backend
     volumes:
@@ -15,13 +16,12 @@ services:
     container_name: frontend
     networks:
       - nw_app
-    # command: "ng serve --port 80"
     command: "ng serve --open --host 0.0.0.0 --port 80"
-    # command: "ng serve --open --host 0.0.0.0 --port 4200 --disable-host-check"
 
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile.dev
     networks:
       - nw_database
       - nw_app
@@ -45,8 +45,6 @@ services:
       POSTGRES_HOST: postgresql_database
     networks:
       - nw_database
-    # ports:
-    #   - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: always

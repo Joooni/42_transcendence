@@ -134,8 +134,6 @@ export class UserDataService {
         userById {
           id
           intra
-          firstname
-          lastname
           username
           email
           picture
@@ -204,8 +202,6 @@ export class UserDataService {
   //         allUsers {
   //           id
   //           intra
-  //           firstname
-  //           lastname
   //           username
   //           email
   //           picture
@@ -235,8 +231,6 @@ export class UserDataService {
           allUsersExceptMyself {
             id
             intra
-            firstname
-            lastname
             username
             email
             picture
@@ -266,8 +260,6 @@ export class UserDataService {
         userById(id: $id) {
           id
           intra
-          firstname
-          lastname
           username
           email
           picture
@@ -300,8 +292,6 @@ export class UserDataService {
         userByName(username: $username) {
           id
           intra
-          firstname
-          lastname
           username
           email
           picture

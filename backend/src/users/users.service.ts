@@ -37,6 +37,9 @@ export class UsersService {
       const existingUsers: User[] = await this.userRepository.find({
         where: { username: Like(`${createUserInput.username}%`) },
       });
+      if (existingUsers.length == 0) return Promise.reject(error);
+      createUserInput.username = createUserInput.username + '_copycat';
+      await this.userRepository.insert(createUserInput);
     }
     return Promise.resolve();
   }
@@ -137,23 +140,25 @@ export class UsersService {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
 
-			if (user.incomingFriendRequests.includes(friend)) {
-				this.acceptFriendRequest(server, ownid, otherid);
-				return;
-			}
-			else if (!user.sendFriendRequests.includes(friend) && !user.friends.includes(friend))
-				user.sendFriendRequests.push(friend);
+      if (user.incomingFriendRequests.includes(friend)) {
+        this.acceptFriendRequest(server, ownid, otherid);
+        return;
+      } else if (
+        !user.sendFriendRequests.includes(friend) &&
+        !user.friends.includes(friend)
+      )
+        user.sendFriendRequests.push(friend);
 
       await this.userRepository.save(user);
 
-			server.to(user.socketid).emit('updateNotifications', {});
-			server.to(friend.socketid).emit('updateNotifications', {});
+      server.to(user.socketid).emit('updateNotifications', {});
+      server.to(friend.socketid).emit('updateNotifications', {});
     } catch (error) {
       console.log(error);
     }
   }
 
-	async acceptFriendRequest(server: Server, ownid: number, otherid: number) {
+  async acceptFriendRequest(server: Server, ownid: number, otherid: number) {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
@@ -161,58 +166,56 @@ export class UsersService {
         (item) => item.id !== friend.id,
       );
 
-			if (!user.friends.includes(friend))
-      	user.friends.push(friend);
-			if (!friend.friends.includes(user))
-      	friend.friends.push(user);
+      if (!user.friends.includes(friend)) user.friends.push(friend);
+      if (!friend.friends.includes(user)) friend.friends.push(user);
 
-			// Achivment: found a friend
-			const num1 = user.achievements.find((i) => i == 5);
-			if (!num1) user.achievements.push(5);
-			const num2 = friend.achievements.find((i) => i == 5);
-			if (!num2) friend.achievements.push(5);
+      // Achivment: found a friend
+      const num1 = user.achievements.find((i) => i == 5);
+      if (!num1) user.achievements.push(5);
+      const num2 = friend.achievements.find((i) => i == 5);
+      if (!num2) friend.achievements.push(5);
 
       await this.userRepository.save(friend);
       await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});
       server.to(friend.socketid).emit('updateUserList', {});
 
-			server.to(user.socketid).emit('updateNotifications', {});
-			server.to(friend.socketid).emit('updateNotifications', {});
+      server.to(user.socketid).emit('updateNotifications', {});
+      server.to(friend.socketid).emit('updateNotifications', {});
     } catch (error) {
       console.log(error);
     }
   }
 
-	async declineFriendRequest(server: Server, ownid: number, otherid: number) {
-		try {
-			const user = await this.findOne(ownid);
+  async declineFriendRequest(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
       user.incomingFriendRequests = user.incomingFriendRequests.filter(
         (item) => item.id !== friend.id,
       );
-			await this.userRepository.save(user);
-			server.to(user.socketid).emit('updateNotifications', {});
-			server.to(friend.socketid).emit('updateNotifications', {});
-		} catch (error) {
-			console.log(error);
-		}
-	}
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateNotifications', {});
+      server.to(friend.socketid).emit('updateNotifications', {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-	async withdrawFriendRequest(server: Server, ownid: number, otherid: number) {
-		try {
-			const user = await this.findOne(ownid);
+  async withdrawFriendRequest(server: Server, ownid: number, otherid: number) {
+    try {
+      const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
       user.sendFriendRequests = user.sendFriendRequests.filter(
         (item) => item.id !== friend.id,
       );
-			await this.userRepository.save(user);
-			server.to(user.socketid).emit('updateNotifications', {});
-			server.to(friend.socketid).emit('updateNotifications', {});
-		} catch (error) {
-			console.log(error);
-		}
-	}
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateNotifications', {});
+      server.to(friend.socketid).emit('updateNotifications', {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async removeFriend(server: Server, ownid: number, otherid: number) {
     try {

@@ -18,7 +18,6 @@ export class ChannelsService {
   ) {}
 
   async findAll(): Promise<Channel[]> {
-    console.log('This action returns all channels');
     const channels = await this.channelRepository
       .createQueryBuilder('channel')
       .leftJoinAndSelect('channel.messages', 'messages')
@@ -169,7 +168,7 @@ export class ChannelsService {
 
   async addUserToChannel(
     server: Server,
-		client: Socket,
+    client: Socket,
     channelId: string,
     userid: number,
     password?: string,
@@ -200,12 +199,12 @@ export class ChannelsService {
         }
       }
       channel.users.push(user);
-			channel.invitedUsers = channel.invitedUsers.filter(
-				(user) => user.id !== userid,
-			);
+      channel.invitedUsers = channel.invitedUsers.filter(
+        (user) => user.id !== userid,
+      );
       await this.channelRepository.save(channel);
       client.join(channelId);
-			server.to(user.socketid).emit('updateNotifications', {});
+      server.to(user.socketid).emit('updateNotifications', {});
       return;
     } catch (error) {
       console.log(error);
@@ -259,34 +258,38 @@ export class ChannelsService {
       }
       channel.invitedUsers.push(invitedUser);
       await this.channelRepository.save(channel);
-			server.to(invitedUser.socketid).emit('updateNotifications', {});
+      server.to(invitedUser.socketid).emit('updateNotifications', {});
       return invitedUser;
     } catch (error) {
       console.log(error);
     }
   }
 
-	async declineChannelInvite(
+  async declineChannelInvite(
     server: Server,
-		channelId: string,
+    channelId: string,
     userid: number,
-	) {
-		try {
-			const user = await this.userService.findOne(userid);
-			if (!user) {
-				throw new NotFoundException('Channel or User not found');
-			}
-			user.invitedInChannel = user.invitedInChannel.filter(
-				(channel) => channel.id === channelId
-			);
-			await this.userRepository.save(user);
-			server.to(user.socketid).emit('updateNotifications', {});
-		} catch (error) {
-			console.log(error);
-		}
-	}
+  ) {
+    try {
+      const user = await this.userService.findOne(userid);
+      if (!user) {
+        throw new NotFoundException('Channel or User not found');
+      }
+      user.invitedInChannel = user.invitedInChannel.filter(
+        (channel) => channel.id === channelId,
+      );
+      await this.userRepository.save(user);
+      server.to(user.socketid).emit('updateNotifications', {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  async setUserAsAdmin(activeUserId: number, selectedUserId: number, channelId: string) {
+  async setUserAsAdmin(
+    activeUserId: number,
+    selectedUserId: number,
+    channelId: string,
+  ) {
     try {
       const channel = await this.getChannelById(channelId);
       const selectedUser = await this.userService.findOne(selectedUserId);

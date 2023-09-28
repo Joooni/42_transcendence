@@ -82,7 +82,7 @@ class GraphQLService {
     });
     this.apolloClient = new ApolloClient({
       link: createHttpLink({
-        uri: 'http://localhost:3000/graphql',
+        uri: `http://${environment.DOMAIN}:3000/graphql`,
         credentials: 'include',
       }),
       cache,

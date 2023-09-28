@@ -52,8 +52,6 @@ type Match {
 type User {
   id: Int!
   intra: String!
-  firstname: String!
-  lastname: String!
   username: String!
   email: String!
   picture: String!

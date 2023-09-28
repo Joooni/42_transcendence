@@ -32,41 +32,48 @@ export class SocketController {
       user.socketid,
     );
 
-	if (user.socketid !== '' && socketId != user.socketid && user.socketid !== 'undefined') {
-		setTimeout(async () => {
-			if (this.socketGateway.server.sockets.sockets.has(user.socketid) === false) {
-				await this.usersService.updateSocketid(jwtPayload.id, socketId);
-				this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
-			}
-			else {
-				console.log('The user is already connected. The new connection will be closed');
-				this.socketGateway.handleAlreadyConnected(socketId);
-			}
-		}, 200);
-	}
-	else {
-		await this.usersService.updateSocketid(jwtPayload.id, socketId);
-		this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
-	}
+    if (
+      user.socketid !== '' &&
+      socketId != user.socketid &&
+      user.socketid !== 'undefined'
+    ) {
+      setTimeout(async () => {
+        if (
+          this.socketGateway.server.sockets.sockets.has(user.socketid) === false
+        ) {
+          await this.usersService.updateSocketid(jwtPayload.id, socketId);
+          this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+        } else {
+          console.log(
+            'The user is already connected. The new connection will be closed',
+          );
+          this.socketGateway.handleAlreadyConnected(socketId);
+        }
+      }, 200);
+    } else {
+      await this.usersService.updateSocketid(jwtPayload.id, socketId);
+      this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+    }
 
-	
-	// if (user.socketid !== '' && socketId != user.socketid && user.socketid !== 'undefined') {
-	// 	console.log('The user is already connected. The new connection will be closed');
-	// 	this.socketGateway.handleAlreadyConnected(socketId);
-	// }
-	// else {
-	// 	await this.usersService.updateSocketid(jwtPayload.id, socketId);
-	// 	this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
-	// }
+    // if (user.socketid !== '' && socketId != user.socketid && user.socketid !== 'undefined') {
+    // 	console.log('The user is already connected. The new connection will be closed');
+    // 	this.socketGateway.handleAlreadyConnected(socketId);
+    // }
+    // else {
+    // 	await this.usersService.updateSocketid(jwtPayload.id, socketId);
+    // 	this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+    // }
 
-	// next 2 lines only for for development
-	// await this.usersService.updateSocketid(jwtPayload.id, socketId);
-	// this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
+    // next 2 lines only for for development
+    // await this.usersService.updateSocketid(jwtPayload.id, socketId);
+    // this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
 
+    user = await this.usersService.findOne(jwtPayload.id);
+    console.log(
+      'The socketID of the user AFTER changing is :  ',
+      user.socketid,
+    );
 
-	user = await this.usersService.findOne(jwtPayload.id);
-	console.log("The socketID of the user AFTER changing is :  ", user.socketid);
-
-	return { verified: true };
+    return { verified: true };
   }
 }

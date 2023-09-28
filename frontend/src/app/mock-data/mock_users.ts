@@ -4,8 +4,6 @@ export const USERS: User[] = [
 	{
 		id: 1,
 		intra: "mmuster",
-		firstname: "Max",
-		lastname: "Mustermann",
 		username: "MusterDude",
 		email: "mmuster@mock.com",
 		picture: "../../assets/cage.jpeg",
@@ -32,8 +30,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 2,
 	// 	intra: "jdoe",
-	// 	firstname: "Jon",
-	// 	lastname: "Doe",
 	// 	username: "JonDude",
 	// 	email: "jdoe@mock.com",
 	// 	picture: "../../assets/cage.jpeg",
@@ -48,8 +44,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 3,
 	// 	intra: "jbiden",
-	// 	firstname: "Joe",
-	// 	lastname: "Biden",
 	// 	username: "BigJoe",
 	// 	email: "jbiden@mock.com",
 	// 	picture: "../assets/biden.jpeg",
@@ -64,8 +58,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 4,
 	// 	intra: "dtrump",
-	// 	firstname: "Donald",
-	// 	lastname: "Trump",
 	// 	username: "TheRealD",
 	// 	email: "dtrump@mock.com",
 	// 	picture: "../assets/trump.jpeg",
@@ -80,8 +72,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 5,
 	// 	intra: "smischni",
-	// 	firstname: "Saskia",
-	// 	lastname: "Mischnick",
 	// 	username: "saskia",
 	// 	email: "smischni@student.42wolfsburg.de",
 	// 	picture: "../assets/profile.jpg",
@@ -96,8 +86,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 6,
 	// 	intra: "jsubel",
-	// 	firstname: "Jonas",
-	// 	lastname: "Subel",
 	// 	username: "jonas",
 	// 	email: "jsubel@student.42wolfsburg.de",
 	// 	picture: "../assets/profile.jpg",
@@ -112,8 +100,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 7,
 	// 	intra: "tjairus",
-	// 	firstname: "Triinu",
-	// 	lastname: "Jairus",
 	// 	username: "triinu",
 	// 	email: "tjairus@student.42wolfsburg.de",
 	// 	picture: "../assets/profile.jpg",
@@ -128,8 +114,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 8,
 	// 	intra: "fmollenh",
-	// 	firstname: "Ferenc",
-	// 	lastname: "Mollenhauer",
 	// 	username: "ferenc",
 	// 	email: "fmollenh@student.42wolfsburg.de",
 	// 	picture: "../assets/profile.jpg",
@@ -144,8 +128,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: 98468,
 	// 	intra: "fsemke",
-	// 	firstname: "Florian",
-	// 	lastname: "Semke",
 	// 	username: "florian",
 	// 	email: "fsemke@student.42wolfsburg.de",
 	// 	picture: "../assets/profile.jpg",
@@ -161,8 +143,6 @@ export const USERS: User[] = [
 	// {
 	// 	id: -1,
 	// 	intra: '',
-	// 	firstname: '',
-	// 	lastname: '',
 	// 	username: '',
 	// 	email: '',
 	// 	picture: '',

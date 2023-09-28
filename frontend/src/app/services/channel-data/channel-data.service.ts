@@ -142,7 +142,6 @@ export class ChannelDataService {
 						type
 						owner {
 							id
-							firstname
 						}
 						users {
 							id
