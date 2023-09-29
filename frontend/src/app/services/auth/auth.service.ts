@@ -27,9 +27,10 @@ export class AuthService implements OnDestroy {
         try {
           await this.userDataService.findSelf();
           this.isAuthenticated = true;
+          this.socketService.isAuthenticated = true;
         } catch (error) {
           this.isAuthenticated = false;
-          //TO-DO: disconnect socket
+          this.socketService.isAuthenticated = false;
           this.socketService.disconnect();
           this.router.navigate(['/login']);
         }
@@ -40,8 +41,10 @@ export class AuthService implements OnDestroy {
     try {
       await this.userDataService.findSelf();
       this.isAuthenticated = true;
+      this.socketService.isAuthenticated = true;
     } catch (error) {
       this.isAuthenticated = false;
+      this.socketService.isAuthenticated = false;
       return false;
     }
     return true;
