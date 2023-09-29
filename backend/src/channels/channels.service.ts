@@ -1,13 +1,11 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Server, Socket } from 'socket.io';
 import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import { ChannelMuteService } from './channel-mute/channel-mute.service';
 import { Channel } from './entities/channel.entity';
-import { ChannelMute } from './entities/channelMute.entity';
 
 @Injectable()
 export class ChannelsService {
@@ -125,8 +123,7 @@ export class ChannelsService {
     }
 
     let hasedPW = undefined;
-    if (password)
-      hasedPW = await this.passwordService.hashPassword(password);
+    if (password) hasedPW = await this.passwordService.hashPassword(password);
     const chanEntity = this.channelRepository.create({
       name: channelname,
       owner: user,
@@ -153,7 +150,12 @@ export class ChannelsService {
     client.join(chanEntity.id);
   }
 
-  async changeType(userid: number, channelid: string, type: string, password: string) {
+  async changeType(
+    userid: number,
+    channelid: string,
+    type: string,
+    password: string,
+  ) {
     const channel = await this.getChannelById(channelid);
     if (!channel) {
       console.log('channel does not exist');
@@ -165,8 +167,7 @@ export class ChannelsService {
     }
 
     let hasedPW = undefined;
-    if (password)
-      hasedPW = await this.passwordService.hashPassword(password);
+    if (password) hasedPW = await this.passwordService.hashPassword(password);
     if (type == 'protected' && !password) {
       console.log('no password');
       return;
@@ -215,15 +216,30 @@ export class ChannelsService {
       if (channel.type === 'private') {
         const foundUser = channel.invitedUsers.find((u) => u.id === userid);
         if (!foundUser) {
-          console.log(user.username + ' tried to join channel ' + channel.name + ' without invite');
+          console.log(
+            user.username +
+              ' tried to join channel ' +
+              channel.name +
+              ' without invite',
+          );
           return;
         }
       } else if (channel.type === 'protected') {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }
-        if ((await this.passwordService.comparePassword(password, channel.password!)) == false) {
-          console.log('User ' + user.username + ' used wrong password for channel ' + channel.name);
+        if (
+          (await this.passwordService.comparePassword(
+            password,
+            channel.password!,
+          )) == false
+        ) {
+          console.log(
+            'User ' +
+              user.username +
+              ' used wrong password for channel ' +
+              channel.name,
+          );
           client.emit('wrongChannelPassword', {});
           return;
         }

@@ -8,13 +8,13 @@ import { ChannelMute } from '../entities/channelMute.entity';
 import { Job, scheduleJob } from 'node-schedule';
 import { User } from 'src/users/entities/user.entity';
 import { Channel } from '../entities/channel.entity';
-import { SocketGateway } from 'src/socket/socket.gateway';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { env } from 'process';
 
-
 @Injectable()
-@WebSocketGateway({ cors: [`http://${env.DOMAIN}:80`, `http://${env.DOMAIN}:3000`] })
+@WebSocketGateway({
+  cors: [`http://${env.DOMAIN}:80`, `http://${env.DOMAIN}:3000`],
+})
 export class ChannelMuteService {
   private mutedUsers: ChannelMute[] = [];
   private jobMap = new Map<number, Job>();

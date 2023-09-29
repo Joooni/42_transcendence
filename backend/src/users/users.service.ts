@@ -318,7 +318,11 @@ export class UsersService {
   async updateSocketid(id: number, newsocketid: string) {
     if (id === null || newsocketid === null)
       throw new Error('id or socketid is null');
-    console.log('updateSocketid mit folgenden Werten', id, newsocketid);
+    console.log(
+      'Saved socketId in DB: user:',
+      id,
+      'socketid: "' + newsocketid + '"',
+    );
     const result: UpdateResult = await this.userRepository.update(id, {
       socketid: newsocketid,
     });

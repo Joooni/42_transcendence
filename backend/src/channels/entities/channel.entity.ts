@@ -1,10 +1,7 @@
-import { Inject } from '@nestjs/common';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Message } from 'src/messages/entities/message.entity';
-import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,

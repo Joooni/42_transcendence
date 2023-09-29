@@ -54,11 +54,6 @@ export class SocketGateway
   async handleAlreadyConnected(socketId: string) {
     this.server.to(socketId).emit('alreadyConnected', {});
     this.server.to(socketId).disconnectSockets();
-
-    //   (async () => {
-    // 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
-    // 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);
-    //   })()
   }
 
   async handleDisconnect(client: Socket) {
@@ -71,8 +66,11 @@ export class SocketGateway
       this.updateStatusAndEmit(user.id, 'offline');
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
     } catch (error) {
-      console.log('Error Socket: User not found');
-      console.log(error);
+      console.log(
+        'Error Socket: ' +
+          client.id +
+          ' socket disconnected without being logged in',
+      );
     }
   }
 
@@ -149,7 +147,7 @@ export class SocketGateway
       client,
       obj.channelid,
       obj.userid,
-      obj.password
+      obj.password,
     );
     this.server.to(obj.channelid).emit('updateChannel', {});
   }

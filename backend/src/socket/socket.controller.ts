@@ -27,10 +27,6 @@ export class SocketController {
     );
 
     let user: User = await this.usersService.findOne(jwtPayload.id);
-    console.log(
-      'The socketID of the user BEFORE changing is :  ',
-      user.socketid,
-    );
 
     if (
       user.socketid !== '' &&
@@ -69,10 +65,6 @@ export class SocketController {
     // this.socketGateway.updateStatusAndEmit(jwtPayload.id, 'online');
 
     user = await this.usersService.findOne(jwtPayload.id);
-    console.log(
-      'The socketID of the user AFTER changing is :  ',
-      user.socketid,
-    );
 
     return { verified: true };
   }

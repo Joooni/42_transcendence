@@ -3,8 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from 'src/messages/entities/message.entity';
 import { PasswordService } from 'src/password/password.service';
-import { SocketGateway } from 'src/socket/socket.gateway';
-import { SocketModule } from 'src/socket/socket.module';
 import { User } from 'src/users/entities/user.entity';
 import { UsersResolver } from 'src/users/users.resolver';
 import { UsersService } from 'src/users/users.service';
