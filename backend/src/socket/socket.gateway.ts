@@ -183,7 +183,6 @@ export class SocketGateway
             return;
           }
         }
-        throw new Error('Error Socket: User not found or not online');
       });
     } catch (error) {
       console.log('Error: ', error);
@@ -261,12 +260,6 @@ export class SocketGateway
 
   @SubscribeMessage('channel:ChangeType')
   async changeType(client: Socket, obj: any) {
-    console.log(
-      obj.activeUser,
-      obj.channelid,
-      obj.newType,
-      obj.password,
-      );
     await this.channelsService.changeType(
       obj.activeUser,
       obj.channelid,
@@ -274,7 +267,8 @@ export class SocketGateway
       obj.password,
     );
 
-    this.server.to(obj.channelId).emit('updateChannel', {});
+    this.server.to(obj.channelid).emit('updateChannel', {});
+    this.server.emit('updateChannelList', {});
   }
 
   @SubscribeMessage('channel:SetUserAsAdmin')

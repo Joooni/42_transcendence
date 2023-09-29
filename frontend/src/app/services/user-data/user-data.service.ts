@@ -224,7 +224,6 @@ export class UserDataService {
   // }
 
   async findAllExceptMyself(): Promise<User[]> {
-    console.log('findAllExceptMyself called');
     let response = await graphQLService.query(
       `
         query {

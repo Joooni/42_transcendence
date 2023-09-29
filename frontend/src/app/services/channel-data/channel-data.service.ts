@@ -127,7 +127,6 @@ export class ChannelDataService {
 		if (typeof response === 'undefined') {
 			return Promise.reject(new Error('Channel not found'));
 		}
-		console.log('getOtherVisibleChannels:', response.visibleChannelsWithoutUser);
 		return response.visibleChannelsWithoutUser;
 	}
 

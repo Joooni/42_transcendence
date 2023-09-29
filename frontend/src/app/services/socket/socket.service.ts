@@ -19,10 +19,8 @@ export class SocketService {
   async connectSocket() {
     return new Promise<void>(async (resolve, reject) => {
       const socketId = this.socket.ioSocket.id;
-      console.log('socketid:', socketId);
       try {
         await axios.get(`http://${environment.DOMAIN}:3000/socket/verify/${socketId}`, { withCredentials: true });
-        console.log('Socket verified');
         this.connected = true;
         resolve();
       } catch (error) {
