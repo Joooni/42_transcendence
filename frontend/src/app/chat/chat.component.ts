@@ -289,17 +289,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 	async updateUserList() {
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
-			console.log('update UserList')
 			if (!user) {
-				console.log('no active user, userlist cannot be updated');
 				return;
 			}
 			this.friends = user.friends.map(friend => ({...friend}));
-			this.blocked = user.blockedUsers.concat(user.blockedFromOther).map(blocked => ({...blocked}));
+			this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
 		});
 		await this.userDataService.findAllExceptMyself().then(users => {
 			this.otherUsers = users.filter(user => {
-				return !this.friends?.some(friend => friend.id === user.id) && !this.blocked?.some(blocked => blocked.id === user.id);
+				return !this.friends?.some(friend => friend.id === user.id) 
+					&& !this.blocked?.some(blocked => blocked.id === user.id) 
+					&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
 			});
 		});
 
