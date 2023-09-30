@@ -4,6 +4,7 @@ import { SocketService } from "src/app/services/socket/socket.service";
 import { UserDataService } from "src/app/services/user-data/user-data.service";
 import { ChatComponent } from "../chat.component";
 import { GameInviteService } from "src/app/services/game-invite/game-invite.service";
+import { UserRelationService } from "src/app/services/user-relation/user-relation.service";
 
 @Component({
 	selector: 'app-chat-dropdown',
@@ -20,7 +21,8 @@ export class ChatDropdownComponent {
 		private userDataService: UserDataService,
 		private chatComponent: ChatComponent,
 		private socketService: SocketService,
-		private gameInviteService: GameInviteService
+		private gameInviteService: GameInviteService,
+		private userRelationService: UserRelationService
 	) {}
 
 	ngOnInit() {
@@ -61,36 +63,18 @@ export class ChatDropdownComponent {
 	}
 
 	sendFriendRequest() {
-		console.log('send Friend Request to ' + this.selectedUser.username);
-		this.socketService.emit('sendFriendRequest', {
-			ownid: this.activeUser?.id,
-			otherid: this.selectedUser.id,
-		})
+		this.userRelationService.sendFriendRequest(this.activeUser!, this.selectedUser);
 	}
 
 	removeAsFriend() {
-		console.log('remove ' + this.selectedUser.username + ' as friend');
-		this.socketService.emit('removeFriend', {
-			ownid: this.activeUser?.id,
-			otherid: this.selectedUser.id,
-		})
+		this.userRelationService.removeAsFriend(this.activeUser!, this.selectedUser);
 	}
 
 	blockUser() {
-		console.log('block ' + this.selectedUser.username);
-		this.socketService.emit('blockUser', {
-			ownid: this.activeUser?.id,
-			otherid: this.selectedUser.id,
-		})
+		this.userRelationService.blockUser(this.activeUser!, this.selectedUser);
 	}
 
 	unblockUser() {
-		console.log('unblock ' + this.selectedUser.username);
-		this.socketService.emit('unblockUser', {
-			ownid: this.activeUser?.id,
-			otherid: this.selectedUser.id,
-		})
+		this.userRelationService.unblockUser(this.activeUser!, this.selectedUser);
 	}
-
-
 }

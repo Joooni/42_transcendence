@@ -4,6 +4,7 @@ import { UserDataService } from '../services/user-data/user-data.service';
 import { User } from '../models/user';
 import { SocketService } from '../services/socket/socket.service';
 import { Subscription } from 'rxjs';
+import { UserRelationService } from '../services/user-relation/user-relation.service';
 
 @Component({
   selector: 'app-notification',
@@ -18,7 +19,8 @@ export class NotificationComponent implements OnInit {
 	
 	constructor(
 		private userDataService: UserDataService,
-		private socket: SocketService
+		private socket: SocketService,
+		private userRelationService: UserRelationService
 	) {}
 
 	async ngOnInit() {
@@ -30,17 +32,11 @@ export class NotificationComponent implements OnInit {
 	}
 
 	acceptFriendRequest(notification: Notification) {
-		this.socket.emit('acceptFriendRequest', {
-			ownid: this.activeUser?.id,
-			otherid: notification.sender?.id
-		});
+		this.userRelationService.acceptFriendRequest(this.activeUser!, notification.sender!);
 	}
 
 	declineFriendRequest(notification: Notification) {
-		this.socket.emit('declineFriendRequest', {
-			ownid: this.activeUser?.id,
-			otherid: notification.sender?.id
-		});
+		this.userRelationService.declineFriendRequest(this.activeUser!, notification.sender!);
 	}
 
 	acceptChannelInvite(notification: Notification) {
@@ -58,10 +54,7 @@ export class NotificationComponent implements OnInit {
 	}
 
 	withdrawFriendRequest(notification: Notification) {
-		this.socket.emit('withdrawFriendRequest', {
-			ownid: this.activeUser?.id,
-			otherid: notification.recipient?.id
-		});
+		this.userRelationService.withdrawFriendRequest(this.activeUser!, notification.recipient!);
 	}
 
 	private async updateNotifications() {

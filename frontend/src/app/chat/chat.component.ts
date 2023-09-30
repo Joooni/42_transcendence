@@ -50,7 +50,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private userDataService: UserDataService,
-		private userRelationService: UserRelationService,
 		private channelDataService: ChannelDataService,
 		private messageService: MessageService,
 		private socket: SocketService,

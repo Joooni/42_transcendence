@@ -1,4 +1,30 @@
 <div *ngIf="selectedUser" class="profile_flex_column">
+
+	<div class="profile-user-relation" *ngIf="!isProfileOfActiveUser()">
+		<ng-container *ngIf="isFriendsWithActiveUser()">
+			<h4>You are friends with {{selectedUser.username}}.</h4>
+			<button class="button_small profile-button" (click)="unfriendSelectedUser()">UNFRIEND</button>
+		</ng-container>
+		<ng-container *ngIf="hasSentFriendRequestToActiveUser()">
+			<h4>You have an open friend request from {{selectedUser.username}}.</h4>
+			<button class="button_small profile-button" (click)="acceptFriendRequestFromSelectedUser()">ACCEPT</button>
+			<button class="button_small profile-button" (click)="declineFriendRequestFromSelectedUser()">DECLINE</button>
+		</ng-container>
+		<ng-container *ngIf="hasReceivedFriendRequestFromActiveUser()">
+			<h4>{{selectedUser.username}} has not replied to your friend request yet.</h4>
+			<button class="button_small profile-button" (click)="withdrawFriendRequestToSelectedUser()">WITHDRAW FRIEND REQUEST</button>
+		</ng-container>
+		<ng-container *ngIf="hasBeenBlockedByActiveUser()">
+			<h4>You have blocked {{selectedUser.username}} from interacting with you.</h4>
+			<button class="button_small profile-button" (click)="unblockSelectedUser()">UNBLOCK</button>
+		</ng-container>
+		<ng-container *ngIf="hasNoRelationWithActiveUser()" class="profile-user-relation">
+			<h4>You are not friends with {{selectedUser.username}}.</h4>
+			<button class="button_small profile-button" *ngIf="!hasBlockedActiveUser()" (click)="sendFriendRequestToSelectedUser()">SEND FRIEND REQUEST</button> 
+			<button class="button_small profile-button" (click)="blockSelectedUser()">BLOCK</button> 
+		</ng-container>
+	</div>
+
 	<div class="profile_flex_row">
 		<div class="box_row profile_box_row">
 			<div class="profile_picture_big">

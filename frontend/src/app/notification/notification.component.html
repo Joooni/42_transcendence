@@ -7,8 +7,8 @@
 		<div class="notification" *ngIf="notification.type === 'incomingFriendRequest'">
 			<img src="../../assets/add_friend_icon_yellow.png" class="notification-type">
 			<div class="notification-content">
-				<h2>NEW FRIEND REQUEST</h2>
-				<h6><span class="red">{{notification.sender!.username}}</span> has send you a friend request!</h6>
+				<h2>NEW&nbsp;FRIEND&nbsp;REQUEST</h2>
+				<h6><a class="red" routerLink="{{'/profile/' + notification.sender!.username}}">{{notification.sender!.username}}</a> has send you a friend request!</h6>
 			</div>
 			<div class="notification-buttons">
 				<button class="button_small" (click)="acceptFriendRequest(notification)">ACCEPT</button>
@@ -18,8 +18,8 @@
 		<div class="notification" *ngIf="notification.type === 'sendFriendRequest'">
 			<img src="../../assets/add_friend_icon_yellow.png" class="notification-type">
 			<div class="notification-content">
-				<h2>OPEN FRIEND REQUEST</h2>
-				<h6><span class="red">{{notification.recipient!.username}}</span> has not answered your friend request yet!</h6>
+				<h2>OPEN&nbsp;FRIEND&nbsp;REQUEST</h2>
+				<h6><a class="red" routerLink="{{'/profile/' + notification.recipient!.username}}">{{notification.recipient!.username}}</a> has not answered your friend request yet!</h6>
 			</div>
 			<div class="notification-buttons">
 				<button class="button_small button_reverse" (click)="withdrawFriendRequest(notification)">WITHDRAW</button>
@@ -28,7 +28,7 @@
 		<div class="notification" *ngIf="notification.type === 'channelInvite'">
 			<img src="../../assets/channel_invite_icon.png" class="notification-type">
 			<div class="notification-content">
-				<h2>CHANNEL INVITE</h2>
+				<h2>CHANNEL&nbsp;INVITE</h2>
 				<h6>You have been invited to the channel <span class="red">{{notification.subject!.name}}</span></h6>
 			</div>
 			<div class="notification-buttons">
