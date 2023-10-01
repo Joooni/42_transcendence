@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { GAMES } from '../mock-data/mock_games';
 import { Game } from "../models/game";
 import { GameDataService } from '../services/game-data/game-data.service';
 import { User } from '../models/user';
@@ -17,8 +16,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
-	games = GAMES;
 	activeMatches?: Array<Game>;
 	activeUser?: User;
 	onGoingGames?: Array<onGoingGamesData>;

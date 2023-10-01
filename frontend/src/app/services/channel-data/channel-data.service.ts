@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { Channel } from '../../models/channel';
-import { CHANNELS } from '../../mock-data/mock_channels';
 import graphQLService from '../graphQL/GraphQLService';
 import { User } from 'src/app/models/user';
 import { SocketService } from '../socket/socket.service';
@@ -11,8 +10,6 @@ import { SocketService } from '../socket/socket.service';
   providedIn: 'root'
 })
 export class ChannelDataService {
-
-	channels = CHANNELS;
 
 	constructor(private socket: SocketService) { }
 

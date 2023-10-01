@@ -5,17 +5,12 @@ import { User } from '../../models/user';
 import axios from 'axios';
 import { Router } from '@angular/router';
 
-// for FE-testing - to be deleted when BE provides test data
-import { USERS } from '../../mock-data/mock_users';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataService {
-
-  // for FE-testing - to be deleted when BE provides test data
-  users = USERS;
 
   constructor(private router: Router) {}
 
@@ -426,9 +421,4 @@ export class UserDataService {
       throw new Error('Empty user data');
     return updateAchievements;
   }
-
-  // for FE-testing - to be deleted when BE provides test data
-  getAllUsers(): Observable<User[]> {
-		return of(this.users);
-	}
 }

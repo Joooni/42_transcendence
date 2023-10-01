@@ -14,11 +14,12 @@ export class SettingsComponent {
 
 	activeUser?: User;
 	newUsername?: string;
-	selectedMap?: string;
+	selectedMap?: number;
 	twoFAEnabled: boolean = false;
 	twoFACode?: string;
 	qrCode?: string;
 	invalidCode: boolean = false;
+	disableNameForm: boolean = true;
 
 	constructor(
 		public userService: UserDataService,
@@ -27,9 +28,11 @@ export class SettingsComponent {
 		) {}
 
 	async ngOnInit() {
-		await this.userService.findSelf().then(user => this.activeUser = user)
-		this.twoFAEnabled = this.activeUser!.twoFAEnabled;
-		this.selectedMap = this.activeUser!.selectedMap?.toString();
+		this.updateUser();
+	}
+
+	setDisableName(status: boolean) {
+		this.disableNameForm = status;
 	}
 
 	async toggle2FA() {
@@ -96,7 +99,7 @@ export class SettingsComponent {
 			this.twoFAEnabled = true;
 	}
 
-	async saveChanges() {
+	async saveNewUsername() {
 		let hasError: boolean = false;
 		if (this.newUsername && this.newUsername != this.activeUser?.username)
 			await this.userService.findUserByUsername(this.newUsername)
@@ -107,35 +110,43 @@ export class SettingsComponent {
 			.catch(() => {});
 		if (!hasError && this.newUsername) {
 			this.userService.updateUsername(this.newUsername!)
+			.then(() => {
+				this.setDisableName(true);
+			})
 			.catch(() => {
 				this.errorService.showErrorMessage("Couldn't save the new username. Please try again!");
 				hasError = true;
-			})
+			});
+			this.updateUser();
 		}
-		if (this.selectedMap != this.activeUser?.selectedMap)
-			await this.userService.updateSelectedMap(Number(this.selectedMap!))
+	}
+
+	async selectOtherMap(map: number) {
+		if (map != this.activeUser?.selectedMap) {
+			await this.userService.updateSelectedMap(map)
 			.catch(() => {
 				this.errorService.showErrorMessage("Couldn't save the selected Game Design. Please try again!");
-				hasError = true;
-			})
-		this.userService.findSelf().then((user) => {
+			});
+			this.updateUser();
+		}
+	}
+
+	updateUser() {
+		this.userService.findSelf().then(user => {
 			this.activeUser = user;
-			if (!hasError)
-				this.router.navigate(['/profile/' + this.activeUser?.username]);
+			this.twoFAEnabled = this.activeUser.twoFAEnabled;
+			this.selectedMap = this.activeUser.selectedMap;
+			console.log(this.activeUser);
 		});
 	}
 
 	async onFileSelected(event: Event) {
-		// super umständlich, aber er beschwert sich bei 
-		// const file = event.target.files[0];
-		// saskia: vielleicht kennst du da n besseren weg?
 		const target = event.target as HTMLInputElement;
 		const fileList = target.files as FileList;
 		const file = fileList[0];
-		console.log("on file selected: ",file);
-		if (file)
-		{
+		if (file) {
 			await this.userService.uploadPicture(file);
+			this.updateUser();
 		}
 	}
 
