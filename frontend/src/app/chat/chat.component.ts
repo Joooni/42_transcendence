@@ -10,6 +10,7 @@ import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
 import { Router } from '@angular/router';
 import { ChatChannelComponent } from './chat-channel/chat-channel.component';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-chat',
@@ -53,6 +54,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 		private channelDataService: ChannelDataService,
 		private messageService: MessageService,
 		private socket: SocketService,
+		private errorService: ErrorService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -78,8 +80,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 			this.updateChannelList();
 		});
 		this.socket.listen('wrongChannelPassword').subscribe(() => {
-			//TODO: Show error Popup that the channelPassword was wrong
-			console.log('wrongChannelPassword');
+			this.errorService.showErrorMessage("You entered the wrong channel password!")
 		});
 	}
 
@@ -241,11 +242,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async joinChannelWithPassword()  {
-		//this.channelToJoin ist der betroffene channel
-		//check if password is valid
-		//if no: this.channelPasswordInvalid = true & return
-		//if yes:
-		//socket.emit('joinChannel') incl password?
 		this.socket.emit('joinChannel', {
 			channelid: this.channelToJoin?.id,
 			userid: this.activeUser?.id,
@@ -266,7 +262,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 	async updateChannelList() {
 		await new Promise(r => setTimeout(r, 250));
-		//TO-DO: update list of all visible channels
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
 			this.invitedInChannel = this.activeUser.invitedInChannel;

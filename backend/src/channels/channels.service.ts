@@ -322,7 +322,7 @@ export class ChannelsService {
         throw new NotFoundException('Channel or User not found');
       }
       user.invitedInChannel = user.invitedInChannel.filter(
-        (channel) => channel.id === channelId,
+        (channel) => channel.id !== channelId,
       );
       await this.userRepository.save(user);
       server.to(user.socketid).emit('updateNotifications', {});
