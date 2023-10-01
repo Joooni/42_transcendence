@@ -93,7 +93,6 @@ export class MessageService implements OnInit {
 		});
 
 		dms.sort((objA, objB) => objA.timestamp.getTime() - objB.timestamp.getTime());
-		console.log('Aktuelle dms:', dms);
 		return(dms);
 	}
 
@@ -140,7 +139,6 @@ export class MessageService implements OnInit {
 		});
 
 		mes.sort((objA, objB) => objA.timestamp.getTime() - objB.timestamp.getTime());
-		console.log('Aktuelle dms:', mes);
 		return(mes);
 	}
 

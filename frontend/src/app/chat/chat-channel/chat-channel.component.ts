@@ -50,8 +50,6 @@ export class ChatChannelComponent {
 		
 		console.log('Now i will listen to messages');
 		this.socketService.listen('message').subscribe((data) => {
-			console.log('received a message from the server');
-
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.receiverChannel?.id === this.chatComponent.selectedChannel?.id) {
 				this.messages?.push(tmpMes);
@@ -147,8 +145,6 @@ export class ChatChannelComponent {
 	}
 
 	async inviteUser() {
-		console.log('inviteUser has been called for:');
-		console.log(this.invitedUserId);
 		//PROBLEM: initial value of channel is string ('public') not enum numeric value )
 		const userId = Number(this.invitedUserId);
 		let invitedUser: User;
@@ -167,10 +163,12 @@ export class ChatChannelComponent {
 	}
 
 	updateChannelSettings() {
-		console.log('The new channel type is: ' + this.selectedChannelType);
-		if (this.newPassword)
-			console.log('The new channel password is: ' + this.newPassword);
-		//TO-DO: BE call: update channel
+		this.socket.emit('channel:ChangeType', {
+			channelid: this.chatComponent.selectedChannel!.id,
+			activeUser: this.activeUser?.id,
+			newType: this.selectedChannelType,
+			password: this.newPassword,
+		});
 		this.closePopUp('popup-channel-settings');
 	}
 

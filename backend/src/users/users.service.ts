@@ -318,7 +318,11 @@ export class UsersService {
   async updateSocketid(id: number, newsocketid: string) {
     if (id === null || newsocketid === null)
       throw new Error('id or socketid is null');
-    console.log('updateSocketid mit folgenden Werten', id, newsocketid);
+    console.log(
+      'Saved socketId in DB: user:',
+      id,
+      'socketid: "' + newsocketid + '"',
+    );
     const result: UpdateResult = await this.userRepository.update(id, {
       socketid: newsocketid,
     });
@@ -363,6 +367,23 @@ export class UsersService {
   /*
   wollen wir hier ein resetPicture einbauen, damit man auf das default (aka intra) Bild zurückswitchen kann?
   */
+
+  async getUserSortedByRank() {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .orderBy('user.rank', 'ASC')
+      .addOrderBy('user.id')
+      .getMany();
+  }
+
+  async getTopThree() {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .orderBy('user.rank', 'ASC')
+      .addOrderBy('user.id')
+      .take(3)
+      .getMany();
+  }
 
   async updateRanksByXP(): Promise<User[]> {
     const sortedUsers = await this.userRepository

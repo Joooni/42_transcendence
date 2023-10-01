@@ -15,6 +15,7 @@ import { SocketController } from './socket.controller';
 import { ChannelMute } from 'src/channels/entities/channelMute.entity';
 import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
 import { Match } from 'src/game/entitites/match.entity';
+import { PasswordService } from 'src/password/password.service';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { Match } from 'src/game/entitites/match.entity';
     ChannelsService,
     ChannelMuteService,
     JwtService,
+    PasswordService,
   ],
   exports: [SocketGateway],
   controllers: [SocketController],

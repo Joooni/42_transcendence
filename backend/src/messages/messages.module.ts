@@ -13,6 +13,7 @@ import { ChannelsService } from 'src/channels/channels.service';
 import { ChannelsResolver } from 'src/channels/channels.resolver';
 import { ChannelMute } from 'src/channels/entities/channelMute.entity';
 import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.service';
+import { PasswordService } from 'src/password/password.service';
 
 @Module({
   providers: [
@@ -23,6 +24,7 @@ import { ChannelMuteService } from 'src/channels/channel-mute/channel-mute.servi
     ChannelsService,
     ChannelsResolver,
     ChannelMuteService,
+    PasswordService,
   ],
   imports: [
     TypeOrmModule.forFeature([Message, User, Channel, ChannelMute]),

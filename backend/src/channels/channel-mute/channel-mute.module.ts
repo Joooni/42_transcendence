@@ -2,8 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from 'src/messages/entities/message.entity';
-import { SocketGateway } from 'src/socket/socket.gateway';
-import { SocketModule } from 'src/socket/socket.module';
+import { PasswordService } from 'src/password/password.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersResolver } from 'src/users/users.resolver';
 import { UsersService } from 'src/users/users.service';
@@ -20,6 +19,7 @@ import { ChannelMuteService } from './channel-mute.service';
     UsersResolver,
     ChannelsService,
     ChannelsResolver,
+    PasswordService,
   ],
   imports: [
     TypeOrmModule.forFeature([ChannelMute, User, Channel, Message]),

@@ -224,7 +224,6 @@ export class UserDataService {
   // }
 
   async findAllExceptMyself(): Promise<User[]> {
-    console.log('findAllExceptMyself called');
     let response = await graphQLService.query(
       `
         query {
@@ -313,6 +312,54 @@ export class UserDataService {
     );
     if (typeof userByName === 'undefined') throw new Error('Empty user data');
     return userByName;
+  }
+
+  async getUsersSortedByRank(): Promise<User[]> {
+    const response = await graphQLService.query(
+      `
+      query usersSortedByRank {
+        getUserSortedByRank {
+          id
+          rank
+          xp
+          username
+          picture
+          wins
+          losses
+        }
+      }
+      `,
+      undefined,
+      { fetchPolicy: 'network-only' },
+    );
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    return response.getUserSortedByRank;
+  }
+
+  async getTop3(): Promise<User[]> {
+    const response = await graphQLService.query(
+      `
+      query getTop3 {
+        getTop3 {
+          id
+          rank
+          xp
+          username
+          picture
+          wins
+          losses
+        }
+      }
+      `,
+      undefined,
+      { fetchPolicy: 'network-only' },
+    );
+    if (typeof response === 'undefined') {
+      return Promise.reject(new Error('Empty user data'));
+    }
+    return response.getTop3;
   }
 
   async updateUsername(username: string) {

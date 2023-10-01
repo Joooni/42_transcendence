@@ -93,7 +93,8 @@ type Query {
   allUsersSortedRanks: [User!]!
   userById(id: Int): User!
   userByName(username: String!): User!
-  updateRank: User!
+  getUserSortedByRank: [User!]!
+  getTop3: [User!]!
   messages: [Message!]!
   messagesDM(id: Int, idReceiver: Int): [Message!]!
   messagesChannel(id: String): [Message!]!

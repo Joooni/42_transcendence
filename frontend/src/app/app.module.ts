@@ -30,6 +30,7 @@ import { GameInviteComponent } from './game-invite/game-invite.component';
 import { AlreadyConnectedComponent } from './already-connected/already-connected.component';
 import { GameSearchComponent } from './game/game-search/game-search.component';
 import { NotificationComponent } from './notification/notification.component';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, options: {} };
 
@@ -55,6 +56,7 @@ const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, optio
     AlreadyConnectedComponent,
     GameSearchComponent,
     NotificationComponent,
+    LeaderboardComponent,
   ],
   imports: [
     BrowserModule,

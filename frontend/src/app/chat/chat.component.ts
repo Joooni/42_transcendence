@@ -9,6 +9,7 @@ import { MessageService } from '../services/message/message.service';
 // import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { SocketService } from '../services/socket/socket.service';
 import { Router } from '@angular/router';
+import { ChatChannelComponent } from './chat-channel/chat-channel.component';
 
 @Component({
   selector: 'app-chat',
@@ -76,6 +77,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 		});
 		this.socket.listen('updateChannelList').subscribe(() => {
 			this.updateChannelList();
+		});
+		this.socket.listen('wrongChannelPassword').subscribe(() => {
+			//TODO: Show error Popup that the channelPassword was wrong
+			console.log('wrongChannelPassword');
 		});
 	}
 
@@ -196,6 +201,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 			this.newChannelNameInvalid = true;
 			return;
 		} catch (e) {
+			console.log('password: ' + this.setChannelPassword);
 			this.socket.emit('createChannel', {
 				channelname: this.newChannelName,	
 				ownerid: this.activeUser?.id,
@@ -239,14 +245,19 @@ export class ChatComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	joinChannelWithPassword()  {
+	async joinChannelWithPassword()  {
 		//this.channelToJoin ist der betroffene channel
 		//check if password is valid
 		//if no: this.channelPasswordInvalid = true & return
 		//if yes:
 		//socket.emit('joinChannel') incl password?
-		console.log("joinChannelWithPassword() called");
-		this.closeChannelPasswordPopUp;
+		this.socket.emit('joinChannel', {
+			channelid: this.channelToJoin?.id,
+			userid: this.activeUser?.id,
+			password: this.enterChannelPassword,
+		});
+		this.closeChannelPasswordPopUp();
+		await this.updateChannelList();
 	}
 
 	disableCreateChannelButton(): boolean {

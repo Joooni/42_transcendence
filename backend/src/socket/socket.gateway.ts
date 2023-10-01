@@ -54,11 +54,6 @@ export class SocketGateway
   async handleAlreadyConnected(socketId: string) {
     this.server.to(socketId).emit('alreadyConnected', {});
     this.server.to(socketId).disconnectSockets();
-
-    //   (async () => {
-    // 	user = await setTimeout(10000, this.usersService.findOnebySocketId(client.id));
-    // 	console.log("The socketID of the DISCONNECTED user AFTER changing is :  ", user.socketid);
-    //   })()
   }
 
   async handleDisconnect(client: Socket) {
@@ -71,8 +66,11 @@ export class SocketGateway
       this.updateStatusAndEmit(user.id, 'offline');
       this.usersService.updateSocketid(user.id, ''); // Delete SocketId in database
     } catch (error) {
-      console.log('Error Socket: User not found');
-      console.log(error);
+      console.log(
+        'Error Socket: ' +
+          client.id +
+          ' socket disconnected without being logged in',
+      );
     }
   }
 
@@ -149,6 +147,7 @@ export class SocketGateway
       client,
       obj.channelid,
       obj.userid,
+      obj.password,
     );
     this.server.to(obj.channelid).emit('updateChannel', {});
   }
@@ -182,7 +181,6 @@ export class SocketGateway
             return;
           }
         }
-        throw new Error('Error Socket: User not found or not online');
       });
     } catch (error) {
       console.log('Error: ', error);
@@ -256,6 +254,19 @@ export class SocketGateway
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, obj: any) {
     await this.usersService.unblockUser(this.server, obj.ownid, obj.otherid);
+  }
+
+  @SubscribeMessage('channel:ChangeType')
+  async changeType(client: Socket, obj: any) {
+    await this.channelsService.changeType(
+      obj.activeUser,
+      obj.channelid,
+      obj.newType,
+      obj.password,
+    );
+
+    this.server.to(obj.channelid).emit('updateChannel', {});
+    this.server.emit('updateChannelList', {});
   }
 
   @SubscribeMessage('channel:SetUserAsAdmin')

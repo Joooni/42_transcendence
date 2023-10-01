@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
 	activeUser?: User;
 	onGoingGames?: Array<onGoingGamesData>;
 	intervalGetOngoingGames: any;
+	top3?: Array<User>;
 	
 	constructor(
 		private socketService: SocketService,
@@ -41,7 +42,8 @@ export class HomeComponent implements OnInit {
 		this.socketService.listen('sendOngoingGames').subscribe((data) => {
 			this.onGoingGames = data as Array<onGoingGamesData> ;
 		})
-		this.requestOngoingGames();	
+		this.requestOngoingGames();
+		this.getTop3();
 	}
 	
 
@@ -65,9 +67,16 @@ export class HomeComponent implements OnInit {
 		}, 5000)
 	}
 	
+	async getTop3() {
+		this.top3 = await this.userService.getTop3();
+	}
 
 	joinGame() {
 		this.router.navigate(['/gameSearch']);
+	}
+
+	leaderboard() {
+		this.router.navigate(['/leaderboard']);
 	}
 
 	watchThisMatch(roomNbr: number) {
