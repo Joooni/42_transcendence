@@ -136,7 +136,6 @@ export class SettingsComponent {
 			this.activeUser = user;
 			this.twoFAEnabled = this.activeUser.twoFAEnabled;
 			this.selectedMap = this.activeUser.selectedMap;
-			console.log(this.activeUser);
 		});
 	}
 
@@ -145,10 +144,10 @@ export class SettingsComponent {
 		const fileList = target.files as FileList;
 		const file = fileList[0];
 		if (file) {
-			await this.userService.uploadPicture(file);
+			await this.userService.uploadPicture(file).catch((e) => {
+				this.errorService.showErrorMessage("File upload failed. Please make sure that the file type is either PNG, JPG or JPEG.");
+			});
 			this.updateUser();
 		}
 	}
-
-
 }

@@ -6,6 +6,12 @@
 	color: yellowgreen;
 }
 
+.title {
+	padding: 1vmin 3vmin;
+	margin-block-start: 0;
+	margin-block-end: 1rem;
+}
+
 .wins_losses {
 	display: flex;
 	flex-direction: column;
@@ -14,6 +20,10 @@
 
 .wins_losses h4 {
 	margin: 5px;
+}
+
+.challenge-button {
+	width: 5rem;
 }
 
 .leaderboard_box_row {
@@ -47,6 +57,6 @@
 .leaderboard_user_box {
 	display: flex;
 	flex-direction: row;
-	gap: 20px;
+	gap: 2rem;
 	align-items: center;
 }

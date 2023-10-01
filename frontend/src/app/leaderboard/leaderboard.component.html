@@ -1,25 +1,25 @@
-<h1>- Leaderboard -</h1>
-<div>
-	<div class="leaderboard_flex_column">
-		<div *ngFor="let user of userList" class="leaderboard_box_row">
+<div class="leaderboard_flex_column">
+	<h1 class="title">- Leaderboard -</h1>
+	<div *ngFor="let user of userList" class="leaderboard_box_row">
+		<div class="leaderboard_user_box">
+			<h4 class="red">#{{user.rank}}</h4>
 			<div class="leaderboard_user_box">
-				<h4 class="red">#{{user.rank}}</h4>
-				<div class="leaderboard_user_box">
-					<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+				<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+				<a routerLink="{{'/profile/' + user.username}}" routerLinkActive="active">
 					<h4>{{user.username}}</h4>
-				</div>
+				</a>
 			</div>
-			<div class="leaderboard_user_box">
-				<h4 class="yellow">{{user.xp}} XP</h4>
-				<div class="wins_losses">
-					<h4>WINS</h4>
-					<h4>{{user.wins}}</h4>	
-				</div>
-				<div class="wins_losses">
-					<h4 class="red">LOSSES</h4>
-					<h4 class="red">{{user.losses}}</h4>
-				</div>
+		</div>
+		<div class="leaderboard_user_box">
+			<button class="button_small" *ngIf="user.id !== activeUser?.id" (click)="sendGameRequest(user)">CHALLENGE</button>
+			<h4 class="yellow">{{user.xp}} XP</h4>
+			<div class="wins_losses">
+				<h4>WINS</h4>
+				<h4>{{user.wins}}</h4>	
+			</div>
+			<div class="wins_losses">
+				<h4 class="red">LOSSES</h4>
+				<h4 class="red">{{user.losses}}</h4>
 			</div>
 		</div>
 	</div>
-</div>
