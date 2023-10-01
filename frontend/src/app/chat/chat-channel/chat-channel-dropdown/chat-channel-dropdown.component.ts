@@ -87,7 +87,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	setUserAsAdmin() {
-		console.log('setUserAsAdmin() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -101,7 +100,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	removeUserAsAdmin() {
-		console.log('removeUserAsAdmin() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -115,7 +113,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	muteUser() {
-		console.log('muteUser() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -130,7 +127,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	unmuteUser() {
-		console.log('unmuteUser() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -144,7 +140,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	kickUser() {
-		console.log('kickUser() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -158,7 +153,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	banUser() {
-		console.log('banUser() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;
@@ -172,7 +166,6 @@ export class ChatChannelDropdownComponent {
 	}
 
 	unbanUser() {
-		console.log('unbanUser() called for ' + this.selectedUser.username);
 		if (!this.chatComponent.activeUser) {
 			console.log('Error: activeUser is undefined');
 			return;

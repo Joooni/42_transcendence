@@ -126,7 +126,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async updateSelectedChannel() {
-		console.log('updateChannel is called');
 		if (typeof(this.selectedChannel) == undefined || !this.selectedChannel?.id)
 			return;
 		const findChannel = await this.channelDataService.getChannel(this.selectedChannel.id);
@@ -170,7 +169,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 				reference[userIndex!].picture = picture;
 		}
 		else {
-			console.log('user will be added');
 			this.userDataService.findUserById(id).then(dbuser => {
 				this.otherUsers!.push(dbuser);
 			});
@@ -178,7 +176,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	selectUser(user: User) {
-		console.log(user.picture);
 		if (this.selectedChannel)
 			this.selectedChannel = undefined;
 		this.selectedUser = user;
@@ -200,7 +197,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 			this.newChannelNameInvalid = true;
 			return;
 		} catch (e) {
-			console.log('password: ' + this.setChannelPassword);
 			this.socket.emit('createChannel', {
 				channelname: this.newChannelName,	
 				ownerid: this.activeUser?.id,

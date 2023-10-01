@@ -10,7 +10,7 @@ import { UserDataService } from '../user-data/user-data.service';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService implements OnInit {
+export class MessageService {
 	
 	private changeDMSubject = new Subject<any>();
 
@@ -24,18 +24,6 @@ export class MessageService implements OnInit {
 	initialize() {
 		this.userDataService.findSelf()
 		.then(user => this.activeUser = user);
-	}
-	
-	//Doesn't work?
-	ngOnInit(): void {
-		this.userDataService.findSelf()
-		.then(user => this.activeUser = user);
-		console.log('message.service is initialized'); // Will never initialized?
-		// this.getMessagesFromDatabase();
-		// this.socketService.listen('message').subscribe((data) => {
-		// 	console.log('received a message from the server');
-		// 	this.receiveInput(data as Message);
-		// });
 	}
 
 	sendMessage(message: Message) {

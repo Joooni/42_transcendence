@@ -29,10 +29,7 @@ export class ChatDirectMessageComponent implements OnInit {
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
 		
-		console.log('Now i will listen to messages');
 		this.socketService.listen('message').subscribe((data) => {
-			console.log('received a message from the server');
-
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.sender.id === this.chatComponent.selectedUser?.id) {
 				this.messages?.push(tmpMes);
@@ -58,7 +55,6 @@ export class ChatDirectMessageComponent implements OnInit {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedUser) {
 			this.messageService.getDMs(this.chatComponent.activeUser, this.chatComponent.selectedUser)
 			.then(dms => this.messages = dms);
-			console.log('updateMessages was called');
 		}
 	}
 }

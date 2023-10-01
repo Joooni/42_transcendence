@@ -153,12 +153,10 @@ export class ChannelDataService {
 			return Promise.reject(new Error('Empty channel data'));
 		}
 		const channels = response.channels;
-		console.log(channels);
 		return channels;
 	}
 
 	joinChannel(channel: Channel, user: User) {
-		console.log('Joining channel: ', channel.name);
 		this.socket.emit('joinChannel', {
 			channelid: channel.id,
 			userid: user.id,

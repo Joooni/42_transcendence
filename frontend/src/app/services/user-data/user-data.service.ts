@@ -60,7 +60,6 @@ export class UserDataService {
   }
 
   async verify2FA(code: string): Promise<void> {
-    console.log('UserDataService verify2FA with code: ', code);
     return axios.get(`http://${environment.DOMAIN}:3000/2fa/verify`, {
       params: { code },
       withCredentials: true,
@@ -274,7 +273,6 @@ export class UserDataService {
       { fetchPolicy: 'network-only' },
     );
 		if (typeof userById === 'undefined') throw new Error('Empty user data');
-    console.log('findUserById called:', userById)
     const editableResult = {...userById};
     return editableResult;
   }
