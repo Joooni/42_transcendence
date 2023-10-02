@@ -2,7 +2,7 @@
 FOLDER_NAME := $(shell basename $(realpath .))
 PROD		:= ./docker-compose.prod.yaml
 DEV			:= ./docker-compose.yaml
-
+IPADD		:= $(shell sed -n '7p' actual.env | tr "'" "\n" | sed -n '2p')
 
 all: up
 
@@ -34,6 +34,9 @@ down:
 
 ps:
 	docker compose ps
+
+ip:
+	sed -i "s/DOMAIN:.*/DOMAIN: '$(IPADD)'/g" ./frontend/src/environments/environment.ts ./frontend/src/environments/environment.development.ts ./frontend/src/environments/environment.prod.ts
 
 clean:
 	docker volume rm $(FOLDER_NAME)_postgres-data
