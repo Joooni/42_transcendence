@@ -175,11 +175,18 @@ export class ChatChannelComponent {
 	}
 
 	disableSaveSettings(): boolean {
-		//TO-DO: TBD ob channel type string oder number
 		if (this.selectedChannelType === 'protected' && !this.newPassword)
 			return true;
 		if (this.selectedChannelType === this.chatComponent.selectedChannel?.type)
 			return true;
 		return false;
+	}
+
+	userHasActions(user: User | undefined): boolean {
+		if (!user)
+			return false;
+		if (user.id === this.activeUser.id || user.id === this.chatComponent.selectedChannel?.owner.id)
+			return false;
+		return !this.isNotOwnerOrAdmin(this.activeUser);
 	}
 }

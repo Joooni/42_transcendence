@@ -141,7 +141,7 @@ export class UsersService {
       const friend = await this.findOne(otherid);
 
       if (user.incomingFriendRequests.includes(friend)) {
-        this.acceptFriendRequest(server, ownid, otherid);
+        await this.acceptFriendRequest(server, ownid, otherid);
         return;
       } else if (
         !user.sendFriendRequests.includes(friend) &&
