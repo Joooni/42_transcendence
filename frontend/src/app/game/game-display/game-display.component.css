@@ -1,8 +1,21 @@
+h1 {
+	font-size: 5vmin;
+}
+
+.game-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 75vmin;
+}
+
 .game-display {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	margin: 2rem;
+	height: 80%;
+	width: 100%;
 }
 
 .game-canvas {
@@ -10,7 +23,8 @@
 	flex-direction:  column;
 	justify-content: flex-start;
 	align-items: center;
-	width: 40rem;
+	width: 70%;
+	height: 70%;
 	padding: 2rem;
 }
 
@@ -19,7 +33,8 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	margin-top: 5rem;
+	width: 10%;
+	margin: 5rem 2rem;
 }
 
 .game-player-picture {
@@ -27,8 +42,8 @@
 	border-style: solid;
 	border-width: 3px;
 	border-color: orange;
-	height: 7rem;
-	width: 7rem;
+	height: 70px;
+	width: 70px;
 }
 
 .game-player-picture img{
@@ -40,10 +55,10 @@
 
 canvas {
 	position: absolute;
+	width: 50%;
 }
 
 .leave-game-buttton {
-	width:			570px;
-	margin-top: calc((40rem * 768 / 1024) + 2rem);
+	width:			30%;
 }
 

@@ -10,6 +10,7 @@ import { MessageService } from '../services/message/message.service';
 import { SocketService } from '../services/socket/socket.service';
 import { Router } from '@angular/router';
 import { ChatChannelComponent } from './chat-channel/chat-channel.component';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-chat',
@@ -50,10 +51,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private userDataService: UserDataService,
-		private userRelationService: UserRelationService,
 		private channelDataService: ChannelDataService,
 		private messageService: MessageService,
 		private socket: SocketService,
+		private errorService: ErrorService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -79,8 +80,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 			this.updateChannelList();
 		});
 		this.socket.listen('wrongChannelPassword').subscribe(() => {
-			//TODO: Show error Popup that the channelPassword was wrong
-			console.log('wrongChannelPassword');
+			this.errorService.showErrorMessage("You entered the wrong channel password!")
 		});
 	}
 
@@ -127,7 +127,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async updateSelectedChannel() {
-		console.log('updateChannel is called');
 		if (typeof(this.selectedChannel) == undefined || !this.selectedChannel?.id)
 			return;
 		const findChannel = await this.channelDataService.getChannel(this.selectedChannel.id);
@@ -171,7 +170,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 				reference[userIndex!].picture = picture;
 		}
 		else {
-			console.log('user will be added');
 			this.userDataService.findUserById(id).then(dbuser => {
 				this.otherUsers!.push(dbuser);
 			});
@@ -179,7 +177,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	selectUser(user: User) {
-		console.log(user.picture);
 		if (this.selectedChannel)
 			this.selectedChannel = undefined;
 		this.selectedUser = user;
@@ -201,7 +198,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 			this.newChannelNameInvalid = true;
 			return;
 		} catch (e) {
-			console.log('password: ' + this.setChannelPassword);
 			this.socket.emit('createChannel', {
 				channelname: this.newChannelName,	
 				ownerid: this.activeUser?.id,
@@ -246,11 +242,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async joinChannelWithPassword()  {
-		//this.channelToJoin ist der betroffene channel
-		//check if password is valid
-		//if no: this.channelPasswordInvalid = true & return
-		//if yes:
-		//socket.emit('joinChannel') incl password?
 		this.socket.emit('joinChannel', {
 			channelid: this.channelToJoin?.id,
 			userid: this.activeUser?.id,
@@ -271,7 +262,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 	async updateChannelList() {
 		await new Promise(r => setTimeout(r, 250));
-		//TO-DO: update list of all visible channels
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
 			this.invitedInChannel = this.activeUser.invitedInChannel;
@@ -290,17 +280,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 	async updateUserList() {
 		await this.userDataService.findSelf().then(user => {
 			this.activeUser = user;
-			console.log('update UserList')
 			if (!user) {
-				console.log('no active user, userlist cannot be updated');
 				return;
 			}
 			this.friends = user.friends.map(friend => ({...friend}));
-			this.blocked = user.blockedUsers.concat(user.blockedFromOther).map(blocked => ({...blocked}));
+			this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
 		});
 		await this.userDataService.findAllExceptMyself().then(users => {
 			this.otherUsers = users.filter(user => {
-				return !this.friends?.some(friend => friend.id === user.id) && !this.blocked?.some(blocked => blocked.id === user.id);
+				return !this.friends?.some(friend => friend.id === user.id) 
+					&& !this.blocked?.some(blocked => blocked.id === user.id) 
+					&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
 			});
 		});
 

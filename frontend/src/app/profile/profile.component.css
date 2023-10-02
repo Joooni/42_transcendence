@@ -66,6 +66,15 @@ h3 {
 	align-items: center;
 }
 
+.profile-user-relation {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	column-gap: 1rem;
+	align-items: center;
+	margin: 0 2vmin;
+}
+
 h1 {
 	margin: 2vmin 3vmin;
 }

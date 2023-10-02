@@ -19,19 +19,10 @@ export class ErrorService {
 	) {}
 
 	async initErrorService() {
-		console.log('initErrorService()');
 		this.socket.listen('alreadyConnected').subscribe(data => {
 			console.log('got error that user is already connected');
 			this.router.navigate(['/alreadyConnected']);
 		})
-
-		// var user: User;
-		// await this.userService.findSelf().then(db => user = db);
-		
-		// setTimeout(() =)
-				
-		// if (this.socket.connected === false)
-		// 	this.router.navigate(['/alreadyConnected']);
 	}
 	
 

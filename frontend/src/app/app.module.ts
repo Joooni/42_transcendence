@@ -9,7 +9,6 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
-import { MatchmakingComponent } from './matchmaking/matchmaking.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ChatComponent } from './chat/chat.component';
 import { ChatDirectMessageComponent } from './chat/chat-direct-message/chat-direct-message.component';
@@ -41,7 +40,6 @@ const config: SocketIoConfig = { url: `http://${environment.DOMAIN}:3000`, optio
     HomeComponent,
     ProfileComponent,
     SettingsComponent,
-    MatchmakingComponent,
     LoginComponent,
     ChatComponent,
 		ChatDropdownComponent,

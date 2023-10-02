@@ -19,7 +19,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	moveDown: boolean;
 	countdown: number;
 	roomNbr?: number;
-	leave: boolean = false;
 	leftPlayer?: User;
 	rightPlayer?: User;
 
@@ -54,7 +53,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 		if (this.roomNbr != undefined) {
 			this.socketService.emit2('userLeftGame', this.gameDisplayService.activeUser?.id, this.roomNbr);
 		}
-		this.leave = false;
 		this.leftPlayer = undefined;
 		this.rightPlayer = undefined;
 	}
@@ -141,7 +139,6 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 				if (data.userQuit != undefined) {
 					this.context.drawImage(this.gameDisplayService.oppQuit.img, this.gameDisplayService.oppQuit.x, this.gameDisplayService.oppQuit.y, this.gameDisplayService.oppQuit.width, this.gameDisplayService.oppQuit.height);
 				}
-				this.leave = true;
 			}, 1000);
 			
 		}

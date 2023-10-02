@@ -1,13 +1,12 @@
 <div class="home_flex_columns">
 	<div class="home_flex_rows">
 		<button class="home_big_button" (click)="joinGame()">
-			JOIN GAME
+			JOIN&nbsp;GAME
 		</button>
 		<h1>
-			- ONGOING GAMES -
+			-&nbsp;ONGOING&nbsp;GAMES&nbsp;-
 		</h1>
 		<div *ngFor="let game of onGoingGames" class="home_game_box">
-			<!-- <img class="profile_picture" src="{{ game.player1_profile_pic }}"> -->
 			<div class="player-info">
 				<h4>{{ game.leftUserName }}</h4>
 				<h2>{{ game.goalsLeft}}</h2>
@@ -17,31 +16,37 @@
 				<h4>{{ game.rightUserName}}</h4>
 				<h2>{{ game.goalsRight}}</h2>
 			</div>
-			<!-- <img class="profile_picture" src="{{ game.player2_profile_pic }}"> -->
 			<button class="home_medium_button" (click)="watchThisMatch(game.roomNbr)">Watch this match</button>
 		</div>
 	</div>
-	<div class="home_flex_rows">
-		<app-notification class="notification-container"></app-notification>
-		<h1>
-			- TOP 3 Players-
-		</h1>
-		<div class="top3Leaderboard">
-			<div *ngFor="let user of top3" class="leaderboard_box_user">
-				<div class="leaderboard_user_box">
-					<h4 class="red">#{{user.rank}}</h4>
+	<div class="home_flex_rows right-side">
+		
+		<app-notification></app-notification>
+		
+		<div class="leaderboard-container">
+			<div class="leaderboard-title">
+				<img class="leaderboard-icon" src="../../assets/leaderboard_icon.png">
+				<h2>TOP 3 Players</h2>
+			</div>
+			<div class="top3Leaderboard">
+				<div *ngFor="let user of top3" class="leaderboard_box_user">
 					<div class="leaderboard_user_box">
-						<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
-						<h4>{{user.username}}</h4>
+						<h4 class="red">#{{user.rank}}</h4>
+						<div class="leaderboard_user_box">
+							<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+							<a routerLink="{{'/profile/' + user.username}}" routerLinkActive="active">
+								<h4>{{user.username}}</h4>
+							</a>
+						</div>
+					</div>
+					<div class="leaderboard_user_box">
+						<h4 class="yellow">{{user.xp}} XP</h4>
 					</div>
 				</div>
-				<div class="leaderboard_user_box">
-					<h4 class="yellow">{{user.xp}} XP</h4>
-				</div>
 			</div>
+			<button class="button_medium" (click)="leaderboard()">
+				View full leaderboard
+			</button>
 		</div>
-		<button class="home_big_button" (click)="leaderboard()">
-			View full leaderboard
-		</button>
 	</div>
 </div>

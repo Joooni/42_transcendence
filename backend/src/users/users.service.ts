@@ -237,8 +237,8 @@ export class UsersService {
       const user = await this.findOne(ownid);
       const other = await this.findOne(otherid);
       user.friends = user.friends.filter((item) => item.id !== other.id);
-      other.friends = other.friends.filter((item) => item.id !== user.id);
-      await this.userRepository.save(other);
+			user.sendFriendRequests = user.sendFriendRequests.filter((item) => item.id !== other.id);
+			user.incomingFriendRequests = user.incomingFriendRequests.filter((item) => item.id !== other.id);
       user.blockedUsers.push(other);
       await this.userRepository.save(user);
       server.to(user.socketid).emit('updateUserList', {});

@@ -48,7 +48,6 @@ export class ChatChannelComponent {
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
 		
-		console.log('Now i will listen to messages');
 		this.socketService.listen('message').subscribe((data) => {
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.receiverChannel?.id === this.chatComponent.selectedChannel?.id) {
@@ -74,7 +73,6 @@ export class ChatChannelComponent {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
 			.then(messages => this.messages = messages);
-			console.log('updateMessages was called');
 		}
 	}
 

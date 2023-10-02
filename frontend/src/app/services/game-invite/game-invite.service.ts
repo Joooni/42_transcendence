@@ -27,16 +27,10 @@ export class GameInviteService {
 	) {}
 
 	initGameInviteService() {
-		console.log('initGameInviteService()');
 
 		this.socket.socket.on('gotGameRequest', ({senderID, gameMode}: {senderID: number; gameMode: number}) => {
 			this.gotGameRequest(senderID as number, gameMode as number);
 		})
-
-		// this.socket.listen('gotGameRequest').subscribe(data => {
-		// 	console.log('game request... the sender is   ' + data);
-		// this.gotGameRequest(data as number[]);
-		// });
 	}
 
 	async getActiveUser() {
@@ -61,7 +55,6 @@ export class GameInviteService {
 	}
 
 	async acceptGameRequest() {		
-		console.log("_______ TEST1 ________");
 		await this.getActiveUser();
 		this.socket.emit3('startGameWithRequest', this.activeUser?.id, this.gameRequestSender?.id, this.gameMode)
 		this.socket.stopListen('withdrawnGameRequest');
@@ -71,7 +64,6 @@ export class GameInviteService {
 	}
 
 	async declineGameRequest() {
-		console.log("_______ TEST1 ________");
 		await this.getActiveUser();
 		this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
 		this.socket.stopListen('withdrawnGameRequest');
@@ -90,16 +82,12 @@ export class GameInviteService {
 		this.showSendGameRequestPopup = false;
 		this.showWaitForGameRequestAnswerPopup = true
 		await this.getActiveUser();
-		console.log("_______ TEST1 ________");
 		this.socket.emit3('sendGameRequest', this.activeUser?.id, this.gameRequestRecipient!.id, gameMode);
-		console.log("_______ TEST2 ________");
 		this.socket.listen('gameRequestDecliend').subscribe(() => {
-			console.log("got gamerequest decliend");
 			this.showWaitForGameRequestAnswerPopup = false;
 			this.sendGameRequestWasDeclined();
 		})
 		this.socket.listen('gameRequestAccepted').subscribe((data) => {
-			console.log("got gamerequest accepted");
 			this.showWaitForGameRequestAnswerPopup = false;
 			this.router.navigate(['/game']);
 			this.showSendGameRequestPopup = false;
@@ -127,6 +115,5 @@ export class GameInviteService {
 
 	ngOnDestroy() {
 		this.socket.stopListen('gotGameRequest');
-		console.log("GAME_INVITE DESTROYED");
 	}
 }

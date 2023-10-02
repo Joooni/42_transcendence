@@ -1,11 +1,14 @@
 <div class="game-display">
+	<div class="button-container">
+		<iframe *ngIf="stopSearch" src="https://giphy.com/embed/R3K0NfClEUHSw" width="300" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
+		<button class="buttonSearch" *ngIf="search === true"
+			(click)="startGame()">SEARCH FOR OPPONENT</button>
 	
-	<div align="center">
-		<button class="buttonSearch" *ngIf="search == true"
-			(click)="startGame()">Search for opponent</button>
-	
-		<button class="buttonStopSearch" *ngIf="stopSearch == true"
-			(click)="stopSearching()">Stop Searching</button>
+		<button class="buttonStopSearch" *ngIf="stopSearch === true"
+			(click)="stopSearching()">CANCEL</button>
+
+		<button class="buttonStopSearch" *ngIf="search === true"
+			routerLink="/home" routerLinkActive="active">RETURN HOME</button>
 	</div>
-		
-</div>>
+</div>

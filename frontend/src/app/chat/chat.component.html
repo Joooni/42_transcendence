@@ -187,7 +187,6 @@
 		<h2>PROTECTED CHANNEL</h2>
 		<h4>Please enter the password for this channel:</h4>
 		<input class="popup-channel-password-input" type="password" [(ngModel)]="enterChannelPassword">
-		<h6 class="error-message" *ngIf="channelPasswordInvalid">Wrong password. Please try again.</h6>
 		<div class="popup-buttons">
 			<button class="button_medium" (click)="joinChannelWithPassword()" [disabled]="!enterChannelPassword">CONFIRM</button>
 			<button class="button_medium button_reverse" (click)="closeChannelPasswordPopUp()">CANCEL</button>

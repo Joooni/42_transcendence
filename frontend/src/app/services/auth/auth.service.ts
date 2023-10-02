@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { USERS } from 'src/app/mock-data/mock_users';
 import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
 import { Subscription, interval } from 'rxjs';
@@ -48,14 +47,6 @@ export class AuthService implements OnDestroy {
       return false;
     }
     return true;
-  }
-
-  async twoFAEnabled(): Promise<boolean> {
-    let user: User = USERS[0];
-    try {
-      const user = await this.userDataService.findSelf();
-    } catch (error) {}
-    return user.twoFAEnabled;
   }
 
   ngOnDestroy(): void {

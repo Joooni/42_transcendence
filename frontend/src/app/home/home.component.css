@@ -5,6 +5,7 @@ h2, h4 {
 
 .home_flex_columns {
 	height: 80vh;
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
@@ -17,6 +18,7 @@ h2, h4 {
 	flex-direction: column;
 	padding: 0 2%;
 	width: 46%;
+	min-width: 28rem;
 	text-align: center;
 	justify-content: flex-start;
 	align-items: center;
@@ -51,9 +53,10 @@ h2, h4 {
 	row-gap: 0.8rem;
 }
 
-.notification-container {
-	width: 100%;
-	height: 45%;
+.leaderboard-container {
+	margin: 0 0.5rem;
+	align-items: center;
+	padding: 0.5rem;
 }
 
 .top3Leaderboard {
@@ -65,7 +68,8 @@ h2, h4 {
 .leaderboard_user_box {
 	display: flex;
 	flex-direction: row;
-	gap: 20px;
+	column-gap: 1rem;
+	margin: 0 1rem;
 	align-items: center;
 }
 
@@ -74,8 +78,10 @@ h2, h4 {
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
+	row-gap: 1rem;
 	min-height: auto;
 	max-height: 80px;
+	width: 90%;
 	margin: 5px 2vmin;
 	padding-left: 7vmin;
 	padding-right: 7vmin;
@@ -95,4 +101,22 @@ h2, h4 {
 
 .yellow {
 	color: yellowgreen;
+}
+
+.leaderboard-title {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	column-gap: 0.8rem;
+	align-items: center;
+	margin: 0 0.5rem;
+}
+
+.leaderboard-icon {
+	height: 30px;
+	width: 30px;
+}	
+
+.right-side {
+	row-gap: 3rem;
 }
