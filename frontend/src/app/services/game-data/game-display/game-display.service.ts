@@ -97,6 +97,15 @@ export class GameDisplayService {
 		img: new Image
 	}
 
+	plyQuit = {
+		x: 241,
+		y: 524,
+		width: 542,
+		height: 41,
+		src : '../../../../assets/gameObjects/plyQuit.png',
+		img: new Image
+	}
+
 
 	countdown = {
 		x: 462,
@@ -185,8 +194,8 @@ export class GameDisplayService {
 			this.ball.img.src = '../../../../assets/gameObjects/look1/DK_Fass1.png';
 		} else {
 			this.background.img.src = '../../../../assets/gameObjects/look2/hintergrund.png';
-			this.racketLeft.img.src = '../../../../assets/gameObjects/look2/racket2_left.png';
-			this.racketRight.img.src = '../../../../assets/gameObjects/look2/racket2_right.png';
+			this.racketLeft.img.src = '../../../../assets/gameObjects/look2/racket_left.png';
+			this.racketRight.img.src = '../../../../assets/gameObjects/look2/racket_right.png';
 			this.ball.img.src = '../../../../assets/gameObjects/look2/ball2.png';
 		}
 
@@ -203,6 +212,8 @@ export class GameDisplayService {
 	
 		this.result.img.src = this.result.src;
 		this.oppQuit.img.src = this.oppQuit.src;
+		this.plyQuit.img.src = this.plyQuit.src;
+		
 	}
 
 
