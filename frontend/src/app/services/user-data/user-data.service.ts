@@ -356,6 +356,8 @@ export class UserDataService {
   }
 
   async updateUsername(username: string) {
+    if (username.length > 30)
+      throw new Error('Username too long');
     const { updateUsername } = await graphQLService.mutation(
       `
       mutation updateUsername( $username: String! ){
