@@ -392,7 +392,7 @@ export class UsersService {
       .addOrderBy('user.id')
       .getMany();
     for (let i = 0; i < sortedUsers.length; i++) {
-      //Archivment: King of the Jungle
+      //Achievement: King of the Jungle
       let achievementChanged = false;
       if (i == 0) {
         const archiv = sortedUsers[0].achievements.find((num) => num == 7);
