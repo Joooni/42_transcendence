@@ -316,6 +316,7 @@ export class UserDataService {
           rank
           xp
           username
+          status
           picture
           wins
           losses

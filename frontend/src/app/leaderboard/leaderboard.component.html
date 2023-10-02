@@ -11,15 +11,15 @@
 			</div>
 		</div>
 		<div class="leaderboard_user_box">
-			<button class="button_small" *ngIf="user.id !== activeUser?.id" (click)="sendGameRequest(user)">CHALLENGE</button>
-			<h4 class="yellow">{{user.xp}} XP</h4>
+			<button class="button_small" *ngIf="user.id !== activeUser?.id && isOnline(user)" (click)="sendGameRequest(user)">CHALLENGE</button>
+			<h4 class="yellow smaller_text">{{user.xp}} XP</h4>
 			<div class="wins_losses">
-				<h4>WINS</h4>
-				<h4>{{user.wins}}</h4>	
+				<h4 class="smaller_text">WINS</h4>
+				<h4 class="smaller_text">{{user.wins}}</h4>
 			</div>
 			<div class="wins_losses">
-				<h4 class="red">LOSSES</h4>
-				<h4 class="red">{{user.losses}}</h4>
+				<h4 class="red smaller_text">LOSSES</h4>
+				<h4 class="red smaller_text">{{user.losses}}</h4>
 			</div>
 		</div>
 	</div>
