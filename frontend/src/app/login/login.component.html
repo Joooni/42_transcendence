@@ -8,6 +8,7 @@
 		<h2>2-Factor-Authentication</h2>
 		<h4>Please enter a code from your authenticator app to authenticate</h4>
 		<input  class="pop-up-input" type="text" [(ngModel)]="twoFACode">
+		<h4 class="red" *ngIf="wrongCode">Code could not be recognized. Please try again.</h4>
 		<button class="button_medium" [disabled]="!userDataService.twoFACodeIsValid(twoFACode)" (click)="popUpConfirm()">CONFIRM</button>
 	</div>
 </div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from 'src/app/models/user';
-import { GameDisplayService } from 'src/app/services/game-data/game-display/game-display.service';
+import { GameDisplayService } from 'src/app/services/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { Router } from '@angular/router';

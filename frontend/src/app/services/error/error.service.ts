@@ -14,13 +14,10 @@ export class ErrorService {
 
   constructor(private socket: SocketService,
 			  private router: Router,
-			  private userService: UserDataService,
-			  private socketService: SocketService,
 	) {}
 
 	async initErrorService() {
 		this.socket.listen('alreadyConnected').subscribe(data => {
-			console.log('got error that user is already connected');
 			this.router.navigate(['/alreadyConnected']);
 		})
 	}

@@ -20,7 +20,6 @@ export class ChatDropdownComponent {
 	constructor(
 		private userDataService: UserDataService,
 		private chatComponent: ChatComponent,
-		private socketService: SocketService,
 		private gameInviteService: GameInviteService,
 		private userRelationService: UserRelationService
 	) {}
@@ -64,6 +63,7 @@ export class ChatDropdownComponent {
 
 	sendFriendRequest() {
 		this.userRelationService.sendFriendRequest(this.activeUser!, this.selectedUser);
+		this.toggleShowPopup('popup-friend-request');
 	}
 
 	removeAsFriend() {
@@ -76,5 +76,10 @@ export class ChatDropdownComponent {
 
 	unblockUser() {
 		this.userRelationService.unblockUser(this.activeUser!, this.selectedUser);
+	}
+
+	toggleShowPopup(id: string) {
+		const popup = document.getElementById(id);
+		popup?.classList.toggle('show-popup');
 	}
 }

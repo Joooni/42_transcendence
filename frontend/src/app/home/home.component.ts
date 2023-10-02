@@ -1,13 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import { Game } from "../models/game";
-import { GameDataService } from '../services/game-data/game-data.service';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
-import { GameDisplayComponent } from '../game/game-display/game-display.component';
-import { GameDisplayService } from '../services/game-data/game-display/game-display.service';
+import { GameDisplayService } from '../services/game-display/game-display.service';
 import { Router } from '@angular/router';
 
 @Component({

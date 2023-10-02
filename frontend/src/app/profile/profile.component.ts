@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { Match } from '../models/game';
-import { GameDataService } from '../services/game-data/game-data.service';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { SocketService } from '../services/socket/socket.service';
+import { GameDisplayService } from '../services/game-display/game-display.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +22,7 @@ export class ProfileComponent {
   constructor(
     private userService: UserDataService,
     private route: ActivatedRoute,
-    private gameservice: GameDataService,
+    private gameservice: GameDisplayService,
 		private userRelationService: UserRelationService,
 		private socket: SocketService
     ) {

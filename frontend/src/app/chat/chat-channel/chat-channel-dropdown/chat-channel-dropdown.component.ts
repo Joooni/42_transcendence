@@ -23,7 +23,6 @@ export class ChatChannelDropdownComponent {
 	constructor(
 		private chatComponent: ChatComponent,
 		private userDataService: UserDataService,
-		private channelService: ChannelDataService,
 		private socket: SocketService,
 	) {}
 
@@ -46,7 +45,6 @@ export class ChatChannelDropdownComponent {
 	canBeRemovedAsAdmin(): boolean {
 		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
 			return false;
-		//TO-DO: TBD if admins can remove other admins
 		return (this.userIsAdmin(this.selectedUser) && this.userIsOwner(this.activeUser));
 	}
 
@@ -96,7 +94,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id 
 		});
-		// this.updateUserAndChannel();
 	}
 
 	removeUserAsAdmin() {
@@ -109,7 +106,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id 
 		});
-		// this.updateUserAndChannel();
 	}
 
 	muteUser() {
@@ -123,7 +119,6 @@ export class ChatChannelDropdownComponent {
 			channelId: this.channel.id,
 			time: 1,
 		});
-		// this.updateUserAndChannel();
 	}
 
 	unmuteUser() {
@@ -136,7 +131,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id,
 		});
-		// this.updateUserAndChannel();
 	}
 
 	kickUser() {
@@ -149,7 +143,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id 
 		});
-		// this.updateUserAndChannel();
 	}
 
 	banUser() {
@@ -162,7 +155,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id 
 		});
-		// this.updateUserAndChannel();
 	}
 
 	unbanUser() {
@@ -175,13 +167,6 @@ export class ChatChannelDropdownComponent {
 			selectedUser: this.selectedUser.id,
 			channelId: this.channel.id 
 		});
-		// this.updateUserAndChannel();
-	}
-
-	//so that the available options in the dropdown update
-	private async updateUserAndChannel() {
-		await this.userDataService.findUserById(this.selectedUser.id).then(user => this.selectedUser = user);
-		await this.channelService.getChannel(this.channel.id).then(channel => this.channel = channel);
 	}
 
 	private userIsAdmin(user: User): boolean {

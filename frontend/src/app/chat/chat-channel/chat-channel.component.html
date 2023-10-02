@@ -32,7 +32,7 @@
 			<div class="user" [ngClass]="chatComponent.selectedChannel?.owner?.status">
 				<h4>{{chatComponent.selectedChannel?.owner?.username}}</h4>
 				<app-chat-channel-dropdown
-					*ngIf="chatComponent.selectedChannel?.owner?.id !== activeUser.id"
+					*ngIf="userHasActions(chatComponent.selectedChannel?.owner)"
 					[channel]="chatComponent.selectedChannel!"
 					[selectedUser]="chatComponent.selectedChannel!.owner"
 				></app-chat-channel-dropdown>
@@ -45,7 +45,7 @@
 					<div class="icons">
 						<img class="icon" *ngIf="isMuted(admin)" src="../../../assets/mute_icon_yellow.png">
 						<app-chat-channel-dropdown
-							*ngIf="admin.id !== activeUser.id"
+							*ngIf="userHasActions(admin)"
 							[channel]="chatComponent.selectedChannel!"
 							[selectedUser]="admin"
 						></app-chat-channel-dropdown>
@@ -60,7 +60,7 @@
 					<div class="icons">
 						<img class="icon" *ngIf="isMuted(user)" src="../../../assets/mute_icon_yellow.png">
 						<app-chat-channel-dropdown
-							*ngIf="user.id !== activeUser.id"
+							*ngIf="userHasActions(user)"
 							[channel]="chatComponent.selectedChannel!"
 							[selectedUser]="user"
 						></app-chat-channel-dropdown>
