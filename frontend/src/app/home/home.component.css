@@ -16,9 +16,7 @@ h2, h4 {
 .home_flex_rows {
 	display: flex;
 	flex-direction: column;
-	padding: 0 2%;
-	width: 46%;
-	min-width: 28rem;
+	padding: 0 1%;
 	text-align: center;
 	justify-content: flex-start;
 	align-items: center;
@@ -78,13 +76,11 @@ h2, h4 {
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
+	min-width: 650px;
 	row-gap: 1rem;
-	min-height: auto;
-	max-height: 80px;
-	width: 90%;
 	margin: 5px 2vmin;
-	padding-left: 7vmin;
-	padding-right: 7vmin;
+	padding-left: 2vmin;
+	padding-right: 2vmin;
 	
 	background-color: rgb(2, 88, 2);
 	border-radius: 15px;

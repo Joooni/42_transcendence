@@ -25,4 +25,10 @@ export class LeaderboardComponent {
 	sendGameRequest(user: User) {
 		this.gameInviteService.sendGameRequest(user);
 	}
+
+  isOnline(user: User): boolean {
+    if (user.status == 'online')
+      return true;
+    return false;
+  }
 }

@@ -22,6 +22,10 @@
 	margin: 5px;
 }
 
+.smaller_text {
+	font-size: 0.8rem;
+}
+
 .challenge-button {
 	width: 5rem;
 }
@@ -39,8 +43,8 @@
 	min-height: auto;
 	max-height: 80px;
 	margin: 5px 2vmin;
-	padding-left: 7vmin;
-	padding-right: 7vmin;
+	padding-left: 3vmin;
+	padding-right: 3vmin;
 }
 
 .leaderboard_picture {
@@ -53,10 +57,18 @@
 	flex-direction: column; 
 }
 
-
 .leaderboard_user_box {
 	display: flex;
 	flex-direction: row;
-	gap: 2rem;
+	gap: 1rem;
 	align-items: center;
+}
+
+@media (min-width: 1050px) {
+	.leaderboard_user_box {
+		gap: 2rem;
+	}
+	.smaller_text {
+		font-size: 1rem;
+	}
 }
