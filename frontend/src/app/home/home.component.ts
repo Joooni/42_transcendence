@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
 	requestOngoingGames() {
 		this.intervalGetOngoingGames = setInterval(() => {
 			this.socketService.emit('requestOngoingGames', this.activeUser?.id)
-		}, 5000)
+		}, 1000)
 	}
 	
 	async getTop3() {
