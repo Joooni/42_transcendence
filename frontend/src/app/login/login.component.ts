@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { AuthService } from '../services/auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { ErrorService } from '../services/error/error.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,38 +17,41 @@ export class LoginComponent {
     private readonly authService: AuthService,
     private readonly activatedRoute: ActivatedRoute,
     public userDataService: UserDataService,
-    private readonly router: Router) {}
+    private readonly router: Router, 
+		private errorService: ErrorService,
+	) {}
 
   activeUser?: boolean;
   twoFACode?: string;
+	wrongCode: boolean = false;
 
   async ngOnInit() {
-    this.activeUser = await this.authService.isUserAuthenticated();
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      const code = params.get('code');
-      const bypassId = params.get('id') as string | undefined;
-      if (code) {
-        this.router.navigate([], {
-          queryParams: {
-            'code': null,
-          },
-          queryParamsHandling: 'merge'
-        });
-				this.userDataService.login(code, bypassId).then((result) => {
-					if (result === false) {
-						const popup = document.getElementById("popup-2FA-login");
-						popup?.classList.toggle('show-popup');
-					}
-				});
-      } else {
-        //error????
-				return;
-      }
-    });
+    try {
+			this.activeUser = await this.authService.isUserAuthenticated();
+			this.activatedRoute.queryParamMap.subscribe((params) => {
+				const code = params.get('code');
+				const bypassId = params.get('id') as string | undefined;
+				if (code) {
+					this.router.navigate([], {
+						queryParams: {
+							'code': null,
+						},
+						queryParamsHandling: 'merge'
+					});
+					this.userDataService.login(code, bypassId).then((result) => {
+						if (result === false) {
+							const popup = document.getElementById("popup-2FA-login");
+							popup?.classList.toggle('show-popup');
+						}
+					});
+				}
+			});
+		} catch (error) {
+			this.errorService.showErrorMessage();
+		}
   }
 
   onLogin() {
-
     window.location.href = `http://${environment.DOMAIN}:3000/auth/login`;
   };
 
@@ -56,11 +60,12 @@ export class LoginComponent {
 		.then(() => {
 			const popup = document.getElementById("popup-2FA-login");
 			popup?.classList.toggle('show-popup');
+			this.wrongCode = false;
 			this.userDataService.updateStatus('online');
       this.router.navigate(['/home']);
 		})
 		.catch(() => {
-				console.log('error on veirfy 2fa');
+			this.wrongCode = true;	
 		})
 	}
 }

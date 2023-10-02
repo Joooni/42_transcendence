@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { gameData } from '../../../game/game-display/GameData'
+import { gameData } from '../../game/game-display/GameData'
 
 import { User } from 'src/app/models/user';
-import { UserDataService } from '../../user-data/user-data.service';
+import { UserDataService } from '../user-data/user-data.service';
+import { Match } from 'src/app/models/game';
+import graphQLService from '../graphQL/GraphQLService';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +110,8 @@ export class GameDisplayService {
 		img3: new Image
 	}
 
-	constructor(private userDataService: UserDataService,
+	constructor(
+		private userDataService: UserDataService
 	) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
@@ -205,5 +208,40 @@ export class GameDisplayService {
 		this.oppQuit.img.src = this.oppQuit.src;
 	}
 
-
+	async getMatchesOfUser(id: number | undefined): Promise<Match[]> {
+    const response = await graphQLService.query(
+      `
+      query getMatchesOfUser($id: Int!){
+        findMatchesByPlayerId (id: $id) {
+          gameID
+          firstPlayer {
+            id
+            username
+            picture
+          }
+          secondPlayer {
+            id
+            username
+            picture
+          }
+          goalsFirstPlayer
+          goalsSecondPlayer
+          xpFirstPlayer
+          xpSecondPlayer
+          timestamp
+        }
+      }
+      `,
+      { id },
+      { fetchPolicy: 'network-only' },
+      );
+      if (typeof response === "undefined")
+        throw new Error('Empty match data');
+      const matches: Match[] = response.findMatchesByPlayerId;
+      const plainMatches = matches.map(match => ({...match}));
+      for (let match of plainMatches) {
+        match.timestamp = new Date(match.timestamp);
+      }
+      return plainMatches;
+  }
 }
