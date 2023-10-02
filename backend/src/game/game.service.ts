@@ -222,25 +222,27 @@ export class GameService {
     while (room <= 50) {
       if (
         this.gameDataMap.has(room) &&
+		this.gameDataMap.get(room)!.rightUserID != undefined &&
         this.gameDataMap.get(room)!.rightUserID != 0 &&
         this.gameDataMap.get(room)!.gameEnds == false
       ) {
+		const tmpGameData: gameData | undefined = this.gameDataMap.get(room);
         oGGData.push({
-          roomNbr: this.gameDataMap.get(room)!.roomNbr,
-          leftUserID: this.gameDataMap.get(room)!.leftUserID,
+          roomNbr: tmpGameData!.roomNbr,
+          leftUserID: tmpGameData!.leftUserID,
           leftUserName: (
             await this.usersService.findOne(
-              this.gameDataMap.get(room)!.leftUserID,
+				tmpGameData!.leftUserID,
             )
           ).username,
-          rightUserID: this.gameDataMap.get(room)!.rightUserID,
+          rightUserID: tmpGameData!.rightUserID,
           rightUserName: (
             await this.usersService.findOne(
-              this.gameDataMap.get(room)!.rightUserID,
+				tmpGameData!.rightUserID,
             )
           ).username,
-          goalsLeft: this.gameDataMap.get(room)!.goalsLeft,
-          goalsRight: this.gameDataMap.get(room)!.goalsRight,
+          goalsLeft: tmpGameData!.goalsLeft,
+          goalsRight: tmpGameData!.goalsRight,
         });
       }
       room++;
