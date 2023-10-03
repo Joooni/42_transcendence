@@ -60,7 +60,6 @@ export class SocketGateway
     console.log('SocketClient disconnected:', client.id);
     try {
       const user = await this.usersService.findOnebySocketId(client.id);
-      console.log('the user:' + user);
       this.gameService.exitRoomsAfterSocketDiscon(user);
       this.closePopups(user);
       this.updateStatusAndEmit(user.id, 'offline');

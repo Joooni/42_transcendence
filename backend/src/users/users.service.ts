@@ -38,8 +38,8 @@ export class UsersService {
         where: { username: Like(`${createUserInput.username}%`) },
       });
       if (existingUsers.length == 0) return Promise.reject(error);
-      createUserInput.username = createUserInput.username + '_copycat';
-      await this.userRepository.insert(createUserInput);
+      createUserInput.username = createUserInput.username + '1';
+      this.create(createUserInput);
     }
     return Promise.resolve();
   }
