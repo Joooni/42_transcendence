@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
 import { Match } from 'src/app/models/game';
 import graphQLService from '../graphQL/GraphQLService';
+import { ErrorService } from '../error/error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -111,7 +112,8 @@ export class GameDisplayService {
 	}
 
 	constructor(
-		private userDataService: UserDataService
+		private userDataService: UserDataService,
+		private errorService: ErrorService
 	) {
 		this.goalTrigger = false;
 		this.gameEnds = false;
@@ -178,34 +180,38 @@ export class GameDisplayService {
 	}
 
 	async loadImages() {
-		await this.userDataService.findSelf().then(async user => this.activeUser = user);
-		var check = this.activeUser?.selectedMap;
-
-		if (check == 2) {
-			this.background.img.src = '../../../../assets/gameObjects/look1/hintergrund1.png';
-			this.racketLeft.img.src = '../../../../assets/gameObjects/look1/banane_links.png';
-			this.racketRight.img.src = '../../../../assets/gameObjects/look1/banane_rechts.png';
-			this.ball.img.src = '../../../../assets/gameObjects/look1/DK_Fass1.png';
-		} else {
-			this.background.img.src = '../../../../assets/gameObjects/look2/hintergrund.png';
-			this.racketLeft.img.src = '../../../../assets/gameObjects/look2/racket2_left.png';
-			this.racketRight.img.src = '../../../../assets/gameObjects/look2/racket2_right.png';
-			this.ball.img.src = '../../../../assets/gameObjects/look2/ball2.png';
-		}
-
-		this.countdown.img1.src = '../../../../assets/gameObjects/nbr1.png';
-		this.countdown.img2.src = '../../../../assets/gameObjects/nbr2.png';
-		this.countdown.img3.src = '../../../../assets/gameObjects/nbr3.png';
+		try {
+			await this.userDataService.findSelf().then(async user => this.activeUser = user);
+			var check = this.activeUser?.selectedMap;
+	
+			if (check == 2) {
+				this.background.img.src = '../../../../assets/gameObjects/look1/hintergrund1.png';
+				this.racketLeft.img.src = '../../../../assets/gameObjects/look1/banane_links.png';
+				this.racketRight.img.src = '../../../../assets/gameObjects/look1/banane_rechts.png';
+				this.ball.img.src = '../../../../assets/gameObjects/look1/DK_Fass1.png';
+			} else {
+				this.background.img.src = '../../../../assets/gameObjects/look2/hintergrund.png';
+				this.racketLeft.img.src = '../../../../assets/gameObjects/look2/racket2_left.png';
+				this.racketRight.img.src = '../../../../assets/gameObjects/look2/racket2_right.png';
+				this.ball.img.src = '../../../../assets/gameObjects/look2/ball2.png';
+			}
+	
+			this.countdown.img1.src = '../../../../assets/gameObjects/nbr1.png';
+			this.countdown.img2.src = '../../../../assets/gameObjects/nbr2.png';
+			this.countdown.img3.src = '../../../../assets/gameObjects/nbr3.png';
+			
+	
+			this.goal.img.src = this.goal.src;	
+			this.explosion.img.src = this.explosion.src;
 		
-
-		this.goal.img.src = this.goal.src;	
-		this.explosion.img.src = this.explosion.src;
-	
-		this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr0.png';	
-		this.goalsRight.img.src = '../../../../assets/gameObjects/nbr0.png';
-	
-		this.result.img.src = this.result.src;
-		this.oppQuit.img.src = this.oppQuit.src;
+			this.goalsLeft.img.src = '../../../../assets/gameObjects/nbr0.png';	
+			this.goalsRight.img.src = '../../../../assets/gameObjects/nbr0.png';
+		
+			this.result.img.src = this.result.src;
+			this.oppQuit.img.src = this.oppQuit.src;
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	async getMatchesOfUser(id: number | undefined): Promise<Match[]> {

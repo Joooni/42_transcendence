@@ -21,7 +21,8 @@ export class UserDataService {
         throw new Error('Empty user authentication');
       return { require2FAVerify: !res.data.isAuthenticated };
     }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
+      console.log('error in UserDataService fetch JWT');
+			if (typeof error.response === 'undefined') throw error;
       throw new Error(error.response.data.message);
     });
   }
@@ -42,6 +43,7 @@ export class UserDataService {
 			})
     } catch (error: any) {
       await this.logout();
+			console.log('error in UserDataService login');
       if (typeof error.response === 'undefined') throw error;
       throw new Error(error.response.data.message);
     }
@@ -56,7 +58,7 @@ export class UserDataService {
   twoFACodeIsValid(code: string | undefined): boolean {
     if (!code)
       return false;
-    return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
+    return (/^\d+$/.test(code) && code.length === 6);
   }
 
   async verify2FA(code: string): Promise<void> {
@@ -86,16 +88,21 @@ export class UserDataService {
   }
 
   async logout(): Promise<void> {
-    const user: User = await this.findSelf();
-    if (user.status !== "offline" || user.id > 0) {
-      await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
-        this.updateStatus('offline');
-        return;
-      }).catch((error) => {
-        if (typeof error.response === 'undefined') throw error;
-        throw new Error(error.response.data.message);
-      })
-    }
+    try {
+			const user: User = await this.findSelf();
+			if (user.status !== "offline" || user.id > 0) {
+				await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
+					this.updateStatus('offline');
+					return;
+				}).catch((error) => {
+					console.log('error in UserDataService logout');
+					if (typeof error.response === 'undefined') throw error;
+					throw new Error(error.response.data.message);
+				})
+			}
+		} catch (e) {
+			console.log('caught error in userDataService logout');
+		}
   }
 
   async uploadPicture(uploadedPicture: File): Promise<void> {
@@ -122,100 +129,75 @@ export class UserDataService {
   }
 
   async findSelf(): Promise<User> {
-    const { userById } = await graphQLService.query(
-      `
-      query {
-        userById {
-          id
-          intra
-          username
-          email
-          picture
-          twoFAEnabled
-					hasTwoFASecret
-					status
-          wins
-          losses
-          xp
-          map
-					selectedMap
-          achievements
-          channelList {
-            id
-            name
-          }
-          invitedInChannel {
-            id
-            name
-          }
-          friends {
-            id
-            username
-            status
-            picture
-          }
-					sendFriendRequests {
-            id
-            username
-            status
-            picture
-          }
-					incomingFriendRequests {
-            id
-            username
-            status
-            picture
-          }
-          blockedUsers {
-            id
-            username
-            status
-            picture
-          }
-          blockedFromOther {
-            id
-            username
-            status
-            picture
-          }
-        }
-      }
-      `,
-      undefined,
-      { fetchPolicy: 'network-only' },
-    );
-      if (typeof userById === 'undefined') throw new Error('Empty user data');
-      return userById;
+		try {
+			const { userById } = await graphQLService.query(
+				`
+				query {
+					userById {
+						id
+						intra
+						username
+						email
+						picture
+						twoFAEnabled
+						hasTwoFASecret
+						status
+						wins
+						losses
+						xp
+						map
+						selectedMap
+						achievements
+						channelList {
+							id
+							name
+						}
+						invitedInChannel {
+							id
+							name
+						}
+						friends {
+							id
+							username
+							status
+							picture
+						}
+						sendFriendRequests {
+							id
+							username
+							status
+							picture
+						}
+						incomingFriendRequests {
+							id
+							username
+							status
+							picture
+						}
+						blockedUsers {
+							id
+							username
+							status
+							picture
+						}
+						blockedFromOther {
+							id
+							username
+							status
+							picture
+						}
+					}
+				}
+				`,
+				undefined,
+				{ fetchPolicy: 'network-only' },
+			);
+			if (typeof userById === 'undefined') throw new Error('Empty user data');
+			return userById;
+		} catch (e) {
+			throw new Error('Error UserDataService findSelf()');
+		}
   }
-
-     // We don't need it?
-  // async findAll(): Promise<User[]> {
-  //   const response = await graphQLService.query(
-  //     `
-  //       query {
-  //         allUsers {
-  //           id
-  //           intra
-  //           username
-  //           email
-  //           picture
-  //           twoFAEnabled
-  //           status
-  //           wins
-  //           losses
-  //           xp
-  //           achievements
-  //         }
-  //       }
-  //     `,
-  //     undefined,
-  //     { fetchPolicy: 'network-only' },
-  //   );
-  //   if (typeof response === 'undefined') {
-  //     return Promise.reject(new Error('Empty user data'));
-  //   }
-  //   return response.allUsers;
-  // }
 
   async findAllExceptMyself(): Promise<User[]> {
     let response = await graphQLService.query(

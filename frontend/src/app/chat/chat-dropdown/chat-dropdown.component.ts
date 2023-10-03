@@ -5,6 +5,7 @@ import { UserDataService } from "src/app/services/user-data/user-data.service";
 import { ChatComponent } from "../chat.component";
 import { GameInviteService } from "src/app/services/game-invite/game-invite.service";
 import { UserRelationService } from "src/app/services/user-relation/user-relation.service";
+import { ErrorService } from "src/app/services/error/error.service";
 
 @Component({
 	selector: 'app-chat-dropdown',
@@ -21,11 +22,16 @@ export class ChatDropdownComponent {
 		private userDataService: UserDataService,
 		private chatComponent: ChatComponent,
 		private gameInviteService: GameInviteService,
-		private userRelationService: UserRelationService
+		private userRelationService: UserRelationService,
+		private errorService: ErrorService
 	) {}
 
 	ngOnInit() {
-		this.userDataService.findSelf().then(user => this.activeUser = user);
+		try {
+			this.userDataService.findSelf().then(user => this.activeUser = user);
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	isBlockedOrOffline(): boolean {

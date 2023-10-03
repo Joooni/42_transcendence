@@ -22,31 +22,41 @@ export class HeaderComponent implements OnInit {
 		private userDataService: UserDataService,
 		private gameInviteService: GameInviteService,
 		private errorService: ErrorService,
-		) {
+	) {
 
-			window.addEventListener('pageshow', function (event) {
-				if (event.persisted) {
-					window.location.reload();
-				}
-			});
-
-			if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type  === 'back_forward'){
+		window.addEventListener('pageshow', function (event) {
+			if (event.persisted) {
 				window.location.reload();
-				}
+			}
+		});
 
+		if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type  === 'back_forward'){
+			window.location.reload();
 		}
+	}
 
 	ngOnInit() {
-		this.checkAuthentication();
-		this.gameInviteService.initGameInviteService();
-		this.errorService.initErrorService();
+		try {
+			this.checkAuthentication();
+			this.gameInviteService.initGameInviteService();
+			this.errorService.initErrorService();
+		} catch (e) {
+			console.log('caught error in header onInit')
+		}
+
 	}
 
 	checkAuthentication() {
 		setInterval(() => {
-			this.isAuthenticated = this.authService.isAuthenticated;
-			if (this.isAuthenticated)
-				this.userDataService.findSelf().then(user => this.activeUser = user);
+			try {
+				this.isAuthenticated = this.authService.isAuthenticated;
+				if (this.isAuthenticated) {
+					console.log('check auth by calling findself')
+					this.userDataService.findSelf().then(user => this.activeUser = user);
+				}
+			} catch (e) {
+				console.log('caught error in header checkAuth');
+			}
 		}, 500);
 	}
 }

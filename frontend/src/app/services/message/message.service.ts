@@ -22,8 +22,12 @@ export class MessageService {
 		) { this.initialize(); }
 
 	initialize() {
-		this.userDataService.findSelf()
-		.then(user => this.activeUser = user);
+		try {
+			this.userDataService.findSelf()
+				.then(user => this.activeUser = user);
+		} catch (e) {
+			console.log('caught error in MessageService initialize');
+		}
 	}
 
 	sendMessage(message: Message) {

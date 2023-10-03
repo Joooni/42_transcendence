@@ -5,6 +5,7 @@ import { ChatComponent } from "../../chat.component";
 import { UserDataService } from "src/app/services/user-data/user-data.service";
 import { ChannelDataService } from "src/app/services/channel-data/channel-data.service";
 import { SocketService } from "src/app/services/socket/socket.service";
+import { ErrorService } from "src/app/services/error/error.service";
 
 @Component({
 	selector: 'app-chat-channel-dropdown',
@@ -24,10 +25,15 @@ export class ChatChannelDropdownComponent {
 		private chatComponent: ChatComponent,
 		private userDataService: UserDataService,
 		private socket: SocketService,
+		private errorService: ErrorService,
 	) {}
 
 	ngOnInit() {
-		this.userDataService.findSelf().then(user => this.activeUser = user);
+		try {
+			this.userDataService.findSelf().then(user => this.activeUser = user);
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	isBannedOrOffline(): boolean {

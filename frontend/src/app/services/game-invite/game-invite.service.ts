@@ -27,15 +27,18 @@ export class GameInviteService {
 	) {}
 
 	initGameInviteService() {
-
 		this.socket.socket.on('gotGameRequest', ({senderID, gameMode}: {senderID: number; gameMode: number}) => {
 			this.gotGameRequest(senderID as number, gameMode as number);
 		})
 	}
 
 	async getActiveUser() {
-		if (!this.activeUser) {
-			await this.userService.findSelf().then(user => this.activeUser = user);
+		try {
+			if (!this.activeUser) {
+				await this.userService.findSelf().then(user => this.activeUser = user);
+			}
+		} catch (e) {
+			console.log('error in initGameInviteService get Active User');
 		}
 	}
 

@@ -261,45 +261,53 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async updateChannelList() {
-		await new Promise(r => setTimeout(r, 250));
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			this.invitedInChannel = this.activeUser.invitedInChannel;
-			this.memberChannels = this.activeUser.channelList;
-			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
-				other => this.otherVisibleChannels = other
-			);
-			if (this.selectedChannel) {
-				const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
-				if (!findChannel)
-					this.selectedChannel = undefined;
-			}
-		});
+		try {
+			await new Promise(r => setTimeout(r, 250));
+			await this.userDataService.findSelf().then(user => {
+				this.activeUser = user;
+				this.invitedInChannel = this.activeUser.invitedInChannel;
+				this.memberChannels = this.activeUser.channelList;
+				this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
+					other => this.otherVisibleChannels = other
+				);
+				if (this.selectedChannel) {
+					const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
+					if (!findChannel)
+						this.selectedChannel = undefined;
+				}
+			});
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	async updateUserList() {
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			if (!user) {
-				return;
-			}
-			this.friends = user.friends.map(friend => ({...friend}));
-			this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
-		});
-		await this.userDataService.findAllExceptMyself().then(users => {
-			this.otherUsers = users.filter(user => {
-				return !this.friends?.some(friend => friend.id === user.id) 
-					&& !this.blocked?.some(blocked => blocked.id === user.id) 
-					&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
+		try {
+			await this.userDataService.findSelf().then(user => {
+				this.activeUser = user;
+				if (!user) {
+					return;
+				}
+				this.friends = user.friends.map(friend => ({...friend}));
+				this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
 			});
-		});
-
-		if (this.selectedUser) {
-			const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
-			const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
-			if (!oUser && !fUser) {
-				this.selectedUser = undefined;
+			await this.userDataService.findAllExceptMyself().then(users => {
+				this.otherUsers = users.filter(user => {
+					return !this.friends?.some(friend => friend.id === user.id) 
+						&& !this.blocked?.some(blocked => blocked.id === user.id) 
+						&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
+				});
+			});
+	
+			if (this.selectedUser) {
+				const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
+				const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
+				if (!oUser && !fUser) {
+					this.selectedUser = undefined;
+				}
 			}
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 		}
 	}
 }
