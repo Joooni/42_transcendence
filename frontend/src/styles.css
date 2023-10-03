@@ -197,6 +197,10 @@ select {
 	border-radius: 50%;
 }
 
+iframe {
+	pointer-events: none;
+}
+
 .achievement_icon {
 	border-radius: 50%;
 	border-style: solid;

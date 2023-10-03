@@ -5,9 +5,9 @@
 			<div class="profile_picture">
 				<img src="{{gameInviteService.gameRequestSender?.picture}}">
 			</div>
-			<h2 class="game-invite-message">{{gameInviteService.gameRequestSender?.username}}</h2>
+			<h2 class="game-invite-message">{{gameInviteService.gameRequestSender?.username?.toUpperCase()}}</h2>
 			<h4 class="game-invite-message message-last"> challenges you to a game in</h4>
-			<h2>{{gameInviteService.gameModeString}}</h2>
+			<h2>{{gameInviteService.gameModeString?.toUpperCase()}}</h2>
 		</div>		
 		<div class="popup-buttons">
 			<button class="button_medium" (click)="gameInviteService.acceptGameRequest()">ACCEPT</button>
@@ -25,13 +25,13 @@
 				<div class="profile_picture">
 					<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
 				</div>
-				<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+				<h2>{{gameInviteService.gameRequestRecipient?.username?.toUpperCase()}}</h2>
 			</div>
 			<h4 class="game-invite-message message-first message-last">Please choose the game mode</h4>
 		</div>
 		<div class="popup-buttons">
-			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(0)">Normal</button>
-			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(1)">Alternative</button>
+			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(0)">NORMAL</button>
+			<button class="button_medium button_reverse" (click)="gameInviteService.waitForGameRequestAnswer(1)">ALTERNATIVE</button>
 		</div>
 	</div>
 </div>
@@ -46,7 +46,7 @@
 				<div class="profile_picture">
 					<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
 				</div>
-				<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+				<h2>{{gameInviteService.gameRequestRecipient?.username?.toUpperCase()}}</h2>
 			</div>
 			<h4 class="game-invite-message message-first message-last">Waiting for their reply ...</h4>
 		</div>
@@ -67,7 +67,7 @@
 			<div class="profile_picture">
 				<img src="{{gameInviteService.gameRequestRecipient?.picture}}">
 			</div>
-			<h2>{{gameInviteService.gameRequestRecipient?.username}}</h2>
+			<h2>{{gameInviteService.gameRequestRecipient?.username?.toUpperCase()}}</h2>
 			<h4 class="game-invite-message message-first message-last">has been declined.</h4>
 		</div>
 		<div class="popup-buttons">
