@@ -11,7 +11,7 @@
 				<div class="settings-name-container">
 					<input type="text" [(ngModel)]="newUsername" [disabled]="disableNameForm" placeholder="{{activeUser?.username}}">
 					<button class="button_small" *ngIf="disableNameForm" (click)="setDisableName(false)">EDIT NAME</button>
-					<button class="button_small" *ngIf="!disableNameForm" (click)="saveNewUsername()">SAVE NAME</button>
+					<button class="button_small" *ngIf="!disableNameForm" [disabled]="nameHasValidLength()" (click)="saveNewUsername()">SAVE NAME</button>
 				</div>
 			</td>
 		</tr>

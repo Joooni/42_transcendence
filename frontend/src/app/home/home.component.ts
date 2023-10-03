@@ -6,6 +6,7 @@ import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
 import { GameDisplayService } from '../services/game-display/game-display.service';
 import { Router } from '@angular/router';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-home',
@@ -23,21 +24,25 @@ export class HomeComponent implements OnInit {
 		private socketService: SocketService,
 		private router: Router,
 		private userService: UserDataService,
-		private gameDisplayService: GameDisplayService,
+		private errorService: ErrorService
 	) {	}
 
 	ngOnInit() {
-		this.userService.findSelf().then(user => {
-			this.activeUser = user;
-		});
-
-		this.connectSocket();
-
-		this.socketService.listen('sendOngoingGames').subscribe((data) => {
-			this.onGoingGames = data as Array<onGoingGamesData> ;
-		})
-		this.requestOngoingGames();
-		this.getTop3();
+		try {
+			this.userService.findSelf().then(user => {
+				this.activeUser = user;
+			});
+	
+			this.connectSocket();
+	
+			this.socketService.listen('sendOngoingGames').subscribe((data) => {
+				this.onGoingGames = data as Array<onGoingGamesData> ;
+			})
+			this.requestOngoingGames();
+			this.getTop3();
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 	
 

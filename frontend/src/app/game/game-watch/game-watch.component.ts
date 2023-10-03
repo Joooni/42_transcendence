@@ -6,6 +6,7 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 import { gameData } from '../game-display/GameData';
 import { User } from 'src/app/models/user';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
+import { ErrorService } from 'src/app/services/error/error.service';
 
 @Component({
   selector: 'app-game-watch',
@@ -28,7 +29,8 @@ export class GameWatchComponent implements AfterViewInit {
 		private gameDisplayService: GameDisplayService,
 		private socketService: SocketService,
 		private router: Router,
-		private userDataService: UserDataService
+		private userDataService: UserDataService,
+		private errorService: ErrorService
 	)
 	{
 		this.stopWatch = false;
@@ -57,16 +59,25 @@ export class GameWatchComponent implements AfterViewInit {
 	}
 
 	runGame(data: gameData) {
-		if (this.watchingRoom == undefined)
-			this.watchingRoom = data.roomNbr;
-		this.getPlayerData(data);
-		this.gameDisplayService.imageControl(data);
-		this.draw(data);
+		try {
+			if (this.watchingRoom == undefined)
+				this.watchingRoom = data.roomNbr;
+			this.getPlayerData(data);
+			this.gameDisplayService.imageControl(data);
+			this.draw(data);
+		} catch (e) {
+			this.errorService.showErrorMessage('Game could not be initialized. Please try again.');
+			this.router.navigate(['/home']);
+		}
 	}
 
 	async getPlayerData(data: gameData) {
-		this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
-		this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
+		try {
+			this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
+			this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
+		} catch (e) {
+			throw e;
+		}
 	}
 
 	draw(data: gameData) {

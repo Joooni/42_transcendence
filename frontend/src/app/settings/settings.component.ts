@@ -99,6 +99,12 @@ export class SettingsComponent {
 			this.twoFAEnabled = true;
 	}
 
+	nameHasValidLength(): boolean {
+		if (this.newUsername && this.newUsername?.length > 30)
+			return true;
+		return false;
+	}
+
 	async saveNewUsername() {
 		let hasError: boolean = false;
 		if (this.newUsername && this.newUsername != this.activeUser?.username)
@@ -118,7 +124,11 @@ export class SettingsComponent {
 				hasError = true;
 			});
 			this.updateUser();
+		} else {
+			this.errorService.showErrorMessage("Username cannot be empty!");
+			hasError = true;
 		}
+
 	}
 
 	async selectOtherMap(map: number) {
@@ -132,11 +142,16 @@ export class SettingsComponent {
 	}
 
 	updateUser() {
-		this.userService.findSelf().then(user => {
-			this.activeUser = user;
-			this.twoFAEnabled = this.activeUser.twoFAEnabled;
-			this.selectedMap = this.activeUser.selectedMap;
-		});
+		try {
+			this.userService.findSelf().then(user => {
+				this.activeUser = user;
+				this.twoFAEnabled = this.activeUser.twoFAEnabled;
+				this.selectedMap = this.activeUser.selectedMap;
+			});
+		} catch (e) {
+			return;
+		}
+
 	}
 
 	async onFileSelected(event: Event) {

@@ -3,6 +3,7 @@ import { SocketService } from '../socket/socket.service';
 import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
 import { Router } from '@angular/router';
+import { ErrorService } from '../error/error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class GameInviteService {
   constructor(
 		private socket: SocketService,
 		private router: Router,
-		private userService: UserDataService
+		private userService: UserDataService,
+		private errorService: ErrorService
 	) {}
 
 	initGameInviteService() {
@@ -38,68 +40,93 @@ export class GameInviteService {
 				await this.userService.findSelf().then(user => this.activeUser = user);
 			}
 		} catch (e) {
-			console.log('error in initGameInviteService get Active User');
+			this.declineGameRequest();
 		}
 	}
 
 	async gotGameRequest(senderID: number, gameMode: number) {
-		this.gameRequestSender = await this.userService.findUserById(senderID);
-		this.gameMode = gameMode;
-		if (gameMode === 0)
-			this.gameModeString = "Normal Mode";
-		else
-			this.gameModeString = "Alternative Mode";
-		this.showGotGameRequestPopup = true;
-		this.socket.listen('withdrawnGameRequest').subscribe(() => {
-			this.socket.stopListen('withdrawnGameRequest');
-			this.showGotGameRequestPopup = false;
-			this.gameRequestSender = undefined;
-		})
+		try {
+			this.gameRequestSender = await this.userService.findUserById(senderID);
+			this.gameMode = gameMode;
+			if (gameMode === 0)
+				this.gameModeString = "Normal Mode";
+			else
+				this.gameModeString = "Alternative Mode";
+			this.showGotGameRequestPopup = true;
+			this.socket.listen('withdrawnGameRequest').subscribe(() => {
+				this.socket.stopListen('withdrawnGameRequest');
+				this.showGotGameRequestPopup = false;
+				this.gameRequestSender = undefined;
+			})
+		} catch (e) {
+			this.declineGameRequest();
+		}
 	}
 
 	async acceptGameRequest() {		
-		await this.getActiveUser();
-		this.socket.emit3('startGameWithRequest', this.activeUser?.id, this.gameRequestSender?.id, this.gameMode)
-		this.socket.stopListen('withdrawnGameRequest');
-		this.showGotGameRequestPopup = false;
-		this.gameRequestSender = undefined;
-		this.router.navigate(['/game']);
+		try {
+			await this.getActiveUser();
+			this.socket.emit3('startGameWithRequest', this.activeUser?.id, this.gameRequestSender?.id, this.gameMode)
+			this.socket.stopListen('withdrawnGameRequest');
+			this.showGotGameRequestPopup = false;
+			this.gameRequestSender = undefined;
+			this.router.navigate(['/game']);
+		} catch (e) {
+			this.errorService.showErrorMessage('Something went wrong. Please try again.')
+			this.declineGameRequest();
+		}
 	}
 
 	async declineGameRequest() {
-		await this.getActiveUser();
-		this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
-		this.socket.stopListen('withdrawnGameRequest');
-		this.showGotGameRequestPopup = false;
-		this.gameRequestSender = undefined;
+		try {
+			await this.getActiveUser();
+			this.socket.emit2('gameRequestDecliend', this.activeUser?.id, this.gameRequestSender?.id)
+			this.socket.stopListen('withdrawnGameRequest');
+			this.showGotGameRequestPopup = false;
+			this.gameRequestSender = undefined;
+		} catch (e) {
+			this.socket.stopListen('withdrawnGameRequest');
+			this.showGotGameRequestPopup = false;
+			this.gameRequestSender = undefined;
+		}
 	}
 
 	async sendGameRequest(selectedUser: User) {
-		await this.getActiveUser();
-		this.showSendGameRequestPopup = true;
-		this.gameRequestRecipient = selectedUser;
-		this.socket.emit2('setStatusToGaming', this.activeUser?.id, this.gameRequestRecipient!.id);
+		try {
+			await this.getActiveUser();
+			this.showSendGameRequestPopup = true;
+			this.gameRequestRecipient = selectedUser;
+			this.socket.emit2('setStatusToGaming', this.activeUser?.id, this.gameRequestRecipient!.id);
+		} catch (e) {
+			this.errorService.showErrorMessage('Something went wrong. Please try again.');
+		}
 	}
 
 	async waitForGameRequestAnswer(gameMode: number) {
-		this.showSendGameRequestPopup = false;
-		this.showWaitForGameRequestAnswerPopup = true
-		await this.getActiveUser();
-		this.socket.emit3('sendGameRequest', this.activeUser?.id, this.gameRequestRecipient!.id, gameMode);
-		this.socket.listen('gameRequestDecliend').subscribe(() => {
-			this.showWaitForGameRequestAnswerPopup = false;
-			this.sendGameRequestWasDeclined();
-		})
-		this.socket.listen('gameRequestAccepted').subscribe((data) => {
-			this.showWaitForGameRequestAnswerPopup = false;
-			this.router.navigate(['/game']);
+		try {
 			this.showSendGameRequestPopup = false;
-			this.gameRequestRecipient = undefined;
-		})
+			this.showWaitForGameRequestAnswerPopup = true
+			await this.getActiveUser();
+			this.socket.emit3('sendGameRequest', this.activeUser?.id, this.gameRequestRecipient!.id, gameMode);
+			this.socket.listen('gameRequestDecliend').subscribe(() => {
+				this.showWaitForGameRequestAnswerPopup = false;
+				this.sendGameRequestWasDeclined();
+			})
+			this.socket.listen('gameRequestAccepted').subscribe((data) => {
+				this.showWaitForGameRequestAnswerPopup = false;
+				this.router.navigate(['/game']);
+				this.showSendGameRequestPopup = false;
+				this.gameRequestRecipient = undefined;
+			})
+		} catch (e) {
+			this.cancelGameRequest();
+		}
 	}
 
 	async cancelGameRequest() {
-		await this.getActiveUser();
+		try {
+			await this.getActiveUser();
+		} catch (e) {}
 		this.socket.emit2('gameRequestWithdrawn', this.activeUser?.id, this.gameRequestRecipient?.id);
 		this.gameRequestRecipient = undefined;
 		this.showWaitForGameRequestAnswerPopup = false;

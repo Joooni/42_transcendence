@@ -6,6 +6,7 @@ import { Match } from '../models/game';
 import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { SocketService } from '../services/socket/socket.service';
 import { GameDisplayService } from '../services/game-display/game-display.service';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +25,8 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private gameservice: GameDisplayService,
 		private userRelationService: UserRelationService,
-		private socket: SocketService
+		private socket: SocketService,
+		private errorService: ErrorService
     ) {
     }
     async ngOnInit(): Promise<void> {
@@ -40,18 +42,22 @@ export class ProfileComponent {
   }
 
 	async updateUserData() {
-		const username = String(this.route.snapshot.paramMap.get('username'));
-		await this.userService.findUserByUsername(username).then(user => 
-			this.selectedUser = user
-		).catch(() => 
-			this.hasSelectedUser = false
-		);
-		this.userService.findSelf().then(user => this.activeUser = user);
-		this.gameservice.getMatchesOfUser(this.selectedUser?.id).then(history => {
-			this.gameHistory = history;
-			for(let game of this.gameHistory)
-				game.timestamp = new Date(game.timestamp);
-		});
+		try {
+			const username = String(this.route.snapshot.paramMap.get('username'));
+			this.userService.findSelf().then(user => this.activeUser = user);
+			await this.userService.findUserByUsername(username).then(user => {
+				this.selectedUser = user;
+				this.gameservice.getMatchesOfUser(this.selectedUser?.id).then(history => {
+					this.gameHistory = history;
+					for(let game of this.gameHistory)
+						game.timestamp = new Date(game.timestamp);
+				});
+			}).catch(() => 
+				this.hasSelectedUser = false
+			);
+		} catch (e) {
+			this.errorService.showErrorMessage("Something went wrong while fetching the data. Please try again.");
+		}
 	}
 
   isProfileOfActiveUser(): boolean {

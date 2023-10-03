@@ -58,13 +58,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-
-		await this.updateUserList();
-		if (this.activeUser) {
-			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
-			this.memberChannels = this.activeUser.channelList;
-			this.invitedInChannel = this.activeUser.invitedInChannel;
+		try {
+			await this.updateUserList();
+			if (this.activeUser) {
+				this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
+				this.memberChannels = this.activeUser.channelList;
+				this.invitedInChannel = this.activeUser.invitedInChannel;
+			}
+		} catch (e) {
+			this.errorService.showErrorMessage('Failed to fetch Chat Data. Please refresh and try again.');
 		}
+
 
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
@@ -115,15 +119,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async selectChannel(channel: Channel) {
-		const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
-		if (!findChannel)
-			return;
-		if (this.selectedUser)
-			this.selectedUser = undefined;
-		await this.channelDataService.getChannel(channel.id)
-			.then(rtrnChannel => this.selectedChannel = rtrnChannel)
-		this.messageService.changeOfDM('change of channel');
-		this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
+		try {
+			const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
+			if (!findChannel)
+				return;
+			if (this.selectedUser)
+				this.selectedUser = undefined;
+			await this.channelDataService.getChannel(channel.id)
+				.then(rtrnChannel => this.selectedChannel = rtrnChannel)
+			this.messageService.changeOfDM('change of channel');
+			this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
+		} catch (e) {
+			this.errorService.showErrorMessage('Something went wrong selecting this channel. Please refresh and try again.');
+		}
+
 	}
 
 	async updateSelectedChannel() {
@@ -172,7 +181,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 		else {
 			this.userDataService.findUserById(id).then(dbuser => {
 				this.otherUsers!.push(dbuser);
-			});
+			}).catch(() => {});
 		}
 	}
 
@@ -227,17 +236,23 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async joinChannel(channel: Channel) {
-		if (channel.type == 'protected') {
-			this.channelToJoin = channel;
-			const popup = document.getElementById('popup-channel-password');
-			popup?.classList.toggle('show-popup');
-		}
-		else {
-			this.socket.emit('joinChannel', {
-				channelid: channel.id,
-				userid: this.activeUser?.id,
-			});
-			await this.updateChannelList();
+		try {
+			const fullChannel = await this.channelDataService.getChannel(channel.id);
+			if (channel.type == 'protected') {
+				this.channelToJoin = channel;
+				const popup = document.getElementById('popup-channel-password');
+				popup?.classList.toggle('show-popup');
+			} else if (fullChannel.bannedUsers.some((user) => user.id === this.activeUser?.id)) {
+						this.errorService.showErrorMessage('You cannot enter this channel because you have been banned.');
+			} else {
+				this.socket.emit('joinChannel', {
+					channelid: channel.id,
+					userid: this.activeUser?.id,
+				});
+				await this.updateChannelList();
+			}
+		} catch (e) {
+			this.errorService.showErrorMessage();
 		}
 	}
 

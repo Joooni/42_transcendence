@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { GameInviteService } from '../services/game-invite/game-invite.service';
+import { ErrorService } from '../services/error/error.service';
 
 @Component({
   selector: 'app-leaderboard',
@@ -14,12 +15,17 @@ export class LeaderboardComponent {
 
   constructor(
     private userService: UserDataService,
-		private gameInviteService: GameInviteService
+		private gameInviteService: GameInviteService,
+		private errorService: ErrorService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    await this.userService.findSelf().then(user => this.activeUser = user);
-    this.userList = await this.userService.getUsersSortedByRank();
+    try {
+			await this.userService.findSelf().then(user => this.activeUser = user);
+    	this.userList = await this.userService.getUsersSortedByRank();
+		} catch (e) {
+			this.errorService.showErrorMessage('Something went wrong fetching Leaderboard Data. Please try again.')
+		}
   }
 
 	sendGameRequest(user: User) {

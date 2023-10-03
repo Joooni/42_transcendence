@@ -1,22 +1,25 @@
-<div class="game-watch">
-
-	<div class="game-player-info" *ngIf="leftPlayer">
-		<div class="game-player-picture">
-			<img src="{{leftPlayer.picture}}">
+<div class="game-container">
+	
+	<div class="game-player-row">
+		<div class="game-player-info left">
+			<div *ngIf="leftPlayer" class="game-player-picture">
+				<img src="{{leftPlayer.picture}}">
+			</div>
+			<h1 *ngIf="leftPlayer">{{leftPlayer.username.toUpperCase()}}</h1>
 		</div>
-		<h1>{{leftPlayer.username.toUpperCase()}}</h1>
-	</div>
 
-	<div class="game-canvas">
-		<canvas #canvasEle></canvas>
-		<button class="stop-watching-button" (click)="stopWatching()">Stop watching</button>
-	</div>
+		<button class="leave-game-buttton button_medium" (click)="stopWatching()">LEAVE</button>
 
-	<div class="game-player-info" *ngIf="rightPlayer">
-		<div class="game-player-picture">
-			<img src="{{rightPlayer.picture}}">
+		<div class="game-player-info right">
+			<h1 *ngIf="rightPlayer">{{rightPlayer.username.toUpperCase()}}</h1>
+			<div *ngIf="rightPlayer" class="game-player-picture">
+				<img src="{{rightPlayer.picture}}">
+			</div>
 		</div>
-		<h1>{{rightPlayer.username.toUpperCase()}}</h1>
 	</div>
 	
+	<div class="game-display">
+		<div class="game-canvas">
+			<canvas #canvasEle></canvas>
+		</div>
 </div>

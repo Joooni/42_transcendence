@@ -61,7 +61,9 @@ export class LoginComponent {
 			const popup = document.getElementById("popup-2FA-login");
 			popup?.classList.toggle('show-popup');
 			this.wrongCode = false;
-			this.userDataService.updateStatus('online');
+			try {
+				this.userDataService.updateStatus('online');
+			} catch (e) {}
       this.router.navigate(['/home']);
 		})
 		.catch(() => {

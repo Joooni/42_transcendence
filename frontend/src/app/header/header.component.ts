@@ -41,21 +41,18 @@ export class HeaderComponent implements OnInit {
 			this.gameInviteService.initGameInviteService();
 			this.errorService.initErrorService();
 		} catch (e) {
-			console.log('caught error in header onInit')
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 		}
 
 	}
 
 	checkAuthentication() {
 		setInterval(() => {
-			try {
-				this.isAuthenticated = this.authService.isAuthenticated;
-				if (this.isAuthenticated) {
-					console.log('check auth by calling findself')
-					this.userDataService.findSelf().then(user => this.activeUser = user);
-				}
-			} catch (e) {
-				console.log('caught error in header checkAuth');
+			this.isAuthenticated = this.authService.isAuthenticated;
+			if (this.isAuthenticated) {
+				this.userDataService.findSelf()
+					.then(user => this.activeUser = user)
+					.catch(() => {});
 			}
 		}, 500);
 	}

@@ -79,7 +79,7 @@ export class ChatChannelDropdownComponent {
 	}
 
 	canBeBanned(): boolean {
-		if (this.userIsOwner(this.selectedUser) || !this.activeUser)
+		if (this.userIsOwner(this.selectedUser) || !this.activeUser || this.channel.bannedUsers.some(user => user.id === this.selectedUser.id))
 			return false;
 		return this.userIsAdmin(this.activeUser) || this.userIsOwner(this.activeUser)
 	}
@@ -92,7 +92,7 @@ export class ChatChannelDropdownComponent {
 
 	setUserAsAdmin() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:SetUserAsAdmin', {
@@ -104,7 +104,7 @@ export class ChatChannelDropdownComponent {
 
 	removeUserAsAdmin() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:RemoveUserAsAdmin', {
@@ -116,7 +116,7 @@ export class ChatChannelDropdownComponent {
 
 	muteUser() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:MuteUser', {
@@ -129,7 +129,7 @@ export class ChatChannelDropdownComponent {
 
 	unmuteUser() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:UnmuteUser', {
@@ -141,7 +141,7 @@ export class ChatChannelDropdownComponent {
 
 	kickUser() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:KickUser', {
@@ -153,7 +153,7 @@ export class ChatChannelDropdownComponent {
 
 	banUser() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:BanUser', {
@@ -165,7 +165,7 @@ export class ChatChannelDropdownComponent {
 
 	unbanUser() {
 		if (!this.chatComponent.activeUser) {
-			console.log('Error: activeUser is undefined');
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 			return;
 		}
 		this.socket.emit('channel:UnbanUser', {
