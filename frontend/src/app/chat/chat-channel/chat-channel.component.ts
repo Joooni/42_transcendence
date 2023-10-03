@@ -41,17 +41,16 @@ export class ChatChannelComponent {
 	ngOnInit(): void {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.activeUser = this.chatComponent.activeUser;
-			//TO-DO: TBD ob channel type string oder number
 			this.selectedChannelType = this.chatComponent.selectedChannel.type;
-			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
-			.then(messages => this.messages = messages);
+			this.updateMessages();
 		}
 		this.messageService.events$.forEach(event => this.updateMessages());
 		
 		this.socketService.listen('message').subscribe((data) => {
 			let tmpMes: Message = {...data as Message, timestamp: new Date((data as Message).timestamp)};
 			if (tmpMes.receiverChannel?.id === this.chatComponent.selectedChannel?.id) {
-				this.messages?.push(tmpMes);
+				if (!this.isUserBlocked(tmpMes.sender))
+					this.messages?.push(tmpMes);
 			}
 		});
 	}
@@ -72,8 +71,25 @@ export class ChatChannelComponent {
 	updateMessages() {
 		if (this.chatComponent.activeUser && this.chatComponent.selectedChannel) {
 			this.messageService.getChannelMessages(this.chatComponent.selectedChannel)
-			.then(messages => this.messages = messages);
+			.then(messages => {
+				this.messages = [];
+				for (let message of messages) {
+					if (!this.isUserBlocked(message.sender)) {
+						this.messages.push(message);
+					}
+				}
+			});
 		}
+	}
+
+	isUserBlocked(user: User): boolean {
+		if (this.activeUser.blockedUsers) {
+			for(let blockedUser of this.activeUser.blockedUsers) {
+				if (blockedUser.id === user.id)
+					return true;
+			}
+		}
+		return false;
 	}
 
 	isNotOwnerOrAdmin(user: User): boolean {
