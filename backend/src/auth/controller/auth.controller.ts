@@ -61,7 +61,8 @@ export class Intra42Controller {
   }
 
   @Get('logout')
-  logout(@Res({ passthrough: true }) res: Response): void {
-    res.clearCookie('jwt', { httpOnly: true });
+  async logout(@Req() req: Request, @Res() res: Response): Promise<void> {
+    res.cookie('jwt', '', { httpOnly: true, expires: new Date(0) });
+    res.status(200).send({ message: 'Logout sucessful' });
   }
 }

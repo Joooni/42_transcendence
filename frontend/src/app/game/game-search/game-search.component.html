@@ -1,7 +1,6 @@
 <div class="game-display">
 	<div class="button-container">
-		<iframe *ngIf="stopSearch" src="https://giphy.com/embed/R3K0NfClEUHSw" width="300" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-
+		<img *ngIf="stopSearch" width="300" height="300" src="/assets/gameLoading.gif">
 		<button class="buttonSearch" *ngIf="search === true"
 			(click)="startGame()">SEARCH FOR OPPONENT</button>
 	

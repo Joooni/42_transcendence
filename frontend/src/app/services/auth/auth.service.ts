@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { User } from 'src/app/models/user';
 import { UserDataService } from '../user-data/user-data.service';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
 import { SocketService } from '../socket/socket.service';
+import { environment } from 'src/environments/environment';
+import axios from 'axios';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,10 @@ export class AuthService implements OnDestroy {
   ngOnDestroy(): void {
     if (this.authSubscription)
       this,this.authSubscription.unsubscribe();
+  }
+
+  async logout() {
+    const url = `http://${environment.DOMAIN}:3000/auth/logout`;
+    await axios.get(url, { withCredentials: true });
   }
 }

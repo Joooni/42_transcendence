@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SocketService } from '../socket/socket.service';
 import { Router } from '@angular/router';
-import { UserDataService } from '../user-data/user-data.service';
-import { User } from 'src/app/models/user';
+import { AuthService } from '../auth/auth.service';
 
 
 @Injectable({
@@ -14,11 +13,13 @@ export class ErrorService {
 
   constructor(private socket: SocketService,
 			  private router: Router,
+			  private authService: AuthService,
 	) {}
 
 	async initErrorService() {
 		this.socket.listen('alreadyConnected').subscribe(data => {
 			this.router.navigate(['/alreadyConnected']);
+			this.authService.logout();
 		})
 	}
 	
