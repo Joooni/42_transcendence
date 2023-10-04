@@ -41,8 +41,8 @@ ip:
 	sed -i "s/DOMAIN:.*/DOMAIN: '$(IPADD)'/g" ./frontend/src/environments/environment.ts ./frontend/src/environments/environment.development.ts ./frontend/src/environments/environment.prod.ts
 
 clean:
-	docker volume rm $(FOLDER_NAME)_postgres-data
-	docker volume rm $(FOLDER_NAME)_uploads
+	-docker volume rm $(FOLDER_NAME)_postgres-data
+	-docker volume rm $(FOLDER_NAME)_uploads
 
 fclean: down clean
 	rm .env
