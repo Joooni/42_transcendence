@@ -178,7 +178,7 @@ export class GameService {
           this.gameDataMap.delete(roomNbr!);
         }, 1000);
       }
-    }, 1000 / 25);
+    }, 1500 / 25);
   }
 
   async startCountdown(roomNbr: number, server: Server, gameMode: number) {
@@ -222,27 +222,26 @@ export class GameService {
     while (room <= 50) {
       if (
         this.gameDataMap.has(room) &&
-		this.gameDataMap.get(room)!.rightUserID != undefined &&
         this.gameDataMap.get(room)!.rightUserID != 0 &&
         this.gameDataMap.get(room)!.gameEnds == false
       ) {
-		const tmpGameData: gameData | undefined = this.gameDataMap.get(room);
+		var gameDataTmp: gameData | undefined = this.gameDataMap.get(room);
         oGGData.push({
-          roomNbr: tmpGameData!.roomNbr,
-          leftUserID: tmpGameData!.leftUserID,
+          roomNbr: gameDataTmp!.roomNbr,
+          leftUserID: gameDataTmp!.leftUserID,
           leftUserName: (
             await this.usersService.findOne(
-				tmpGameData!.leftUserID,
+				gameDataTmp!.leftUserID,
             )
           ).username,
-          rightUserID: tmpGameData!.rightUserID,
+          rightUserID: gameDataTmp!.rightUserID,
           rightUserName: (
             await this.usersService.findOne(
-				tmpGameData!.rightUserID,
+				gameDataTmp!.rightUserID,
             )
           ).username,
-          goalsLeft: tmpGameData!.goalsLeft,
-          goalsRight: tmpGameData!.goalsRight,
+          goalsLeft: gameDataTmp!.goalsLeft,
+          goalsRight: gameDataTmp!.goalsRight,
         });
       }
       room++;
