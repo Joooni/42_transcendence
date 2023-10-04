@@ -73,7 +73,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
 		});
-		//Will update username & status & profile picture of specific user
 		this.socket.listen('updateUser').subscribe((user: any) => {
 			this.updateSpecificUser(user.id, user.username, user.status, user.picture);
 		});

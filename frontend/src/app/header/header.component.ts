@@ -53,7 +53,7 @@ export class HeaderComponent implements OnInit {
 				this.userDataService.findSelf()
 					.then((user) => {
 						this.activeUser = user;
-						if (!this.activeUser?.hasLoggedInBefore)
+						if (!this.activeUser?.hasLoggedInBefore && !this.errorService.firstLoginHasBeenShownAlready)
 							this.errorService.showFirstLoginPopup();
 					}).catch(() => {});
 			}

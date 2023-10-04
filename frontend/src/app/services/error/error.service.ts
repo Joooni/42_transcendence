@@ -15,6 +15,7 @@ export class ErrorService {
 
 	public showFirstLoginPrompt: boolean = false;
 	public activeUser?: User;
+	public firstLoginHasBeenShownAlready = false;
 
   constructor(
 		private socket: SocketService,
@@ -50,6 +51,7 @@ export class ErrorService {
 
 	public async closeFirstLoginPopup() {
 		try {
+			this.firstLoginHasBeenShownAlready = true;
 			await this.userService.updateHasLoggedInBefore();
 		} catch (e) {}
 		this.showFirstLoginPrompt = false;
