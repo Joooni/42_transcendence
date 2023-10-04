@@ -184,7 +184,7 @@ export class UserDataService {
 			}
 			`,
 			undefined,
-			// { fetchPolicy: 'network-only' },
+			{ fetchPolicy: 'network-only' },
 		);
 		if (typeof userById === 'undefined') throw new Error('Empty user data');
 		return userById;

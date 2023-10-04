@@ -58,7 +58,7 @@ export class ErrorComponent {
 		const file = fileList[0];
 		if (file) {
 			await this.userService.uploadPicture(file).catch(() => {
-				this.errorMessage = "File upload failed. Please make sure that the file type is either PNG, JPG or JPEG.";
+				this.errorMessage = "File upload failed. Please make sure that the file type is either PNG, JPG (JPEG is cool, too) or GIF.";
 			});
 			this.errorService.updateUser();
 		}
