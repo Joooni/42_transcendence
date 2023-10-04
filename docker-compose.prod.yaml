@@ -22,17 +22,19 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
+    depends_on:
+      - database
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    volumes:
+      - uploads:/app/uploads/profile_pictures
+    restart: unless-stopped
+    container_name: backend
     networks:
       - nw_database
       - nw_app
-    ports:
-      - 3000:3000
-    depends_on:
-      - database
-    env_file:
-      - .env
-    restart: unless-stopped
-    container_name: backend
 
   database:
     image: postgres:15-alpine
@@ -56,3 +58,5 @@ networks:
 
 volumes:
   postgres-data:
+  uploads:
+

@@ -6,6 +6,7 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   UploadedFile,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ConfigService } from '@nestjs/config';
@@ -54,7 +55,7 @@ export class UsersController {
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({ fileType: '(jpeg|jpg|png|gif)$' }),
-          // we can validate file size here too - do we want that?
+          new MaxFileSizeValidator({ maxSize: 5242880 }),
         ],
       }),
     )

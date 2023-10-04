@@ -7,7 +7,6 @@ DEV			:= ./docker-compose.yaml
 all: up
 
 prod: $(PROD)
-	cp actual.env .env
 	docker compose -f $(PROD) up --build --remove-orphans -d
 
 dev: $(DEV)
@@ -16,8 +15,7 @@ dev: $(DEV)
 	docker compose -f $(DEV) logs --tail 100 -f
 
 up:
-	docker-compose -f $(DEV) up --remove-orphans -d
-	docker compose -f $(DEV) logs --tail 100 -f
+	docker-compose -f $(PROD) up --remove-orphans -d
 
 logs:
 	docker compose -f $(DEV) logs --tail 100 -f
@@ -29,6 +27,10 @@ database:
 #	SELECT * FROM "table you want to see";
 #
 
+stop:
+	docker compose -f $(DEV) stop
+	docker compose -f $(PROD) stop
+
 down:
 	docker compose down
 
@@ -37,6 +39,7 @@ ps:
 
 clean:
 	docker volume rm $(FOLDER_NAME)_postgres-data
+	docker volume rm $(FOLDER_NAME)_uploads
 
 fclean: down clean
 	rm .env

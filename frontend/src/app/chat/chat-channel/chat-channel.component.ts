@@ -135,7 +135,7 @@ export class ChatChannelComponent {
 			this.closePopUp('popup-leave-channel');
 		} catch (e) {
 			this.closePopUp('popup-leave-channel');
-			this.errorService.showErrorMessage('The Channel you are trying to leave does not exist anymore');
+			this.errorService.showErrorMessage('The channel you are trying to leave does not exist anymore');
 			this.chatComponent.selectedChannel = undefined;
 		}
 		await this.chatComponent.updateChannelList();
