@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
-import { ErrorService } from '../error/error.service';
 
 @Injectable({
   providedIn: 'root'

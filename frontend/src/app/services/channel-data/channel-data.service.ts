@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-
 import { Channel } from '../../models/channel';
 import graphQLService from '../graphQL/GraphQLService';
 import { User } from 'src/app/models/user';
@@ -83,7 +81,9 @@ export class ChannelDataService {
 						}
 						mutedUsers {
 							id
-							username
+							user {
+								username
+							}
 						}
 						bannedUsers {
 							id

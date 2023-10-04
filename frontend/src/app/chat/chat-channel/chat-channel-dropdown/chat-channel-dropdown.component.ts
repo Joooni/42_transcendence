@@ -3,7 +3,6 @@ import { Channel } from "src/app/models/channel";
 import { User } from "src/app/models/user";
 import { ChatComponent } from "../../chat.component";
 import { UserDataService } from "src/app/services/user-data/user-data.service";
-import { ChannelDataService } from "src/app/services/channel-data/channel-data.service";
 import { SocketService } from "src/app/services/socket/socket.service";
 import { ErrorService } from "src/app/services/error/error.service";
 

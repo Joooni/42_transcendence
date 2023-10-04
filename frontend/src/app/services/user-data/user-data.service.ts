@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { User } from '../../models/user';
 import axios from 'axios';
 import { Router } from '@angular/router';
-
 import { environment } from 'src/environments/environment';
 
 @Injectable({
