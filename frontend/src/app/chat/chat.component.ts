@@ -1,15 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { UserDataService } from '../services/user-data/user-data.service';
-import { UserRelationService } from '../services/user-relation/user-relation.service';
 import { ChannelDataService } from '../services/channel-data/channel-data.service';
 import { User } from '../models/user';
 import { Channel } from '../models/channel';
 import { MessageService } from '../services/message/message.service';
-// import { GameDisplayComponent } from '../game/game-display/game-display.component';
 import { SocketService } from '../services/socket/socket.service';
-import { Router } from '@angular/router';
-import { ChatChannelComponent } from './chat-channel/chat-channel.component';
 import { ErrorService } from '../services/error/error.service';
 
 @Component({
