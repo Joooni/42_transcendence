@@ -20,12 +20,6 @@ up:
 logs:
 	docker compose -f $(DEV) logs --tail 100 -f
 
-frontend:
-	docker compose exec -it frontend sh
-
-backend:
-	docker compose exec -it backend sh
-
 database:
 	docker exec -it postgresql_database bash -c "psql -h localhost -U user postgres_db"
 #	psql -h localhost -U user postgres_db
