@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { GameDisplayService } from 'src/app/services/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
@@ -11,7 +11,7 @@ import { ErrorService } from 'src/app/services/error/error.service';
   templateUrl: './game-search.component.html',
   styleUrls: ['./game-search.component.css']
 })
-export class GameSearchComponent {
+export class GameSearchComponent implements OnDestroy {
 
 	search: boolean;
 	stopSearch: boolean;
@@ -29,6 +29,12 @@ export class GameSearchComponent {
 		this.stopSearch = false;
 		this.gameDisplayService.restartService();
 		this.loadUser();
+	}
+
+	ngOnDestroy() {
+		if (this.stopSearch === true) {
+			this.socketService.emit('stopSearching', this.activeUser?.id);
+		}
 	}
 
 	async loadUser() {
@@ -52,6 +58,6 @@ export class GameSearchComponent {
 	stopSearching() {
 		this.stopSearch = false;
 		this.search = true;
-		this.socketService.emit('stopSearching', undefined);
+		this.socketService.emit('stopSearching', this.activeUser?.id);
 	}
 }

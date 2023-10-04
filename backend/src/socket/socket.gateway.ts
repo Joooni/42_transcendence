@@ -60,6 +60,9 @@ export class SocketGateway
     console.log('SocketClient disconnected:', client.id);
     try {
       const user = await this.usersService.findOnebySocketId(client.id);
+	  if (this.gameService.playerWaitingID === user.id) {
+		this.stopSearching(client, user.id);
+	  }
       this.gameService.exitRoomsAfterSocketDiscon(user);
       this.closePopups(user);
       this.updateStatusAndEmit(user.id, 'offline');
@@ -406,17 +409,20 @@ export class SocketGateway
   }
 
   @SubscribeMessage('stopSearching')
-  stopSearching(client: Socket) {
-    this.updateStatusAndEmit(this.gameService.playerWaitingID!, 'online');
-    console.log(
-      'User with ID:  ',
-      this.gameService.playerWaitingID,
-      ' stoped searching a game.',
-    );
-    this.gameService.playerWaitingID = undefined;
-    this.gameService.gameDataBEMap.delete(this.gameService.room);
-    this.gameService.gameDataMap.delete(this.gameService.room);
-    this.gameService.room = 0;
+  stopSearching(client: Socket, userID: number) {
+	if (this.gameService.playerWaitingID === userID)
+	{
+		this.updateStatusAndEmit(this.gameService.playerWaitingID!, 'online');
+		console.log(
+		'User with ID:  ',
+		this.gameService.playerWaitingID,
+		' stoped searching a game.',
+		);
+		this.gameService.playerWaitingID = undefined;
+		this.gameService.gameDataBEMap.delete(this.gameService.room);
+		this.gameService.gameDataMap.delete(this.gameService.room);
+		this.gameService.room = 0;
+		}
   }
 
   @SubscribeMessage('setStatusToGaming')
