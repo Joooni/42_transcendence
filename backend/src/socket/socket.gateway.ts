@@ -189,7 +189,7 @@ export class SocketGateway
 
   @SubscribeMessage('declineChannelInvite')
   async declineChannelInvite(client: Socket, obj: any) {
-		await this.channelsService.declineChannelInvite(
+    await this.channelsService.declineChannelInvite(
       this.server,
       obj.channelid,
       obj.userid,

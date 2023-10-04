@@ -84,7 +84,7 @@ export class User {
   @Column({ default: 1 })
   selectedMap: number;
 
-	@Field()
+  @Field()
   @Column({ default: false })
   hasLoggedInBefore: boolean;
 
