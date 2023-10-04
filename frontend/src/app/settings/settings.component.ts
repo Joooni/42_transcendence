@@ -113,7 +113,9 @@ export class SettingsComponent {
 				hasError = true;
 			})
 			.catch(() => {});
-		if (!hasError && this.newUsername) {
+		if (hasError)
+			return;
+		if (this.newUsername) {
 			this.userService.updateUsername(this.newUsername!)
 			.then(() => {
 				this.setDisableName(true);
