@@ -4,7 +4,6 @@ import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { SocketService } from '../services/socket/socket.service';
 import { onGoingGamesData } from '../game/game-display/GameData';
-import { GameDisplayService } from '../services/game-display/game-display.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error/error.service';
 

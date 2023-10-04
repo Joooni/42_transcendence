@@ -375,6 +375,21 @@ input:checked + .toggle:after {
 	border-radius: 20px;
 }
 
+.popup-content-wide {
+	width: 85vmin;
+	background-color: rgb(0, 77, 0);
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	padding: 20px;
+	border-style: solid;
+	border-color: #ffa500;
+	border-width: 5px;
+	border-radius: 20px;
+}
+
 .show-popup {
 	visibility: visible;
 }

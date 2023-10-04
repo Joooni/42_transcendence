@@ -51,8 +51,11 @@ export class HeaderComponent implements OnInit {
 			this.isAuthenticated = this.authService.isAuthenticated;
 			if (this.isAuthenticated) {
 				this.userDataService.findSelf()
-					.then(user => this.activeUser = user)
-					.catch(() => {});
+					.then((user) => {
+						this.activeUser = user;
+						if (!this.activeUser?.hasLoggedInBefore)
+							this.errorService.showFirstLoginPopup();
+					}).catch(() => {});
 			}
 		}, 500);
 	}

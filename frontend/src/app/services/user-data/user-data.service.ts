@@ -134,6 +134,7 @@ export class UserDataService {
 					picture
 					twoFAEnabled
 					hasTwoFASecret
+					hasLoggedInBefore
 					status
 					wins
 					losses
@@ -391,5 +392,21 @@ export class UserDataService {
     if (typeof updateAchievements === 'undefined')
       throw new Error('Empty user data');
     return updateAchievements;
+  }
+
+	async updateHasLoggedInBefore() {
+    const { afterFirstLogin } = await graphQLService.mutation(
+      `
+      mutation afterFirstLogin {
+        afterFirstLogin {
+          hasLoggedInBefore
+        }
+      }
+      `,
+      {},
+    );
+    if (typeof afterFirstLogin === 'undefined')
+      throw new Error('Empty users data');
+    return afterFirstLogin;
   }
 }

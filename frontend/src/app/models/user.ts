@@ -8,6 +8,7 @@ export interface User {
 	picture: string;
 	twoFAEnabled: boolean;
 	hasTwoFASecret?: boolean;
+	hasLoggedInBefore: boolean;
 	status: string;
 	wins: number;
 	losses: number;

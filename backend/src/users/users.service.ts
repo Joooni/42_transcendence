@@ -318,6 +318,14 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
+	async afterFirstLogin(id: number): Promise<void> {
+		const result: UpdateResult = await this.userRepository.update(id, {
+      hasLoggedInBefore: true
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
   async updateSocketid(id: number, newsocketid: string) {
     if (id === null || newsocketid === null)
       throw new Error('id or socketid is null');

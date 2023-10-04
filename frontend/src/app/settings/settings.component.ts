@@ -128,7 +128,6 @@ export class SettingsComponent {
 			this.errorService.showErrorMessage("Username cannot be empty!");
 			hasError = true;
 		}
-
 	}
 
 	async selectOtherMap(map: number) {
@@ -151,7 +150,6 @@ export class SettingsComponent {
 		} catch (e) {
 			return;
 		}
-
 	}
 
 	async onFileSelected(event: Event) {
