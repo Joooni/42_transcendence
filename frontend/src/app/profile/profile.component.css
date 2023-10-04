@@ -120,7 +120,7 @@ table {
 }
 
 .game-history {
-	max-height: 20rem;
+	max-height: 40rem;
 	overflow-y: auto;
 	margin: 0 1.5rem 1rem 1.5rem;
 	background-color: rgba(1, 47, 1, 0.552);

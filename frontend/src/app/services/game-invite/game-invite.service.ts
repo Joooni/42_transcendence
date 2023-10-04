@@ -45,23 +45,27 @@ export class GameInviteService {
 	}
 
 	async gotGameRequest(senderID: number, gameMode: number) {
-		try {
-			this.gameRequestSender = await this.userService.findUserById(senderID);
-			this.gameMode = gameMode;
-			if (gameMode === 0)
-				this.gameModeString = "Normal Mode";
-			else
-				this.gameModeString = "Alternative Mode";
-			this.showGotGameRequestPopup = true;
-			this.socket.listen('withdrawnGameRequest').subscribe(() => {
-				this.socket.stopListen('withdrawnGameRequest');
-				this.showGotGameRequestPopup = false;
-				this.gameRequestSender = undefined;
-			})
-		} catch (e) {
-			this.declineGameRequest();
-		}
-	}
+        try {
+            this.gameRequestSender = await this.userService.findUserById(senderID);
+            if (this.router.url.endsWith('/game')) {
+                this.declineGameRequest();
+            } else {
+                this.gameMode = gameMode;
+                if (gameMode === 0)
+                    this.gameModeString = "Normal Mode";
+                else
+                    this.gameModeString = "Alternative Mode";
+                this.showGotGameRequestPopup = true;
+                this.socket.listen('withdrawnGameRequest').subscribe(() => {
+                    this.socket.stopListen('withdrawnGameRequest');
+                    this.showGotGameRequestPopup = false;
+                    this.gameRequestSender = undefined;
+                })
+            }
+        } catch (e) {
+            this.declineGameRequest();
+        }
+    }
 
 	async acceptGameRequest() {		
 		try {
