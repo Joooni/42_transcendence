@@ -24,7 +24,7 @@ export class LeaderboardComponent {
 			await this.userService.findSelf().then(user => this.activeUser = user);
     	this.userList = await this.userService.getUsersSortedByRank();
 		} catch (e) {
-			this.errorService.showErrorMessage('Something went wrong fetching Leaderboard Data. Please try again.')
+			this.errorService.showErrorMessage('Something went wrong fetching leaderboard data. Please try again.')
 		}
   }
 

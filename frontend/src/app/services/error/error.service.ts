@@ -11,7 +11,7 @@ import { User } from 'src/app/models/user';
 })
 export class ErrorService {
 	public showError: boolean = false;
-	public errorMessage: string = "Ooops, something went wrong. Please try again."
+	public errorMessage: string = "Oops, something went wrong. Please try again."
 
 	public showFirstLoginPrompt: boolean = false;
 	public activeUser?: User;
@@ -45,7 +45,7 @@ export class ErrorService {
 
 	public closeError() {
 		this.showError = false;
-		this.errorMessage = "Ooops, something went wrong. Please try again."
+		this.errorMessage = "Oops, something went wrong. Please try again."
 	}
 
 	public async closeFirstLoginPopup() {

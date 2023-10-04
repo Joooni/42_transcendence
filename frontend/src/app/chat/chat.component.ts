@@ -66,7 +66,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 				this.invitedInChannel = this.activeUser.invitedInChannel;
 			}
 		} catch (e) {
-			this.errorService.showErrorMessage('Failed to fetch Chat Data. Please refresh and try again.');
+			this.errorService.showErrorMessage('Failed to fetch chat data. Please refresh and try again.');
 		}
 
 

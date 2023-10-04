@@ -134,7 +134,7 @@ export class SettingsComponent {
 		if (map != this.activeUser?.selectedMap) {
 			await this.userService.updateSelectedMap(map)
 			.catch(() => {
-				this.errorService.showErrorMessage("Couldn't save the selected Game Design. Please try again!");
+				this.errorService.showErrorMessage("Couldn't save the selected game design. Please try again!");
 			});
 			this.updateUser();
 		}
@@ -158,7 +158,7 @@ export class SettingsComponent {
 		const file = fileList[0];
 		if (file) {
 			await this.userService.uploadPicture(file).catch((e) => {
-				this.errorService.showErrorMessage("File upload failed. Please make sure that the file type is either PNG, JPG or JPEG.");
+				this.errorService.showErrorMessage("File upload failed. Please make sure that the file is less than 5MB and its type is either PNG, JPG (JPEG is cool, too) or GIF.");
 			});
 			this.updateUser();
 		}
