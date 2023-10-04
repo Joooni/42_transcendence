@@ -39,6 +39,7 @@ ps:
 
 clean:
 	docker volume rm $(FOLDER_NAME)_postgres-data
+	docker volume rm $(FOLDER_NAME)_uploads
 
 fclean: down clean
 	rm .env
