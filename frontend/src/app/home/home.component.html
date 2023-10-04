@@ -33,7 +33,9 @@
 					<div class="leaderboard_user_box">
 						<h4 class="red">#{{user.rank}}</h4>
 						<div class="leaderboard_user_box">
-							<img class="profile_picture leaderboard_picture" src="{{user.picture}}">
+							<div class="leaderboard_picture">
+								<img src="{{user.picture}}">
+							</div>
 							<a routerLink="{{'/profile/' + user.username}}" routerLinkActive="active">
 								<h4>{{user.username}}</h4>
 							</a>
