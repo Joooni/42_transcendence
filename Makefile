@@ -7,7 +7,6 @@ DEV			:= ./docker-compose.yaml
 all: up
 
 prod: $(PROD)
-	cp actual.env .env
 	docker compose -f $(PROD) up --build --remove-orphans -d
 
 dev: $(DEV)
@@ -16,11 +15,16 @@ dev: $(DEV)
 	docker compose -f $(DEV) logs --tail 100 -f
 
 up:
-	docker-compose -f $(DEV) up --remove-orphans -d
-	docker compose -f $(DEV) logs --tail 100 -f
+	docker-compose -f $(PROD) up --remove-orphans -d
 
 logs:
 	docker compose -f $(DEV) logs --tail 100 -f
+
+frontend:
+	docker compose exec -it frontend sh
+
+backend:
+	docker compose exec -it backend sh
 
 database:
 	docker exec -it postgresql_database bash -c "psql -h localhost -U user postgres_db"
@@ -28,6 +32,10 @@ database:
 #	\dt for overview of all tables
 #	SELECT * FROM "table you want to see";
 #
+
+stop:
+	docker compose -f $(DEV) stop
+	docker compose -f $(PROD) stop
 
 down:
 	docker compose down

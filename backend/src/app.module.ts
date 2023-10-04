@@ -30,6 +30,9 @@ import { ChannelMuteModule } from './channels/channel-mute/channel-mute.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads/profile_pictures'),
       serveRoot: '/uploads/profile_pictures',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     UsersModule,
     MessagesModule,

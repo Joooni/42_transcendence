@@ -34,6 +34,3 @@ EXPOSE 3000
 VOLUME /app/uploads/profile_pictures/
 
 CMD ["npm", "run", "start:prod"]
-
-# nodemon for development
-# CMD ["npm", "run", "start:nodemon"]
