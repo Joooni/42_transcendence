@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { User } from "src/app/models/user";
-import { SocketService } from "src/app/services/socket/socket.service";
 import { UserDataService } from "src/app/services/user-data/user-data.service";
 import { ChatComponent } from "../chat.component";
 import { GameInviteService } from "src/app/services/game-invite/game-invite.service";

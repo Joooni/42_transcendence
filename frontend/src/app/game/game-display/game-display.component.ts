@@ -1,6 +1,5 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { GameDisplayService } from 'src/app/services/game-display/game-display.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';

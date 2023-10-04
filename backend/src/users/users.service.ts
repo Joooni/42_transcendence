@@ -38,14 +38,13 @@ export class UsersService {
         where: { username: Like(`${createUserInput.username}%`) },
       });
       if (existingUsers.length == 0) return Promise.reject(error);
-      createUserInput.username = createUserInput.username + '_copycat';
+      createUserInput.username = createUserInput.username + '_1';
       this.create(createUserInput);
     }
     return Promise.resolve();
   }
 
   async findAll(): Promise<User[]> {
-    //
     return await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.ownedChannels', 'ownedChannels')
@@ -57,7 +56,6 @@ export class UsersService {
   }
 
   async findAllExceptMyself(excludedUserId: number): Promise<User[]> {
-    //
     return await this.userRepository
       .createQueryBuilder('user')
       .where('user.id != :excludedUserId', { excludedUserId })
@@ -452,16 +450,6 @@ export class UsersService {
       console.log('Error: while calcXP' + error);
     }
   }
-
-  /*   async updateAchievements(id: number, newAchievement: number): Promise<void> {
-    const result: UpdateResult = await this.userRepository.createQueryBuilder()
-    .update(User)
-    .set({ achievements: () => `array_append(achievements, ${newAchievement})` })
-    .where('id = :id', { id: id })
-    .execute();
-    if (typeof result.affected != 'undefined' && result.affected < 1)
-      throw new EntityNotFoundError(User, { id: id });
-  } */
 
   async seedDatabase() {
     try {

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { getStoreKeyName } from '@apollo/client/utilities';
 import { ErrorService } from '../services/error/error.service';
 
 @Component({
