@@ -358,176 +358,216 @@ export class SocketGateway
 
   @SubscribeMessage('startGameWithRequest')
   async startGameRequest(client: Socket, data: number[]) {
-    const gameRequestSenderID: number = data[1];
-    const gameRequestRecipientID: number = data[0];
-    this.openPopupSender.delete(gameRequestSenderID);
-    this.openPopupReceiver.delete(gameRequestRecipientID);
-    const gameMode = data[2];
-    this.updateStatusAndEmit(gameRequestRecipientID, 'gaming');
-    console.log(
-      'The GameRequest from User with ID:  ',
-      gameRequestSenderID,
-      '  was accepted by the User with ID:   ',
-      gameRequestRecipientID,
-    );
-
-    const user = await this.usersService.findOne(gameRequestSenderID);
-    this.server
-      .to(user.socketid)
-      .emit('gameRequestAccepted', gameRequestRecipientID);
-    const roomNbr = this.gameService.startWithGameRequest(
-      gameRequestSenderID,
-      this.server.sockets.sockets.get(user.socketid)!,
-      gameRequestRecipientID,
-      client,
-    );
-
-    // const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
-    // gameRequestSenderSocket?.emit("gameRequestAccepted", gameRequestRecipientID);
-    // const roomNbr = this.gameService.startWithGameRequest(gameRequestSenderID, gameRequestSenderSocket!, gameRequestRecipientID, client);
-
-    this.gameService.startCountdown(roomNbr, this.server, gameMode);
+	try {
+		const gameRequestSenderID: number = data[1];
+		const gameRequestRecipientID: number = data[0];
+		this.openPopupSender.delete(gameRequestSenderID);
+		this.openPopupReceiver.delete(gameRequestRecipientID);
+		const gameMode = data[2];
+		this.updateStatusAndEmit(gameRequestRecipientID, 'gaming');
+		console.log(
+		'The GameRequest from User with ID:  ',
+		gameRequestSenderID,
+		'  was accepted by the User with ID:   ',
+		gameRequestRecipientID,
+		);
+		const user = await this.usersService.findOne(gameRequestSenderID);
+		this.server
+		.to(user.socketid)
+		.emit('gameRequestAccepted', gameRequestRecipientID);
+		const roomNbr = this.gameService.startWithGameRequest(
+		gameRequestSenderID,
+		this.server.sockets.sockets.get(user.socketid)!,
+		gameRequestRecipientID,
+		client,
+		);
+		this.gameService.startCountdown(roomNbr, this.server, gameMode);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('startGameSearching')
   startGame(client: Socket, userID: number) {
-    if (userID === this.gameService.playerWaitingID) {
-      return;
-    }
-    this.updateStatusAndEmit(userID, 'gaming');
-    const roomNbr = this.gameService.checkForOpponent(userID, client);
-    console.log(
-      'User with ID:  ',
-      userID,
-      ' is searching a game. The roomNbr is:  ',
-      roomNbr,
-    );
-    if (roomNbr !== undefined) {
-      this.gameService.room = 0;
-      this.gameService.startCountdown(roomNbr, this.server, 0);
-    }
+	try {
+		if (userID === this.gameService.playerWaitingID) {
+		return;
+		}
+		this.updateStatusAndEmit(userID, 'gaming');
+		const roomNbr = this.gameService.checkForOpponent(userID, client);
+		console.log(
+		'User with ID:  ',
+		userID,
+		' is searching a game. The roomNbr is:  ',
+		roomNbr,
+		);
+		if (roomNbr !== undefined) {
+		this.gameService.room = 0;
+		this.gameService.startCountdown(roomNbr, this.server, 0);
+		}
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('stopSearching')
   stopSearching(client: Socket, userID: number) {
-	if (this.gameService.playerWaitingID === userID)
-	{
-		this.updateStatusAndEmit(this.gameService.playerWaitingID!, 'online');
-		console.log(
-		'User with ID:  ',
-		this.gameService.playerWaitingID,
-		' stoped searching a game.',
-		);
-		this.gameService.playerWaitingID = undefined;
-		this.gameService.gameDataBEMap.delete(this.gameService.room);
-		this.gameService.gameDataMap.delete(this.gameService.room);
-		this.gameService.room = 0;
+	try {
+		if (this.gameService.playerWaitingID === userID)
+		{
+			this.updateStatusAndEmit(this.gameService.playerWaitingID!, 'online');
+			console.log(
+			'User with ID:  ',
+			this.gameService.playerWaitingID,
+			' stoped searching a game.',
+			);
+			this.gameService.playerWaitingID = undefined;
+			this.gameService.gameDataBEMap.delete(this.gameService.room);
+			this.gameService.gameDataMap.delete(this.gameService.room);
+			this.gameService.room = 0;
 		}
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('setStatusToGaming')
   async setStatusToGaming(client: Socket, data: number[]) {
-    this.updateStatusAndEmit(data[0], 'gaming');
-    this.openPopupSender.set(data[0], data[1]);
+	try {
+		this.updateStatusAndEmit(data[0], 'gaming');
+		this.openPopupSender.set(data[0], data[1]);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('sendGameRequest')
   async sendGameRequest(client: Socket, data: number[]) {
-    const gameRequestSenderID: number = data[0];
-    const gameRequestRecipientID: number = data[1];
-    const gameMode: number = data[2];
-    this.updateStatusAndEmit(gameRequestRecipientID, 'gaming');
-    this.openPopupReceiver.set(gameRequestRecipientID, gameRequestSenderID);
-    console.log(
-      'User with ID:  ',
-      gameRequestSenderID,
-      '  sent a game requested in mode:  ',
-      gameMode,
-      '  to User with ID:   ',
-      gameRequestRecipientID,
-    );
-    const user = await this.usersService.findOne(gameRequestRecipientID);
-    this.server.to(user.socketid).emit('gotGameRequest', {
-      senderID: gameRequestSenderID,
-      gameMode: gameMode,
-    });
+	try {
+		const gameRequestSenderID: number = data[0];
+		const gameRequestRecipientID: number = data[1];
+		const gameMode: number = data[2];
+		this.updateStatusAndEmit(gameRequestRecipientID, 'gaming');
+		this.openPopupReceiver.set(gameRequestRecipientID, gameRequestSenderID);
+		console.log(
+		'User with ID:  ',
+		gameRequestSenderID,
+		'  sent a game requested in mode:  ',
+		gameMode,
+		'  to User with ID:   ',
+		gameRequestRecipientID,
+		);
+		const user = await this.usersService.findOne(gameRequestRecipientID);
+		this.server.to(user.socketid).emit('gotGameRequest', {
+		senderID: gameRequestSenderID,
+		gameMode: gameMode,
+		});
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('gameRequestWithdrawn')
   async gameRequestWithdrawn(client: Socket, data: number[]) {
-    const gameRequestSenderID: number = data[0];
-    const gameRequestRecipientID: number = data[1];
-    this.updateStatusAndEmit(gameRequestSenderID, 'online');
-    this.updateStatusAndEmit(gameRequestRecipientID, 'online');
-    console.log(
-      'User with ID:  ',
-      gameRequestSenderID,
-      '  withdrawn the game requested to User with ID:   ',
-      gameRequestRecipientID,
-    );
+	try {
+		const gameRequestSenderID: number = data[0];
+		const gameRequestRecipientID: number = data[1];
+		this.updateStatusAndEmit(gameRequestSenderID, 'online');
+		this.updateStatusAndEmit(gameRequestRecipientID, 'online');
+		console.log(
+		'User with ID:  ',
+		gameRequestSenderID,
+		'  withdrawn the game requested to User with ID:   ',
+		gameRequestRecipientID,
+		);
 
-    const user = await this.usersService.findOne(gameRequestRecipientID);
-    this.server
-      .to(user.socketid)
-      .emit('withdrawnGameRequest', gameRequestSenderID);
-
-    // const gameRequestRecipientSocket = this.getSocket(gameRequestRecipientID);
-    // gameRequestRecipientSocket?.emit("withdrawnGameRequest", gameRequestSenderID);
+		const user = await this.usersService.findOne(gameRequestRecipientID);
+		this.server
+		.to(user.socketid)
+		.emit('withdrawnGameRequest', gameRequestSenderID);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('gameRequestDecliend')
   async gameRequestDecliend(client: Socket, data: number[]) {
-    const gameRequestSenderID: number = data[1];
-    const gameRequestRecipientID: number = data[0];
-    this.updateStatusAndEmit(gameRequestSenderID, 'online');
-    this.updateStatusAndEmit(gameRequestRecipientID, 'online');
-    console.log(
-      'The GameRequest from User with ID:  ',
-      gameRequestSenderID,
-      '  was decliend by the User with ID:   ',
-      gameRequestRecipientID,
-    );
+	try {
+		const gameRequestSenderID: number = data[1];
+		const gameRequestRecipientID: number = data[0];
+		this.updateStatusAndEmit(gameRequestSenderID, 'online');
+		this.updateStatusAndEmit(gameRequestRecipientID, 'online');
+		console.log(
+		'The GameRequest from User with ID:  ',
+		gameRequestSenderID,
+		'  was decliend by the User with ID:   ',
+		gameRequestRecipientID,
+		);
 
-    const user = await this.usersService.findOne(gameRequestSenderID);
-    this.server
-      .to(user.socketid)
-      .emit('gameRequestDecliend', gameRequestRecipientID);
-
-    // const gameRequestSenderSocket = this.getSocket(gameRequestSenderID);
-    // gameRequestSenderSocket?.emit("gameRequestDecliend", gameRequestRecipientID);
+		const user = await this.usersService.findOne(gameRequestSenderID);
+		this.server
+		.to(user.socketid)
+		.emit('gameRequestDecliend', gameRequestRecipientID);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('sendRacketPositionLeft')
   getRacketPositionLeft(client: Socket, data: number[]) {
-    if (this.gameService.gameDataMap.get(data[1])!) {
-      this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
-    }
+	try {
+		if (this.gameService.gameDataMap.get(data[1])!) {
+		this.gameService.gameDataMap.get(data[1])!.racketLeftY = data[0];
+		}
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('sendRacketPositionRight')
   getRacketPositionRight(client: Socket, data: number[]) {
-    if (this.gameService.gameDataMap.get(data[1])!) {
-      this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
-    }
+	try {
+		if (this.gameService.gameDataMap.get(data[1])!) {
+		this.gameService.gameDataMap.get(data[1])!.racketRightY = data[0];
+		}
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('requestOngoingGames')
   requestOngoingGames(client: Socket, data: number[]) {
-    this.gameService.sendOngoingGames(this.server);
+	try {
+   		this.gameService.sendOngoingGames(this.server);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('userLeftGame')
   userLeftGame(client: Socket, data: number[]) {
-    this.updateStatusAndEmit(data[0], 'online');
-    this.gameService.userLeftGame(data[0], data[1]);
+	try {
+		this.updateStatusAndEmit(data[0], 'online');
+		this.gameService.userLeftGame(data[0], data[1]);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 
   @SubscribeMessage('watchGame')
   watchGame(client: Socket, data: number) {
-    this.gameService.joinWatchGame(data, client);
+	try {
+   	 this.gameService.joinWatchGame(data, client);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
   @SubscribeMessage('StopWatchGame')
   stopWatchGame(client: Socket, data: number) {
-    this.gameService.leaveWatchGame(data, client);
+	try {
+    	this.gameService.leaveWatchGame(data, client);
+	} catch (error) {
+		console.log('Error: ', error);
+	}
   }
 }
