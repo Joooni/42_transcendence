@@ -379,10 +379,6 @@ export class UsersService {
       throw new EntityNotFoundError(User, { id: id });
   }
 
-  /*
-  wollen wir hier ein resetPicture einbauen, damit man auf das default (aka intra) Bild zurückswitchen kann?
-  */
-
   async getUserSortedByRank() {
     return await this.userRepository
       .createQueryBuilder('user')
