@@ -52,15 +52,16 @@ h2, h4 {
 }
 
 .leaderboard-container {
-	margin: 0 0.5rem;
 	align-items: center;
-	padding: 0.5rem;
+	width: 100%;
 }
 
 .top3Leaderboard {
 	display: flex;
 	flex-direction: column;
-	width: 90%;
+	width: 100%;
+	row-gap: 1rem;
+	margin-bottom: 1rem;
 }
 
 .leaderboard_user_box {
@@ -78,7 +79,6 @@ h2, h4 {
 	align-items: center;
 	min-width: 650px;
 	row-gap: 1rem;
-	margin: 5px 2vmin;
 	padding-left: 2vmin;
 	padding-right: 2vmin;
 	
@@ -105,7 +105,7 @@ h2, h4 {
 	justify-content: flex-start;
 	column-gap: 0.8rem;
 	align-items: center;
-	margin: 0 0.5rem;
+	margin: 0.5rem;
 }
 
 .leaderboard-icon {

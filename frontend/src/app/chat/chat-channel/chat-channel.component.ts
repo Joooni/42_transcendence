@@ -145,26 +145,26 @@ export class ChatChannelComponent {
 		this.invitedUserId = '';
 		const invitableUsers: User[] = [];
 		let allUsers: User[];
-		await this.userService.findAllExceptMyself().then(users => allUsers = users);
-		for (let user of allUsers!) {
-			if (this.chatComponent.selectedChannel?.users.some((elem) => elem.id === user.id))
-				continue;
-			// TO-DO:
-			// if (/* i blocked the user / he blocked me*/)
-			// 	continue;
-			//tbd if we only allow inviting friends?
-			invitableUsers.push(user);
+		try {
+			await this.userService.findAllExceptMyself().then(users => allUsers = users);
+			for (let user of allUsers!) {
+				if (this.chatComponent.selectedChannel?.users.some((elem) => elem.id === user.id)
+					|| this.activeUser.blockedFromOther.some((elem) => elem.id === user.id)
+					|| this.activeUser.blockedUsers.some((elem) => elem.id === user.id))
+					continue;
+				invitableUsers.push(user);
+			}
+			this.invitableUsers = invitableUsers;
+		} catch (e) {
+			return;
 		}
-		this.invitableUsers = invitableUsers;
 	}
 
 	async inviteUser() {
-		//PROBLEM: initial value of channel is string ('public') not enum numeric value )
 		const userId = Number(this.invitedUserId);
 		let invitedUser: User;
 		await this.userService.findUserById(userId).then(user => invitedUser = user);
 		
-		//TO-DO: add function to actually send an invite to someone
 		if (!this.invitedUserId)
 			return;
 		const tmp: number = parseInt(this.invitedUserId, 10);

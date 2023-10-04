@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { SocketService } from '../socket/socket.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { UserDataService } from '../user-data/user-data.service';
+import { User } from 'src/app/models/user';
 
 
 @Injectable({
@@ -11,9 +13,14 @@ export class ErrorService {
 	public showError: boolean = false;
 	public errorMessage: string = "Ooops, something went wrong. Please try again."
 
-  constructor(private socket: SocketService,
-			  private router: Router,
-			  private authService: AuthService,
+	public showFirstLoginPrompt: boolean = false;
+	public activeUser?: User;
+
+  constructor(
+		private socket: SocketService,
+		private router: Router,
+		private authService: AuthService,
+		private userService: UserDataService
 	) {}
 
 	async initErrorService() {
@@ -22,7 +29,6 @@ export class ErrorService {
 			this.authService.logout();
 		})
 	}
-	
 
 	public showErrorMessage(message?: string) {
 		this.showError = true;
@@ -30,8 +36,28 @@ export class ErrorService {
 			this.errorMessage = message;
 	}
 
+	public async showFirstLoginPopup() {
+		try {
+			await this.updateUser();
+			this.showFirstLoginPrompt = true;
+		} catch(e) {}
+	}
+
 	public closeError() {
 		this.showError = false;
 		this.errorMessage = "Ooops, something went wrong. Please try again."
+	}
+
+	public async closeFirstLoginPopup() {
+		try {
+			await this.userService.updateHasLoggedInBefore();
+		} catch (e) {}
+		this.showFirstLoginPrompt = false;
+	}
+
+	async updateUser() {
+		await this.userService.findSelf().then(user => {
+			this.activeUser = user;
+		});
 	}
 }

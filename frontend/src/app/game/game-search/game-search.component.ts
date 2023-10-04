@@ -4,6 +4,7 @@ import { GameDisplayService } from 'src/app/services/game-display/game-display.s
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { Router } from '@angular/router';
+import { ErrorService } from 'src/app/services/error/error.service';
 
 @Component({
   selector: 'app-game-search',
@@ -22,6 +23,7 @@ export class GameSearchComponent {
 		private socketService: SocketService, 
 		private userDataService: UserDataService,
 		private router: Router,
+		private errorService: ErrorService
 	) {
 		this.search = true;
 		this.stopSearch = false;
@@ -30,7 +32,11 @@ export class GameSearchComponent {
 	}
 
 	async loadUser() {
-		await this.userDataService.findSelf().then(async user => this.activeUser = user);
+		try {
+			await this.userDataService.findSelf().then(async user => this.activeUser = user);
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	startGame() {

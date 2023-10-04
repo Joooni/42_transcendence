@@ -101,4 +101,13 @@ export class UsersResolver {
     await this.usersService.updateAchievements(id, updateAchievement);
     return this.usersService.findOne(id);
   }
+
+	@Mutation(() => User)
+	async afterFirstLogin(
+		@CurrentJwtPayload() jwtPayload: JwtPayload,
+	) {
+		console.log('This action sets hasLoggedInBefore to true');
+		await this.usersService.afterFirstLogin(jwtPayload.id);
+		return this.usersService.findOne(jwtPayload.id);
+	}
 }

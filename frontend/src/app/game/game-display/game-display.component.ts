@@ -6,6 +6,7 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { gameData } from './GameData';
 import { User } from 'src/app/models/user';
+import { ErrorService } from 'src/app/services/error/error.service';
 
 @Component({
   selector: 'app-game-display',
@@ -26,7 +27,13 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	private canvasEle: ElementRef<HTMLCanvasElement> = {} as ElementRef<HTMLCanvasElement>;
 	private context: any;
 
-	constructor(private gameDisplayService: GameDisplayService, private socketService: SocketService, private userDataService: UserDataService, private router: Router) {
+	constructor(
+		private gameDisplayService: GameDisplayService, 
+		private socketService: SocketService, 
+		private userDataService: UserDataService, 
+		private router: Router,
+		private errorService: ErrorService
+	) {
 		this.moveUp = false;
 		this.moveDown = false;
 		this.countdown = 3;
@@ -62,22 +69,31 @@ export class GameDisplayComponent implements AfterViewInit, OnDestroy {
 	}
 
 	runGame(data: gameData) {
-		if (this.countdown > 0) {
-			this.getPlayerData(data);
-			this.handleCountdown(data);
-		} else {
-			this.racketMovement();
-			if (data.gameEnds === false) {
-				this.sendRacketPosition(data);
+		try {
+			if (this.countdown > 0) {
+				this.getPlayerData(data);
+				this.handleCountdown(data);
+			} else {
+				this.racketMovement();
+				if (data.gameEnds === false) {
+					this.sendRacketPosition(data);
+				}
+				this.gameDisplayService.imageControl(data);
+				this.draw(data);
 			}
-			this.gameDisplayService.imageControl(data);
-			this.draw(data);
+		} catch (e) {
+			this.errorService.showErrorMessage('Game could not be initialized. Please try again.');
+			this.router.navigate(['/home']);
 		}
 	}
 
 	async getPlayerData(data: gameData) {
-		this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
-		this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
+		try {
+			this.leftPlayer = await this.userDataService.findUserById(data.leftUserID);
+			this.rightPlayer = await this.userDataService.findUserById(data.rightUserID);
+		} catch (e) {
+			throw e;
+		}
 	}
 
 	handleCountdown(data: gameData) {

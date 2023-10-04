@@ -74,9 +74,8 @@
 					<div class="user banned">
 						<h4>{{user.username}}</h4>
 						<div class="icons">
-							<img class="icon" *ngIf="!isNotOwnerOrAdmin(activeUser)" src="../../../assets/dots_icon_yellow.png">
 							<app-chat-channel-dropdown
-								*ngIf="user.id !== activeUser.id"
+								*ngIf="!isNotOwnerOrAdmin(activeUser)"
 								[channel]="chatComponent.selectedChannel!"
 								[selectedUser]="user"
 							></app-chat-channel-dropdown>

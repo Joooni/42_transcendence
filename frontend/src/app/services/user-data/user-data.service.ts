@@ -1,6 +1,5 @@
 import graphQLService from '../graphQL/GraphQLService';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { User } from '../../models/user';
 import axios from 'axios';
 import { Router } from '@angular/router';
@@ -21,7 +20,7 @@ export class UserDataService {
         throw new Error('Empty user authentication');
       return { require2FAVerify: !res.data.isAuthenticated };
     }).catch((error) => {
-      if (typeof error.response === 'undefined') throw error;
+			if (typeof error.response === 'undefined') throw error;
       throw new Error(error.response.data.message);
     });
   }
@@ -34,7 +33,7 @@ export class UserDataService {
 					resolve(false);
 				});
       }
-      const user: User = await this.findSelf();
+			const user: User = await this.findSelf();
       this.updateStatus('online');
       this.router.navigate(['/home']);
 			return new Promise((resolve) => {
@@ -48,7 +47,7 @@ export class UserDataService {
   }
 
   async generate2FA(): Promise<any> {
-    return axios.get(`http://${environment.DOMAIN}:3000/2fa/generate`, {
+		return axios.get(`http://${environment.DOMAIN}:3000/2fa/generate`, {
       withCredentials: true,
     });
   }
@@ -56,7 +55,7 @@ export class UserDataService {
   twoFACodeIsValid(code: string | undefined): boolean {
     if (!code)
       return false;
-    return (/^\d+$/.test(code) && code.length === 6); //tests if string is numerical
+    return (/^\d+$/.test(code) && code.length === 6);
   }
 
   async verify2FA(code: string): Promise<void> {
@@ -86,20 +85,22 @@ export class UserDataService {
   }
 
   async logout(): Promise<void> {
-    const user: User = await this.findSelf();
-    if (user.status !== "offline" || user.id > 0) {
-      await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
-        this.updateStatus('offline');
-        return;
-      }).catch((error) => {
-        if (typeof error.response === 'undefined') throw error;
-        throw new Error(error.response.data.message);
-      })
-    }
+    try {
+			const user: User = await this.findSelf();
+			if (user.status !== "offline" || user.id > 0) {
+				await axios.get(`http://${environment.DOMAIN}:3000/auth/logout`, {withCredentials: true}).then(() => {
+					this.updateStatus('offline');
+					return;
+				}).catch((error) => {
+					if (typeof error.response === 'undefined') throw error;
+					throw new Error(error.response.data.message);
+				})
+			}
+		} catch (e) {}
   }
 
   async uploadPicture(uploadedPicture: File): Promise<void> {
-    const userID: number = (await this.findSelf()).id;
+		const userID: number = (await this.findSelf()).id;
     const formData = new FormData();
     formData.append('picture', uploadedPicture);
     try {
@@ -122,103 +123,75 @@ export class UserDataService {
   }
 
   async findSelf(): Promise<User> {
-    const { userById } = await graphQLService.query(
-      `
-      query {
-        userById {
-          id
-          intra
-          username
-          email
-          picture
-          twoFAEnabled
+		const { userById } = await graphQLService.query(
+			`
+			query {
+				userById {
+					id
+					intra
+					username
+					email
+					picture
+					twoFAEnabled
 					hasTwoFASecret
+					hasLoggedInBefore
 					status
-          wins
-          losses
-          xp
-          map
+					wins
+					losses
+					xp
+					map
 					selectedMap
-          achievements
-          channelList {
-            id
-            name
-          }
-          invitedInChannel {
-            id
-            name
-          }
-          friends {
-            id
-            username
-            status
-            picture
-          }
+					achievements
+					channelList {
+						id
+						name
+					}
+					invitedInChannel {
+						id
+						name
+					}
+					friends {
+						id
+						username
+						status
+						picture
+					}
 					sendFriendRequests {
-            id
-            username
-            status
-            picture
-          }
+						id
+						username
+						status
+						picture
+					}
 					incomingFriendRequests {
-            id
-            username
-            status
-            picture
-          }
-          blockedUsers {
-            id
-            username
-            status
-            picture
-          }
-          blockedFromOther {
-            id
-            username
-            status
-            picture
-          }
-        }
-      }
-      `,
-      undefined,
-      { fetchPolicy: 'network-only' },
-    );
-      if (typeof userById === 'undefined') throw new Error('Empty user data');
-      return userById;
+						id
+						username
+						status
+						picture
+					}
+					blockedUsers {
+						id
+						username
+						status
+						picture
+					}
+					blockedFromOther {
+						id
+						username
+						status
+						picture
+					}
+				}
+			}
+			`,
+			undefined,
+			{ fetchPolicy: 'network-only' },
+		);
+		if (typeof userById === 'undefined') throw new Error('Empty user data');
+		return userById;
   }
 
-     // We don't need it?
-  // async findAll(): Promise<User[]> {
-  //   const response = await graphQLService.query(
-  //     `
-  //       query {
-  //         allUsers {
-  //           id
-  //           intra
-  //           username
-  //           email
-  //           picture
-  //           twoFAEnabled
-  //           status
-  //           wins
-  //           losses
-  //           xp
-  //           achievements
-  //         }
-  //       }
-  //     `,
-  //     undefined,
-  //     { fetchPolicy: 'network-only' },
-  //   );
-  //   if (typeof response === 'undefined') {
-  //     return Promise.reject(new Error('Empty user data'));
-  //   }
-  //   return response.allUsers;
-  // }
-
   async findAllExceptMyself(): Promise<User[]> {
-    let response = await graphQLService.query(
+		let response = await graphQLService.query(
       `
         query {
           allUsersExceptMyself {
@@ -247,7 +220,7 @@ export class UserDataService {
   }
 
   async findUserById(id: number): Promise<User> {
-    const { userById } = await graphQLService.query(
+		const { userById } = await graphQLService.query(
       `
       query findUserById($id: Int) {
         userById(id: $id) {
@@ -278,7 +251,7 @@ export class UserDataService {
   }
 
 	async findUserByUsername(username: string): Promise<User> {
-    const { userByName } = await graphQLService.query(
+		const { userByName } = await graphQLService.query(
       `
       query findUserByUsername($username: String!) {
         userByName(username: $username) {
@@ -308,7 +281,7 @@ export class UserDataService {
   }
 
   async getUsersSortedByRank(): Promise<User[]> {
-    const response = await graphQLService.query(
+		const response = await graphQLService.query(
       `
       query usersSortedByRank {
         getUserSortedByRank {
@@ -333,7 +306,7 @@ export class UserDataService {
   }
 
   async getTop3(): Promise<User[]> {
-    const response = await graphQLService.query(
+		const response = await graphQLService.query(
       `
       query getTop3 {
         getTop3 {
@@ -419,5 +392,21 @@ export class UserDataService {
     if (typeof updateAchievements === 'undefined')
       throw new Error('Empty user data');
     return updateAchievements;
+  }
+
+	async updateHasLoggedInBefore() {
+    const { afterFirstLogin } = await graphQLService.mutation(
+      `
+      mutation afterFirstLogin {
+        afterFirstLogin {
+          hasLoggedInBefore
+        }
+      }
+      `,
+      {},
+    );
+    if (typeof afterFirstLogin === 'undefined')
+      throw new Error('Empty users data');
+    return afterFirstLogin;
   }
 }

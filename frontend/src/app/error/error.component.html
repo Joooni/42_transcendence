@@ -7,3 +7,42 @@
 		</div>
 	</div>
 </div>
+
+<div class="popup" id="popup-first-login" [ngClass]="{'show-popup': errorService.showFirstLoginPrompt}">
+	<div class="popup-content-wide">
+		<h2>WELCOME TO DONKEY PONG</h2>
+		<h4>We have taken over your information from intra, but feel free to make changes to your profile information now.</h4>
+		<table>
+			<tr>
+				<td><h4>Nickname:</h4></td>
+				<td>
+					<div class="settings-name-container">
+						<input type="text" [(ngModel)]="newUsername" [disabled]="disableNameForm" placeholder="{{errorService.activeUser?.username}}">
+						<button class="button_small" *ngIf="disableNameForm" (click)="setDisableName(false)">EDIT NAME</button>
+						<button class="button_small" *ngIf="!disableNameForm" [disabled]="nameHasValidLength()" (click)="saveNewUsername()">SAVE NAME</button>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Profile picture:</h4></td>
+				<td>
+					<div class="settings_row">
+						<div class="settings-profile-picture">
+							<img src={{errorService.activeUser?.picture}}>
+						</div>
+						<div>
+							<button class="button_small upload-button" #fileButton>CHANGE PICTURE</button>
+							<div class="upload-input">
+								<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+							</div>
+						</div>
+					</div>	
+				</td>
+			</tr>
+		</table>
+		<h4 class="error-message" *ngIf="errorMessage">{{errorMessage}}</h4>
+		<div class="popup-buttons">
+			<button class="button_medium" (click)="errorService.closeFirstLoginPopup()">CONFIRM</button>
+		</div>
+	</div>
+</div>

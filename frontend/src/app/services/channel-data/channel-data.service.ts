@@ -101,7 +101,6 @@ export class ChannelDataService {
 		return response.channel;
 	}
 
-	//lieber inkl. der MemberChannel
 	async getOtherVisibleChannels(id: number): Promise<Channel[]> {		
 		const response = await graphQLService.query(
 			`
@@ -127,7 +126,6 @@ export class ChannelDataService {
 		return response.visibleChannelsWithoutUser;
 	}
 
-	//Test Backend query
 	async getChannels(): Promise<Channel[]> {
 		const response = await graphQLService.query(
 			`
@@ -150,10 +148,9 @@ export class ChannelDataService {
 			{ fetchPolicy: 'network-only' },
 		);
 		if (typeof response === 'undefined') {
-			return Promise.reject(new Error('Empty channel data'));
+			return Promise.reject(new Error('Channel not found'));
 		}
-		const channels = response.channels;
-		return channels;
+		return response.visibleChannelsWithoutUser;
 	}
 
 	joinChannel(channel: Channel, user: User) {

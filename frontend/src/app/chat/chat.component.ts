@@ -58,13 +58,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-
-		await this.updateUserList();
-		if (this.activeUser) {
-			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
-			this.memberChannels = this.activeUser.channelList;
-			this.invitedInChannel = this.activeUser.invitedInChannel;
+		try {
+			await this.updateUserList();
+			if (this.activeUser) {
+				this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(other => this.otherVisibleChannels = other);
+				this.memberChannels = this.activeUser.channelList;
+				this.invitedInChannel = this.activeUser.invitedInChannel;
+			}
+		} catch (e) {
+			this.errorService.showErrorMessage('Failed to fetch Chat Data. Please refresh and try again.');
 		}
+
 
 		this.socket.listen('updateChannel').subscribe(() => {
 			this.updateSelectedChannel();
@@ -115,15 +119,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async selectChannel(channel: Channel) {
-		const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
-		if (!findChannel)
-			return;
-		if (this.selectedUser)
-			this.selectedUser = undefined;
-		await this.channelDataService.getChannel(channel.id)
-			.then(rtrnChannel => this.selectedChannel = rtrnChannel)
-		this.messageService.changeOfDM('change of channel');
-		this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
+		try {
+			const findChannel = this.memberChannels?.find(elem => elem.id === channel.id);
+			if (!findChannel)
+				return;
+			if (this.selectedUser)
+				this.selectedUser = undefined;
+			await this.channelDataService.getChannel(channel.id)
+				.then(rtrnChannel => this.selectedChannel = rtrnChannel)
+			this.messageService.changeOfDM('change of channel');
+			this.socket.emit('joinChannelRoom', { channelid: channel.id, userid: this.activeUser?.id });
+		} catch (e) {
+			this.errorService.showErrorMessage('Something went wrong selecting this channel. Please refresh and try again.');
+		}
+
 	}
 
 	async updateSelectedChannel() {
@@ -172,7 +181,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 		else {
 			this.userDataService.findUserById(id).then(dbuser => {
 				this.otherUsers!.push(dbuser);
-			});
+			}).catch(() => {});
 		}
 	}
 
@@ -227,17 +236,23 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async joinChannel(channel: Channel) {
-		if (channel.type == 'protected') {
-			this.channelToJoin = channel;
-			const popup = document.getElementById('popup-channel-password');
-			popup?.classList.toggle('show-popup');
-		}
-		else {
-			this.socket.emit('joinChannel', {
-				channelid: channel.id,
-				userid: this.activeUser?.id,
-			});
-			await this.updateChannelList();
+		try {
+			const fullChannel = await this.channelDataService.getChannel(channel.id);
+			if (channel.type == 'protected') {
+				this.channelToJoin = channel;
+				const popup = document.getElementById('popup-channel-password');
+				popup?.classList.toggle('show-popup');
+			} else if (fullChannel.bannedUsers.some((user) => user.id === this.activeUser?.id)) {
+						this.errorService.showErrorMessage('You cannot enter this channel because you have been banned.');
+			} else {
+				this.socket.emit('joinChannel', {
+					channelid: channel.id,
+					userid: this.activeUser?.id,
+				});
+				await this.updateChannelList();
+			}
+		} catch (e) {
+			this.errorService.showErrorMessage();
 		}
 	}
 
@@ -261,45 +276,53 @@ export class ChatComponent implements OnInit, OnDestroy {
 	}
 
 	async updateChannelList() {
-		await new Promise(r => setTimeout(r, 250));
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			this.invitedInChannel = this.activeUser.invitedInChannel;
-			this.memberChannels = this.activeUser.channelList;
-			this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
-				other => this.otherVisibleChannels = other
-			);
-			if (this.selectedChannel) {
-				const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
-				if (!findChannel)
-					this.selectedChannel = undefined;
-			}
-		});
+		try {
+			await new Promise(r => setTimeout(r, 250));
+			await this.userDataService.findSelf().then(user => {
+				this.activeUser = user;
+				this.invitedInChannel = this.activeUser.invitedInChannel;
+				this.memberChannels = this.activeUser.channelList;
+				this.channelDataService.getOtherVisibleChannels(this.activeUser.id).then(
+					other => this.otherVisibleChannels = other
+				);
+				if (this.selectedChannel) {
+					const findChannel = this.memberChannels?.find(elem => elem.id === this.selectedChannel?.id);
+					if (!findChannel)
+						this.selectedChannel = undefined;
+				}
+			});
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
+		}
 	}
 
 	async updateUserList() {
-		await this.userDataService.findSelf().then(user => {
-			this.activeUser = user;
-			if (!user) {
-				return;
-			}
-			this.friends = user.friends.map(friend => ({...friend}));
-			this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
-		});
-		await this.userDataService.findAllExceptMyself().then(users => {
-			this.otherUsers = users.filter(user => {
-				return !this.friends?.some(friend => friend.id === user.id) 
-					&& !this.blocked?.some(blocked => blocked.id === user.id) 
-					&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
+		try {
+			await this.userDataService.findSelf().then(user => {
+				this.activeUser = user;
+				if (!user) {
+					return;
+				}
+				this.friends = user.friends.map(friend => ({...friend}));
+				this.blocked = user.blockedUsers.map(blocked => ({...blocked}));
 			});
-		});
-
-		if (this.selectedUser) {
-			const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
-			const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
-			if (!oUser && !fUser) {
-				this.selectedUser = undefined;
+			await this.userDataService.findAllExceptMyself().then(users => {
+				this.otherUsers = users.filter(user => {
+					return !this.friends?.some(friend => friend.id === user.id) 
+						&& !this.blocked?.some(blocked => blocked.id === user.id) 
+						&& !this.activeUser?.blockedFromOther.some(blocked => blocked.id === user.id);
+				});
+			});
+	
+			if (this.selectedUser) {
+				const oUser = this.otherUsers?.find(user => user.id === this.selectedUser?.id);
+				const fUser = this.friends?.find(user => user.id === this.selectedUser?.id);
+				if (!oUser && !fUser) {
+					this.selectedUser = undefined;
+				}
 			}
+		} catch (e) {
+			this.errorService.showErrorMessage("You have been logged out. Please refresh and/or log in again.");
 		}
 	}
 }

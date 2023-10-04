@@ -250,6 +250,7 @@ export class ChannelsService {
       );
       await this.channelRepository.save(channel);
       client.join(channelId);
+			server.to(user.socketid).emit('updateChannelList', {});
       server.to(user.socketid).emit('updateNotifications', {});
       return;
     } catch (error) {
@@ -279,6 +280,7 @@ export class ChannelsService {
         channel.users = channel.users.filter((user) => user.id !== userid);
         await this.channelRepository.save(channel);
         server.to(channelId).emit('updateChannel', {});
+				server.to(user.socketid).emit('updateChannelList', {});
         server.to(user.socketid).socketsLeave(channelId);
       }
     } catch (error) {

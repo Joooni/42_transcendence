@@ -58,7 +58,12 @@ export class NotificationComponent implements OnInit {
 	}
 
 	private async updateNotifications() {
-		await this.userDataService.findSelf().then(user => this.activeUser = user);
+		try {
+			await this.userDataService.findSelf().then(user => this.activeUser = user);
+		} catch (e) {
+			return;
+		}
+		
 		this.notifications = [];
 		for (let user of this.activeUser?.incomingFriendRequests!) {
 			this.notifications.push({

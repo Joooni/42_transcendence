@@ -84,6 +84,10 @@ export class User {
   @Column({ default: 1 })
   selectedMap: number;
 
+	@Field()
+  @Column({ default: false })
+  hasLoggedInBefore: boolean;
+
   @Field(() => GraphQLTimestamp)
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastLoginTimestamp: Date;

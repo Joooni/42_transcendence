@@ -4,6 +4,7 @@ import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
+import { ErrorService } from '../error/error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,12 @@ import { AuthService } from '../auth/auth.service';
 export class SocketService {
 
   constructor(
-    public socket: Socket,
-    ) {
+    public socket: Socket
+  ) {
       this.socket.on('connect', async () => {
         this.connectSocket();
       });
-    }
+  }
   
   public isAuthenticated: boolean = false;
   connected = false;
@@ -29,10 +30,7 @@ export class SocketService {
           await axios.get(`http://${environment.DOMAIN}:3000/socket/verify/${socketId}`, { withCredentials: true });
           this.connected = true;
           resolve();
-        } catch (error) {
-          // console.log('Error verifying socket');
-          // reject(error);
-        }
+        } catch (error) {}
       }
     });
   }

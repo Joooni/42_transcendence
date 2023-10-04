@@ -139,9 +139,9 @@ export class UsersService {
     try {
       const user = await this.findOne(ownid);
       const friend = await this.findOne(otherid);
-
-      if (user.incomingFriendRequests.includes(friend)) {
-        await this.acceptFriendRequest(server, ownid, otherid);
+			
+			if (user.incomingFriendRequests.some(item => friend.id === item.id)) {
+				await this.acceptFriendRequest(server, ownid, otherid);
         return;
       } else if (
         !user.sendFriendRequests.includes(friend) &&
@@ -236,6 +236,9 @@ export class UsersService {
     try {
       const user = await this.findOne(ownid);
       const other = await this.findOne(otherid);
+			other.friends = other.friends.filter((item) => item.id !== user.id);
+			await this.userRepository.save(other);
+
       user.friends = user.friends.filter((item) => item.id !== other.id);
 			user.sendFriendRequests = user.sendFriendRequests.filter((item) => item.id !== other.id);
 			user.incomingFriendRequests = user.incomingFriendRequests.filter((item) => item.id !== other.id);
@@ -310,6 +313,14 @@ export class UsersService {
     }
     const result: UpdateResult = await this.userRepository.update(id, {
       achievements: () => `array_append(achievements, ${newAchievement})`,
+    });
+    if (typeof result.affected != 'undefined' && result.affected < 1)
+      throw new EntityNotFoundError(User, { id: id });
+  }
+
+	async afterFirstLogin(id: number): Promise<void> {
+		const result: UpdateResult = await this.userRepository.update(id, {
+      hasLoggedInBefore: true
     });
     if (typeof result.affected != 'undefined' && result.affected < 1)
       throw new EntityNotFoundError(User, { id: id });

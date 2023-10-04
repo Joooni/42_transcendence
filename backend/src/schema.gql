@@ -66,6 +66,7 @@ type User {
   map: Float!
   achievements: [Int!]!
   selectedMap: Float!
+  hasLoggedInBefore: Boolean!
   lastLoginTimestamp: Timestamp!
   ownedChannels: Channel
   channelList: [Channel!]
@@ -113,4 +114,5 @@ type Mutation {
   updateSelectedMap(selectedMap: Float!): User!
   updateStatus(status: String!): User!
   updateAchievements(id: Float!, newAchievement: Float!): User!
+  afterFirstLogin: User!
 }

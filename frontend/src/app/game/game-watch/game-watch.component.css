@@ -1,8 +1,35 @@
-.game-watch {
+h1 {
+	font-size: 5vmin;
+}
+
+.game-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.game-player-row {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	margin: 2rem;
+	align-items: center;
+	margin: 0 3rem;
+}
+
+.game-player-info {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	column-gap: 1rem;
+	width: 35%;
+}
+
+.left {
+	justify-content: flex-start;
+}
+
+.right {
+	justify-content: flex-end;
 }
 
 .game-canvas {
@@ -10,16 +37,7 @@
 	flex-direction:  column;
 	justify-content: flex-start;
 	align-items: center;
-	width: 40rem;
-	padding: 2rem;
-}
-
-.game-player-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-	margin-top: 5rem;
+	width: 100%;
 }
 
 .game-player-picture {
@@ -27,8 +45,8 @@
 	border-style: solid;
 	border-width: 3px;
 	border-color: orange;
-	height: 7rem;
-	width: 7rem;
+	height: 70px;
+	width: 70px;
 }
 
 .game-player-picture img{
@@ -40,9 +58,4 @@
 
 canvas {
 	position: absolute;
-}
-
-.stop-watching-buttton {
-	width:			570px;
-	margin-top: calc((40rem * 768 / 1024) + 2rem);
 }
