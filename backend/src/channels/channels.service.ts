@@ -224,7 +224,7 @@ export class ChannelsService {
           );
           return;
         }
-      } else if (channel.type === 'protected') {
+      } else if (channel.type === 'protected' && !channel.invitedUsers.some(item => {return user.id === item.id})) {
         if (!password) {
           throw new Error('Channel is protected, but no password was provided');
         }
