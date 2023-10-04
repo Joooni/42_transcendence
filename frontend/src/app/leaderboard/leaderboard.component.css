@@ -50,6 +50,17 @@
 .leaderboard_picture {
 	height: 5vmin;
 	width: 5vmin;
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: orange;
+}
+
+.leaderboard_picture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .leaderboard_flex_column {
